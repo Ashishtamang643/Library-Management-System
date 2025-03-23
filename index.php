@@ -96,7 +96,7 @@ if (isset($_POST['submit-btn'])) {
                 New here? <a href="register.php">Create an Account</a>
             </div>
             <div class="admin-login">
-                <a href="admin/adminindex.php">Admin Login</a>
+                <a href="admin/">Admin Login</a>
             </div>
         </form>
 

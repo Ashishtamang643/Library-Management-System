@@ -128,7 +128,7 @@ color:white;
     <!-- Navigation Bar -->
     <div class="second-nav-bar">
         <div class="container">
-            <a href="/LMS/admin">
+            <a href="adminprofile.php">
                 <h3 class="nav-item">Dashboard</h3>
             </a>
             <div class="dropdown">

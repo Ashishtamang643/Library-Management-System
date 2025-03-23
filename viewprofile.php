@@ -2,6 +2,10 @@
 session_start();
 $connection = mysqli_connect("localhost", "root", "");
 $db = mysqli_select_db($connection, "library");
+if (!isset($_SESSION['Email']) || !isset($_SESSION['ID'])) {
+    echo "<script>alert('Please login to continue.'); window.location.href='index.php';</script>";
+    exit();
+}
 
 $name = "";
 $email = "";
@@ -23,15 +27,15 @@ while ($row = mysqli_fetch_assoc($query_run)) {
 // Check if the form is submitted to update profile
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = trim($_POST['name']);
-    $email = trim($_POST['email']);
+    // $email = trim($_POST['email']);
     $cell = trim($_POST['cell']);
     $address = trim($_POST['address']);
     $faculty = trim($_POST['faculty']); // Get selected faculty
 
     // Update profile details in the database
-    $update_query = "UPDATE users SET Name = ?, Email = ?, Cell = ?, Address = ?, faculty = ? WHERE Username = ?";
+    $update_query = "UPDATE users SET Name = ?, Cell = ?, Address = ?, faculty = ? WHERE ID = ?";
     $stmt = mysqli_prepare($connection, $update_query);
-    mysqli_stmt_bind_param($stmt, "ssssss", $name, $email, $cell, $address, $faculty, $_SESSION['Username']);
+    mysqli_stmt_bind_param($stmt, "sssss", $name, $cell, $address, $faculty, $_SESSION['ID']);
 
     if (mysqli_stmt_execute($stmt)) {
         echo "<script>alert('Profile updated successfully!'); window.location.href = 'viewprofile.php';</script>";
@@ -51,19 +55,114 @@ mysqli_close($connection);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Profile</title>
-    <link rel="stylesheet" href="style1.css">
+    <style>
+        /* body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        } */
+
+        .profiledetails {
+            background: #fff;
+            left:50%;
+            position:relative;
+            transform:translateX(-50%);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin-top: 50px;
+        }
+
+        .profiledetails h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .profiledetails h3 {
+            color: #555;
+            margin: 15px 0 5px;
+            font-size: 16px;
+        }
+
+        .profiledetails input[type="text"],
+        .profiledetails input[type="email"],
+        .profiledetails select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .profiledetails input[type="text"]:focus,
+        .profiledetails input[type="email"]:focus,
+        .profiledetails select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .profiledetails a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+            text-align: center;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .profiledetails a:hover {
+            text-decoration: underline;
+        }
+
+        .profiledetails button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .profiledetails button:hover {
+            background-color: #0056b3;
+            
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<?php include('navbar.php'); ?>
+    <?php include('navbar.php'); ?>
 
-    <form action="viewprofile.php" method="post" class="profiledetails" style="display:grid;justify-content: center;margin-top:35px;color: rgb(98, 98, 106);">
-        <h2 class="h2-header">Profile Details</h2>
+    <form action="viewprofile.php" method="post" class="profiledetails">
+        <h2>Profile Details</h2>
         
         <h3>Full Name</h3>
         <input type="text" name="name" value="<?php echo $name; ?>" required>
         
         <h3>Email</h3>
-        <input type="email" name="email" value="<?php echo $email; ?>" required>
+        <input type="email" name="email" disabled value="<?php  echo $email; ?>" required>
         
         <h3>Cell</h3>
         <input type="text" name="cell" value="<?php echo $cell; ?>" required>
@@ -80,7 +179,7 @@ mysqli_close($connection);
             <option value="BBM" <?php echo $faculty == 'BBM' ? 'selected' : ''; ?>>BBM</option>
         </select>
 
-        <a href="changepassword.php" style="color: red;font-family: arial;font-weight: 700;margin-top:30px;">Change password?</a>
+        <a href="changepassword.php">Change password?</a>
 
         <button type="submit" class="edit-btn">Update</button>
     </form>

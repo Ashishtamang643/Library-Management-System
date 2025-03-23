@@ -1,5 +1,5 @@
 <?php
-   session_start();
+session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,26 +7,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Change Password</title>
-    <link rel="stylesheet" href="style1.css">
+    <style>
+       
+
+        form {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin-top: 50px;
+            left: 50%;
+            position:relative;
+            transform:translateX(-50%);
+        }
+
+        form h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            
+        }
+
+        form input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            transition: border-color 0.3s ease;
+        }
+
+        form input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+            background-color: #fff;
+        }
+
+        form button {
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #0056b3;
+        }
+
+       
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <div class="navigation-bar">
-        <div class="nav-container">
-         <h1><a href="userprofile.php">Library Management System</a></h1>
-         <div class="profile-logout">
-            <h3 class="view-profile" style="margin: 20px;font-family: arial;"><a href="viewbooks.php">Books</a></h3>
-            <h3 class="view-profile" style="margin: 20px;font-family: arial;"><a href="viewprofile.php">Profile</a></h3>
-            <li class="logout-btn"><a href="logout.php">Logout</a></li>
-         </div>
-        </div>
-    </div>
+    <?php include('navbar.php'); ?>
 
-    <form action="passwordchange.php"  method="post" style="display:grid;justify-content: center;margin-top:50px;color: rgb(98, 98, 106);">
-        <h2 class="h2-header">Change Password</h2>
-        <input type="text" placeholder="Currrent Password" name="current_pwd"  style="height:60px;margin:20px;background-color: rgb(183, 219, 248);">
-        <input type="text" placeholder="New Password" name="new_pwd" style="height:60px;margin:20px;background-color: rgb(183, 219, 248);">
+    <form action="passwordchange.php" method="post">
+        <h2>Change Password</h2>
+        <input type="text" placeholder="Current Password" name="current_pwd" required>
+        <input type="text" placeholder="New Password" name="new_pwd" required>
         <button type="submit" class="update-btn">Update</button>
     </form>
-
 </body>
 </html>

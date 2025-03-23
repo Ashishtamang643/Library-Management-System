@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['Name'])) {
+    echo "<script>alert('Please login to continue.'); window.location.href='index.php';</script>";
+    exit();
+}
 $connection = mysqli_connect("localhost", "root", "");
 $db = mysqli_select_db($connection, "library");
 
@@ -33,7 +37,7 @@ while ($row = mysqli_fetch_assoc($query_run)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Book</title>
-    <link rel="stylesheet" href="../style1.css">
+    <link rel="stylesheet" href="../style2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* Reset and base styles */

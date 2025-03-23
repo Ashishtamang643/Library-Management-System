@@ -1,6 +1,10 @@
 <?php
      require('functions.php');
      session_start();
+     if (!isset($_SESSION['Name'])) {
+        echo "<script>alert('Please login to continue.'); window.location.href='index.php';</script>";
+        exit();
+    }
      $connection = mysqli_connect("localhost","root","");
      $db = mysqli_select_db($connection,"library");
      $id="";
@@ -18,7 +22,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registered Users</title>
-    <link rel="stylesheet" href="../style1.css">
+    <link rel="stylesheet" href="../style2.css">
 </head>
 <body>
 <?php include('adminnavbar.php'); ?>

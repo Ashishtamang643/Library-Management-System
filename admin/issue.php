@@ -1,6 +1,10 @@
 <?php
     require('functions.php');
     session_start();
+    if (!isset($_SESSION['Name'])) {
+        echo "<script>alert('Please login to continue.'); window.location.href='index.php';</script>";
+        exit();
+    }
     $connection = mysqli_connect("localhost","root","", "library");
 
     // Process the form submission for issuing books

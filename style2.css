@@ -213,8 +213,12 @@ li{
    font-weight: 600;
    font-family:Arial;
    margin-top: 30px;
-   margin-left:40%;
-   margin-right:40%;
+   left:50%;
+   position:relative;
+   transform: translateX(-50%);
+
+   /* margin-left:40%;
+   margin-right:40%; */
    color: white;
    background-color: rgb(54, 48, 48);
    padding: 15px;

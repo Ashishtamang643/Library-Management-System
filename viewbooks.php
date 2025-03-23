@@ -6,7 +6,7 @@ $db = mysqli_select_db($connection, "library");
 
 // Check if user is logged in
 if (!isset($_SESSION['Email']) || !isset($_SESSION['ID'])) {
-    echo "<script>alert('Please login to continue.'); window.location.href='login.php';</script>";
+    echo "<script>alert('Please login to continue.'); window.location.href='index.php';</script>";
     exit();
 }
 
@@ -53,7 +53,7 @@ if (isset($_POST['request_book'])) {
             } else {
                 // Insert book request into database
                 $query = "INSERT INTO book_request (user_email, student_id, student_name, book_name, book_edition, author_name, book_num, status) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')";
+                          VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')";
                 $stmt = mysqli_prepare($connection, $query);
                 mysqli_stmt_bind_param($stmt, "sssssss", $user_email, $student_id, $student_name, $book_name, $book_edition, $author_name, $book_num);
 
@@ -72,54 +72,70 @@ if (isset($_POST['request_book'])) {
 // Fetch filter values from the form
 $selected_faculty = isset($_GET['faculty']) ? $_GET['faculty'] : '';
 $selected_semester = isset($_GET['semester']) ? $_GET['semester'] : '';
+$selected_book_name = isset($_GET['book_name']) ? $_GET['book_name'] : '';
+$selected_book_num = isset($_GET['book_num']) ? $_GET['book_num'] : '';
+$selected_author = isset($_GET['author']) ? $_GET['author'] : '';
+$selected_publication = isset($_GET['publication']) ? $_GET['publication'] : '';
 
 // Build the query based on filters
-$query = "SELECT DISTINCT book_num, available_quantity, book_name, book_edition, author_name, faculty, semester FROM books WHERE 1=1";
+$query = "SELECT DISTINCT book_num, available_quantity, book_name, book_edition, author_name, faculty, semester, publication FROM books WHERE 1=1";
 if (!empty($selected_faculty)) {
     $query .= " AND faculty = ?";
 }
 if (!empty($selected_semester)) {
     $query .= " AND semester = ?";
 }
+if (!empty($selected_book_name)) {
+    $query .= " AND book_name LIKE ?";
+}
+if (!empty($selected_book_num)) {
+    $query .= " AND book_num LIKE ?";
+}
+if (!empty($selected_author)) {
+    $query .= " AND author_name LIKE ?";
+}
+if (!empty($selected_publication)) {
+    $query .= " AND publication LIKE ?";
+}
 
 // Prepare the query with placeholders
 $stmt = mysqli_prepare($connection, $query);
 
 // Bind parameters if they exist
-if (!empty($selected_faculty) && !empty($selected_semester)) {
-    mysqli_stmt_bind_param($stmt, "ss", $selected_faculty, $selected_semester);
-} elseif (!empty($selected_faculty)) {
-    mysqli_stmt_bind_param($stmt, "s", $selected_faculty);
-} elseif (!empty($selected_semester)) {
-    mysqli_stmt_bind_param($stmt, "s", $selected_semester);
+$types = '';
+$params = [];
+if (!empty($selected_faculty)) {
+    $types .= 's';
+    $params[] = $selected_faculty;
+}
+if (!empty($selected_semester)) {
+    $types .= 's';
+    $params[] = $selected_semester;
+}
+if (!empty($selected_book_name)) {
+    $types .= 's';
+    $params[] = "%$selected_book_name%";
+}
+if (!empty($selected_book_num)) {
+    $types .= 's';
+    $params[] = "%$selected_book_num%";
+}
+if (!empty($selected_author)) {
+    $types .= 's';
+    $params[] = "%$selected_author%";
+}
+if (!empty($selected_publication)) {
+    $types .= 's';
+    $params[] = "%$selected_publication%";
+}
+
+if (!empty($params)) {
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
 }
 
 // Execute the query
 mysqli_stmt_execute($stmt);
 $query_result = mysqli_stmt_get_result($stmt);
-
-// Check the issued table and update book_request table
-$student_id = $_SESSION['ID'];
-$check_issued_query = "SELECT br.request_id, br.book_name, br.book_edition, br.author_name 
-                       FROM book_request br 
-                       JOIN issued i ON br.book_name = i.book_name 
-                       AND br.author_name = i.book_author 
-                       AND br.book_num = i.book_num
-                       WHERE br.status = 'pending' 
-                       AND i.student_id = ?";
-$stmt = mysqli_prepare($connection, $check_issued_query);
-mysqli_stmt_bind_param($stmt, "s", $student_id);
-mysqli_stmt_execute($stmt);
-$check_issued_result = mysqli_stmt_get_result($stmt);
-
-while ($row = mysqli_fetch_assoc($check_issued_result)) {
-    $request_id = $row['request_id'];
-    // Update the status to "issued" in the book_request table
-    $update_query = "UPDATE book_request SET status = 'issued' WHERE request_id = ?";
-    $stmt = mysqli_prepare($connection, $update_query);
-    mysqli_stmt_bind_param($stmt, "s", $request_id);
-    mysqli_stmt_execute($stmt);
-}
 ?>
 
 <!DOCTYPE html>
@@ -128,7 +144,7 @@ while ($row = mysqli_fetch_assoc($check_issued_result)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Requests</title>
-    <link rel="stylesheet" href="style1.css">
+    <link rel="stylesheet" href="style2.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -155,33 +171,11 @@ while ($row = mysqli_fetch_assoc($check_issued_result)) {
         .profile-logout h3 {
             margin: 0 20px;
         }
-        .welcome-user {
-            display: block;
-            padding: 20px;
-            background-color: #e2e2e2;
-            margin-bottom: 20px;
-        }
-        table {
-            width: 80%;
-            margin: 20px auto;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #333;
-            color: white;
-        }
-        tr {
-            border-bottom: 1px solid #ccc;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
+        
+        
+        input{
+            width:200px;
+
         }
         .request-btn {
             background-color: #4CAF50;
@@ -201,7 +195,7 @@ while ($row = mysqli_fetch_assoc($check_issued_result)) {
             text-align: center;
             margin: 20px 0;
         }
-        .filter-container select {
+        .filter-container select, .filter-container input {
             padding: 8px;
             margin: 0 10px;
             border-radius: 4px;
@@ -249,6 +243,18 @@ while ($row = mysqli_fetch_assoc($check_issued_result)) {
                 <?php } ?>
             </select>
 
+            <label for="book_name">Book Name:</label>
+            <input type="text" name="book_name" id="book_name" value="<?php echo htmlspecialchars($selected_book_name); ?>" placeholder="Enter book name">
+
+            <label for="book_num">Book Number:</label>
+            <input type="text" name="book_num" id="book_num" value="<?php echo htmlspecialchars($selected_book_num); ?>" placeholder="Enter book number">
+
+            <label for="author">Author:</label>
+            <input type="text" name="author" id="author" value="<?php echo htmlspecialchars($selected_author); ?>" placeholder="Enter author name">
+
+            <label for="publication">Publication:</label>
+            <input type="text" name="publication" id="publication" value="<?php echo htmlspecialchars($selected_publication); ?>" placeholder="Enter publication">
+
             <button type="submit">Filter</button>
         </form>
     </div>
@@ -264,6 +270,7 @@ while ($row = mysqli_fetch_assoc($check_issued_result)) {
                 <th>Faculty</th>
                 <th>Available Qty</th>
                 <th>Semester</th>
+                <th>Publication</th>
                 <th>Action / Status</th>
             </tr>
         </thead>
@@ -276,9 +283,10 @@ while ($row = mysqli_fetch_assoc($check_issued_result)) {
                 $faculty = $row['faculty'];
                 $semester = $row['semester'];
                 $book_num = $row['book_num'];
-                $available_quantity=$row['available_quantity'];
+                $available_quantity = $row['available_quantity'];
+                $publication = $row['publication'];
 
-                // Check if the user has already requested this book with the same edition and author
+                // Check if the user has already requested this book
                 $student_id = $_SESSION['ID'];
                 $check_query = "SELECT status FROM book_request 
                                 WHERE student_id = ? 
@@ -313,6 +321,7 @@ while ($row = mysqli_fetch_assoc($check_issued_result)) {
                     <td><?php echo htmlspecialchars($faculty); ?></td>
                     <td><?php echo htmlspecialchars($available_quantity); ?></td>
                     <td><?php echo htmlspecialchars($semester); ?></td>
+                    <td><?php echo htmlspecialchars($publication); ?></td>
                     <td>
                         <?php if (empty($status)) { ?>
                             <!-- Show the "Request" button if the book hasn't been requested -->

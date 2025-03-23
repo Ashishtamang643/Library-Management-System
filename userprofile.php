@@ -51,7 +51,10 @@ $totalReturnedResult = mysqli_query($connection, $totalReturnedQuery);
 $totalReturnedData = mysqli_fetch_assoc($totalReturnedResult);
 
 // Query to get requested books for the logged-in student
-$requestedBooksQuery = "SELECT book_name, book_num, author_name, request_date FROM book_request WHERE student_id = $_SESSION[ID]";
+$requestedBooksQuery = "SELECT book_name, book_num, author_name, request_date, status
+                        FROM book_request 
+                        WHERE student_id = $_SESSION[ID] 
+                        AND status != ''";
 $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
 ?>
 
@@ -62,7 +65,7 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Library Dashboard</title>
-    <link rel="stylesheet" href="style1.css">
+    <link rel="stylesheet" href="style2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* Add your existing styles here */
@@ -118,21 +121,7 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
             padding: 20px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            font-weight: bold;
-        }
+        
 
         .empty-state {
             padding: 40px;
@@ -273,6 +262,7 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
             if (isset($_GET['show_requested']) && $_GET['show_requested'] == 'true') {
             ?>
                 <h3>Requested Books</h3>
+                <div class="table-container">
                 <table>
                     <thead>
                         <tr>
@@ -280,6 +270,8 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
                             <th>Book Number</th>
                             <th>Author</th>
                             <th>Request Date</th>
+                            <th>Status</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -290,25 +282,28 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
                                 $requestedBookNum = $row['book_num'];
                                 $requestedAuthor = $row['author_name'];
                                 $requestDate = $row['request_date'];
+                                $status = $row['status'];
                         ?>
                                 <tr>
                                     <td><?php echo $requestedBookName; ?></td>
                                     <td><?php echo $requestedBookNum; ?></td>
                                     <td><?php echo $requestedAuthor; ?></td>
                                     <td><?php echo $requestDate; ?></td>
+                                    <td><?php echo $status; ?></td>
                                 </tr>
                         <?php
                             }
                         } else {
                         ?>
                             <tr>
-                                <td colspan="4" class="empty-state">No requested books found.</td>
+                                <td colspan="5" class="empty-state">No requested books found.</td>
                             </tr>
                         <?php
                         }
                         ?>
                     </tbody>
                 </table>
+                </div>
             <?php
             }
             ?>

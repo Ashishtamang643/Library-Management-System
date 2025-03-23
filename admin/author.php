@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['Name'])) {
+  echo "<script>alert('Please login to continue.'); window.location.href='index.php';</script>";
+  exit();
+}
     if(isset($_POST['authorfield'])){
     $author = $_POST["authorfield"];
     $connection = mysqli_connect("localhost","root","");
@@ -34,7 +39,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Profile</title>
-    <link rel="stylesheet" href="../style1.css">
+    <link rel="stylesheet" href="../style2.css">
 </head>
 <body>
     <div class="navigation-bar">
