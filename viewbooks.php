@@ -218,7 +218,7 @@ $query_result = mysqli_stmt_get_result($stmt);
     <!-- Include the navigation bar -->
     <?php include('navbar.php'); ?>
 
-    <span class="welcome-user">Welcome: <?php echo $_SESSION['Email']; ?></span>
+    <span class="welcome-user">Welcome: <?php echo $_SESSION['Name']; ?></span>
     <h2 style="margin-top: 20px; text-align: center;">Available Books</h2>
 
     <!-- Filter Form -->

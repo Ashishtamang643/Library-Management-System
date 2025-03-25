@@ -32,6 +32,8 @@ if (isset($_POST['submit-btn'])) {
             if (password_verify($password, $row['Password'])) {
                 $_SESSION['Email'] = $row['Email'];
                 $_SESSION['ID'] = $row['ID'];  // Save ID to session
+                $_SESSION['Name'] = $row['Name'];  
+
                 header("Location: userprofile.php");
                 exit();
             } else {

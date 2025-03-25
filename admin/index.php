@@ -182,7 +182,7 @@
             
             <div class="additional-links">
                 <a href="../index.php">Back to Home</a>
-                <a href="#">Forgot Password?</a>
+                
             </div>
         </div>
         

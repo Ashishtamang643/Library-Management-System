@@ -42,6 +42,7 @@ $totalIssuedQuery = "SELECT COUNT(*) AS totalIssued FROM issued WHERE student_id
 
 // Query to get total returned books
 $totalReturnedQuery = "SELECT COUNT(*) AS totalReturned FROM issued WHERE student_id = $_SESSION[ID] AND returned = 1";
+$CurrentlyIssuedQuery = "SELECT COUNT(*) AS currentlyissued FROM issued WHERE student_id = $_SESSION[ID] AND returned IS NULL";
 
 // Run the queries
 $totalIssuedResult = mysqli_query($connection, $totalIssuedQuery);
@@ -49,6 +50,9 @@ $totalIssuedData = mysqli_fetch_assoc($totalIssuedResult);
 
 $totalReturnedResult = mysqli_query($connection, $totalReturnedQuery);
 $totalReturnedData = mysqli_fetch_assoc($totalReturnedResult);
+
+$CurrentlyIssuedResult = mysqli_query($connection, $CurrentlyIssuedQuery);
+$CurrentlyIssuedData = mysqli_fetch_assoc($CurrentlyIssuedResult);
 
 // Query to get requested books for the logged-in student
 $requestedBooksQuery = "SELECT book_name, book_num, author_name, request_date, status
@@ -147,7 +151,7 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
         <!-- Dashboard Header -->
         <div class="dashboard-header">
             <div class="welcome-section">
-                <span class="welcome-user">Welcome, <span class="user-email"><?php echo $_SESSION['Email']; ?></span></span>
+                <span class="welcome-user">Welcome, <span class="user-email"><?php echo $_SESSION['Name']; ?></span></span>
             </div>
         </div>
 
@@ -169,7 +173,7 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
 
             <div class="card">
                 <i class="fas fa-book-open icon"></i>
-                <h3><?php echo get_userissue_count(); ?></h3>
+                <h3><?php echo $CurrentlyIssuedData['currentlyissued']; ?></h3>
                 <p>Currently Issued Books</p>
             </div>
         </div>

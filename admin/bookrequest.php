@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 if (!isset($_SESSION['Name'])) {
@@ -23,8 +24,7 @@ if (isset($_POST['update_status'])) {
     }
 }
 
-// Handle book issue operation
-// Handle book issue operation
+// Handle book issue operation (previous implementation remains the same)
 if (isset($_POST['issue_book'])) {
     $request_id = $_POST['request_id'];
     $book_num = $_POST['book_num'];
@@ -107,9 +107,24 @@ if (isset($_POST['issue_book'])) {
     }
 }
 
+// Prepare base query with filtering
+$filter_student_id = isset($_GET['student_id']) ? $_GET['student_id'] : '';
+$filter_book_name = isset($_GET['book_name']) ? $_GET['book_name'] : '';
+$filter_book_num = isset($_GET['book_num']) ? $_GET['book_num'] : '';
 
-// Fetch all book requests
-$query = "SELECT * FROM book_request ORDER BY request_date DESC";
+$query = "SELECT * FROM book_request WHERE 1=1";
+
+if (!empty($filter_student_id)) {
+    $query .= " AND student_id LIKE '%" . mysqli_real_escape_string($connection, $filter_student_id) . "%'";
+}
+if (!empty($filter_book_name)) {
+    $query .= " AND book_name LIKE '%" . mysqli_real_escape_string($connection, $filter_book_name) . "%'";
+}
+if (!empty($filter_book_num)) {
+    $query .= " AND book_num LIKE '%" . mysqli_real_escape_string($connection, $filter_book_num) . "%'";
+}
+
+$query .= " ORDER BY request_date DESC";
 $query_run = mysqli_query($connection, $query);
 ?>
 
@@ -119,38 +134,24 @@ $query_run = mysqli_query($connection, $query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Book Requests</title>
+    <link rel="stylesheet" href="../style2.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
+            
+            
         }
-        table {
-            width: 92%;
-            margin: 20px auto;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #333;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        .status-dropdown {
+        
+        .status-dropdown, .filter-input {
             padding: 5px;
             border-radius: 4px;
             border: 1px solid #ccc;
+            margin: 5px 0;
         }
-        .update-btn, .issue-btn {
+        .update-btn, .issue-btn, .filter-btn {
             background-color: #4CAF50;
             color: white;
             border: none;
@@ -158,7 +159,7 @@ $query_run = mysqli_query($connection, $query);
             cursor: pointer;
             border-radius: 4px;
         }
-        .update-btn:hover, .issue-btn:hover {
+        .update-btn:hover, .issue-btn:hover, .filter-btn:hover {
             background-color: #45a049;
         }
         .issued-text {
@@ -174,12 +175,65 @@ $query_run = mysqli_query($connection, $query);
             margin-top: 20px;
             color: #333;
         }
+        .filter-container {
+            width: 92%;
+            margin: 20px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-width:1250px;
+            
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap:10px;
+        }
+        .reset-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+        .reset-btn:hover {
+            background-color: #d32f2f;
+        }
     </style>
 </head>
 <body>
 <?php include('adminnavbar.php'); ?>
 
     <h2 class="title">Book Requests Management</h2>
+
+    <!-- Filter Container -->
+    <div class="filter-container">
+        <form method="GET" action="" style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <div class="filter-group">
+                <label>Student ID</label>
+                <input type="text" name="student_id" class="filter-input" placeholder="Search Student ID" value="<?php echo htmlspecialchars($filter_student_id); ?>">
+            </div>
+            <div class="filter-group">
+                <label>Book Name</label>
+                <input type="text" name="book_name" class="filter-input" placeholder="Search Book Name" value="<?php echo htmlspecialchars($filter_book_name); ?>">
+            </div>
+            <div class="filter-group">
+                <label>Book Number</label>
+                <input type="text" name="book_num" class="filter-input" placeholder="Search Book Number" value="<?php echo htmlspecialchars($filter_book_num); ?>">
+            </div>
+            <div class="filter-group" style="align-self: flex-end;">
+                <button type="submit" class="filter-btn">Apply Filter</button>
+                <button type="button" class="reset-btn" onclick="window.location.href='?'">Reset</button>
+            </div>
+        </form>
+    </div>
 
     <!-- Book Requests Table -->
     <table>

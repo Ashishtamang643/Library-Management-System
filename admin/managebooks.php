@@ -8,9 +8,38 @@ if (!isset($_SESSION['Name'])) {
 $connection = mysqli_connect("localhost", "root", "");
 $db = mysqli_select_db($connection, "library");
 
+// Handle book deletion
+if (isset($_GET['delete_id'])) {
+    $book_num = $_GET['delete_id'];
+    
+    // First, check if there are any issued copies of this book
+    $check_query = "SELECT COUNT(*) as issued_count FROM issued WHERE book_num = '$book_num' AND returned IS NULL";
+    $check_result = mysqli_query($connection, $check_query);
+    $check_data = mysqli_fetch_assoc($check_result);
+    
+    if ($check_data['issued_count'] > 0) {
+        echo "<script>alert('Cannot delete this book as there are issued copies. Please collect all issued copies first.'); window.location.href='managebooks.php';</script>";
+    } else {
+        // Delete the book
+        $delete_query = "DELETE FROM books WHERE book_num = '$book_num'";
+        $delete_result = mysqli_query($connection, $delete_query);
+        
+        if ($delete_result) {
+            echo "<script>alert('Book deleted successfully.'); window.location.href='managebooks.php';</script>";
+        } else {
+            echo "<script>alert('Error deleting book.'); window.location.href='managebooks.php';</script>";
+        }
+    }
+    exit();
+}
+
 // Fetch filter values from the form
 $selected_faculty = isset($_GET['faculty']) ? $_GET['faculty'] : '';
 $selected_semester = isset($_GET['semester']) ? $_GET['semester'] : '';
+$search_book_name = isset($_GET['book_name']) ? $_GET['book_name'] : '';
+$search_author = isset($_GET['author']) ? $_GET['author'] : '';
+$search_book_num = isset($_GET['book_num']) ? $_GET['book_num'] : '';
+$search_publication = isset($_GET['publication']) ? $_GET['publication'] : '';
 
 // Build the query based on filters
 $query = "SELECT * FROM books WHERE 1=1";
@@ -20,6 +49,24 @@ if (!empty($selected_faculty)) {
 if (!empty($selected_semester)) {
     $query .= " AND semester = '$selected_semester'";
 }
+if (!empty($search_book_name)) {
+    $query .= " AND book_name LIKE '%$search_book_name%'";
+}
+if (!empty($search_author)) {
+    $query .= " AND author_name LIKE '%$search_author%'";
+}
+if (!empty($search_book_num)) {
+    $query .= " AND book_num LIKE '%$search_book_num%'";
+}
+if (!empty($search_publication)) {
+    $query .= " AND publication LIKE '%$search_publication%'";
+}
+
+// Count total books based on the filtered query
+$count_query = str_replace("SELECT *", "SELECT COUNT(*) as total_books", $query);
+$count_result = mysqli_query($connection, $count_query);
+$total_books_row = mysqli_fetch_assoc($count_result);
+$total_books = $total_books_row['total_books'];
 ?>
 
 <!DOCTYPE html>
@@ -30,121 +77,102 @@ if (!empty($selected_semester)) {
     <title>Manage Books</title>
     <link rel="stylesheet" href="../style2.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .navigation-bar {
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .navigation-bar a {
-            color: white;
-            text-decoration: none;
-        }
-        .profile-logout {
-            display: flex;
-            align-items: center;
-        }
-        .profile-logout h3 {
-            margin: 0 20px;
-        }
-        .second-nav-bar {
-            background-color: #444;
-            padding: 10px;
-        }
-        .second-nav-bar .container {
-            display: flex;
-            align-items: center;
-        }
-        .second-nav-bar h3 {
-            margin: 0 15px;
-            color: white;
-        }
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        .dropbtn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-        .h2-register-header {
-            text-align: center;
-            margin-top: 20px;
-        }
-        table {
-            width: 80%;
-            margin: 20px auto;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #333;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
+        /* Previous styles remain the same */
+        
+        /* Enhanced Filter Styling */
         .filter-container {
-            text-align: center;
-            margin: 20px 0;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin: 20px auto;
+            max-width: 900px;
+            transition: all 0.3s ease;
         }
-        .filter-container select {
-            padding: 8px;
-            margin: 0 10px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
+
+        .filter-container:hover {
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
         }
+
+        .filter-container form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .filter-container label {
+            color: #333;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .filter-container select,
+        .filter-container input[type="text"] {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+            width: 180px;
+        }
+
+        .filter-container select:focus,
+        .filter-container input[type="text"]:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+
         .filter-container button {
-            padding: 8px 15px;
+            padding: 10px 20px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
+
         .filter-container button:hover {
             background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
+
+        .filter-container button:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .total-books-container {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 16px;
+            color: #555;
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 6px;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .editbooks-btn {
             background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .delete-btn {
+            background-color: #f44336;
             color: white;
             border: none;
             padding: 5px 10px;
@@ -154,11 +182,16 @@ if (!empty($selected_semester)) {
         .editbooks-btn:hover {
             background-color: #45a049;
         }
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        
     </style>
 </head>
 <body>
-<?php include('adminnavbar.php'); ?>
 
+<?php include('adminnavbar.php'); ?>
 
     <h2 class="h2-register-header">Manage Books</h2>
 
@@ -184,8 +217,25 @@ if (!empty($selected_semester)) {
                 <?php } ?>
             </select>
 
+            <label for="book_name">Book Name:</label>
+            <input type="text" name="book_name" id="book_name" value="<?php echo htmlspecialchars($search_book_name); ?>" placeholder="Search book name">
+
+            <label for="author">Author:</label>
+            <input type="text" name="author" id="author" value="<?php echo htmlspecialchars($search_author); ?>" placeholder="Search author">
+
+            <label for="book_num">Book Number:</label>
+            <input type="text" name="book_num" id="book_num" value="<?php echo htmlspecialchars($search_book_num); ?>" placeholder="Search book number">
+
+            <label for="publication">Publication:</label>
+            <input type="text" name="publication" id="publication" value="<?php echo htmlspecialchars($search_publication); ?>" placeholder="Search publication">
+
             <button type="submit">Filter</button>
         </form>
+    </div>
+
+    <!-- Total Books Count -->
+    <div class="total-books-container">
+        Total Books: <?php echo $total_books; ?>
     </div>
 
     <!-- Books Table -->
@@ -199,9 +249,9 @@ if (!empty($selected_semester)) {
                 <th>Publication</th>
                 <th>Faculty</th>
                 <th>Semester</th>
-                <th>total_quantity</th>
-                <th>available_quantity</th>
-                <th>$issued_quantity</th>
+                <th>Total Quantity</th>
+                <th>Available Quantity</th>
+                <th>Issued Quantity</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -233,7 +283,7 @@ if (!empty($selected_semester)) {
                     <td><?php echo $issued_quantity; ?></td>
                     <td>
                         <a href="editbooks.php?bn=<?php echo $row['book_num']; ?>" class="editbooks-btn">Edit</a>
-                        <a href="deletebooks.php?bn=<?php echo $row['book_num']; ?>" class="editbooks-btn">Delete</a>
+                        <a href="managebooks.php?delete_id=<?php echo $row['book_num']; ?>" class="delete-btn" onclick="return confirm('Are you sure you want to delete this book?')">Delete</a>
                     </td>
                 </tr>
             <?php
