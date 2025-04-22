@@ -5,8 +5,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bedition = htmlspecialchars(trim($_POST['bedition']));
     $bnum = htmlspecialchars(trim($_POST['bnum']));
     $author = htmlspecialchars(trim($_POST['author_name']));
-    $faculty = htmlspecialchars(trim($_POST['faculty']));
-    $semester = intval($_POST['semester']); // Ensure semester is an integer
+    
+    // Handle multiple faculty selection
+    if (isset($_POST['faculty']) && is_array($_POST['faculty'])) {
+        $faculty = implode(", ", array_map('htmlspecialchars', $_POST['faculty']));
+    } else {
+        $faculty = "";
+    }
+    
+    // Handle multiple semester selection
+    if (isset($_POST['semester']) && is_array($_POST['semester'])) {
+        $semester = implode(", ", array_map('htmlspecialchars', $_POST['semester']));
+    } else {
+        $semester = "";
+    }
+    
     $publication = htmlspecialchars(trim($_POST['publication']));
     $total_quantity = intval($_POST['total_quantity']); // Ensure total_quantity is an integer
 
@@ -76,60 +89,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: white;
             text-decoration: none;
         }
-        .profile-logout {
-            display: flex;
-            align-items: center;
-        }
-        .profile-logout h3 {
-            margin: 0 20px;
-        }
-        .second-nav-bar {
-            background-color: #444;
-            padding: 10px;
-        }
-        .second-nav-bar .container {
-            display: flex;
-            align-items: center;
-        }
-        .second-nav-bar h3 {
-            margin: 0 15px;
-            color: white;
-        }
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        .dropbtn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-        .addbooksdetails {
-            max-width: 500px;
+        .container {
+            max-width: 600px;
             margin: 30px auto;
+            height: fit-content;
             padding: 20px;
             background: white;
             border-radius: 8px;
@@ -141,75 +104,103 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 24px;
             color: #333;
         }
-        .addbooksdetails label {
-            display: block;
-            margin-bottom: 8px;
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .form-grid label {
             font-weight: bold;
             color: #555;
         }
-        .addbooksdetails input, .addbooksdetails select {
+        .form-grid input, .form-grid select {
             width: 100%;
             padding: 10px;
-            margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 16px;
         }
+        .form-grid .full-width {
+            grid-column: span 2;
+        }
         .addbooksdetails button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 4px;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
+            margin-top: 20px;
         }
         .addbooksdetails button:hover {
             background-color: #45a049;
+        }
+        /* Style for multiple select */
+        .multi-select {
+            height: auto;
+            min-height: 100px;
+        }
+        .select-help {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
 <?php include('adminnavbar.php'); ?>
 
+<div class="main">
+<?php include('sidebar.php'); ?>
 
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" class="addbooksdetails" method="post">
-        <h2>Add Books</h2>
-        <label for="bname">Book Name</label>
-        <input type="text" id="bname" name="bname" required>
-        
-        <label for="bnum">Book Number</label>
-        <input type="text" id="bnum" name="bnum" required>
-        
-        <label for="bedition">Book Edition</label>
-        <input type="text" id="bedition" name="bedition" required>
-        
-        <label for="author_name">Author Name</label>
-        <input type="text" id="author_name" name="author_name" required>
-        
-        <label for="faculty">Faculty</label>
-        <select id="faculty" name="faculty" required>
-            <option value="Bsc.Csit">Bsc.Csit</option>
-            <option value="BIM">BIM</option>
-            <option value="BCA">BCA</option>
-            <option value="BBM">BBM</option>
-        </select>
-        
-        <label for="semester">Semester</label>
-        <select id="semester" name="semester" required>
-            <?php for ($i = 1; $i <= 8; $i++) { ?>
-                <option value="<?php echo $i; ?>">Semester <?php echo $i; ?></option>
-            <?php } ?>
-        </select>
-        
-        <label for="publication">Publication</label>
-        <input type="text" id="publication" name="publication" required>
-        
-        <label for="total_quantity">Total Quantity</label>
-        <input type="number" id="total_quantity" name="total_quantity" min="1" required>
-        
-        <button type="submit">Add Book</button>
-    </form>
+    <div class="container">
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" class="addbooksdetails" method="post">
+            <h2>Add Books</h2>
+            <div class="form-grid">
+                <label for="bname">Book Name</label>
+                <input type="text" id="bname" name="bname" required>
+                
+                <label for="bnum">Book Number</label>
+                <input type="text" id="bnum" name="bnum" required>
+                
+                <label for="bedition">Book Edition</label>
+                <input type="text" id="bedition" name="bedition" required>
+                
+                <label for="author_name">Author Name</label>
+                <input type="text" id="author_name" name="author_name" required>
+                
+                <div class="full-width">
+                    <label for="faculty">Faculty</label>
+                    <select multiple id="faculty" name="faculty[]" class="multi-select" required>
+                        <option value="Bsc.Csit">Bsc.Csit</option>
+                        <option value="BIM">BIM</option>
+                        <option value="BCA">BCA</option>
+                        <option value="BBM">BBM</option>
+                    </select>
+                    <p class="select-help">Hold Ctrl (PC) or Command (Mac) to select multiple faculties</p>
+                </div>
+                
+                <div class="full-width">
+                    <label for="semester">Semester</label>
+                    <select multiple id="semester" name="semester[]" class="multi-select" required>
+                        <?php for ($i = 1; $i <= 8; $i++) { ?>
+                            <option value="<?php echo $i; ?>">Semester <?php echo $i; ?></option>
+                        <?php } ?>
+                    </select>
+                    <p class="select-help">Hold Ctrl (PC) or Command (Mac) to select multiple semesters</p>
+                </div>
+                
+                <label for="publication">Publication</label>
+                <input type="text" id="publication" name="publication" required>
+                
+                <label for="total_quantity">Total Quantity</label>
+                <input type="number" id="total_quantity" name="total_quantity" min="1" required>
+            </div>
+            <button type="submit">Add Book</button>
+        </form>
+    </div>
+</div>
 </body>
 </html>

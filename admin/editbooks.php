@@ -29,6 +29,7 @@ while ($row = mysqli_fetch_assoc($query_run)) {
     $publication = $row['publication'];
     $total_quantity = $row['total_quantity'];
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -91,8 +92,11 @@ while ($row = mysqli_fetch_assoc($query_run)) {
 
         /* Form groups */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             position: relative;
+            display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two equal columns */
+    gap: 15px; /* Space between grid items */
         }
 
         /* Form labels */
@@ -207,6 +211,13 @@ while ($row = mysqli_fetch_assoc($query_run)) {
 <body>
 <?php include('adminnavbar.php'); ?>
 
+<div class="main">
+<?php include('sidebar.php'); ?>
+
+    <div class="container">
+
+
+
     <form action="editupdatebooks.php" method="POST" class="editbooksdetails">
         <h2>Edit Book Details</h2>
         
@@ -283,6 +294,9 @@ while ($row = mysqli_fetch_assoc($query_run)) {
             <i class="fas fa-sync-alt"></i> Update Book Details
         </button>
     </form>
+
+    </div>
+    </div>
 </body>
 </html>
 

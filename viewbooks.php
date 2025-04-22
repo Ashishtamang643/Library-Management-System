@@ -77,60 +77,73 @@ $selected_book_num = isset($_GET['book_num']) ? $_GET['book_num'] : '';
 $selected_author = isset($_GET['author']) ? $_GET['author'] : '';
 $selected_publication = isset($_GET['publication']) ? $_GET['publication'] : '';
 
-// Build the query based on filters
 $query = "SELECT DISTINCT book_num, available_quantity, book_name, book_edition, author_name, faculty, semester, publication FROM books WHERE 1=1";
-if (!empty($selected_faculty)) {
-    $query .= " AND faculty = ?";
-}
-if (!empty($selected_semester)) {
-    $query .= " AND semester = ?";
-}
+
+// Build parameter arrays first
+$types = '';
+$params = [];
+
+    if (!empty($selected_faculty)) {
+        $query .= " AND REPLACE(CONCAT(',', REPLACE(faculty, ' ', ''), ','), ' ', '') LIKE CONCAT('%,', ?, ',%')";
+        $types .= 's';
+        $params[] = str_replace(' ', '', $selected_faculty); // ensures param is also space-free
+    }
+
+    if (!empty($selected_semester)) {
+        $query .= " AND REPLACE(CONCAT(',', REPLACE(semester, ' ', ''), ','), ' ', '') LIKE CONCAT('%,', ?, ',%')";
+        $types .= 's';
+        $params[] = str_replace(' ', '', $selected_semester); // ensures param is also space-free
+    }
+
+// if (!empty($selected_semester)) {
+//     $query .= " AND (semester = ? OR semester LIKE CONCAT(?, ',%') OR semester LIKE CONCAT('%,', ?, ',%') OR semester LIKE CONCAT('%,', ?))";
+//     $types .= 'ssss'; // Four placeholders for semester
+//     $params[] = $selected_semester;
+//     $params[] = $selected_semester;
+//     $params[] = $selected_semester;
+//     $params[] = $selected_semester;
+// }
+
 if (!empty($selected_book_name)) {
     $query .= " AND book_name LIKE ?";
+    $types .= 's';
+    $params[] = "%$selected_book_name%";
 }
+
 if (!empty($selected_book_num)) {
     $query .= " AND book_num LIKE ?";
+    $types .= 's';
+    $params[] = "%$selected_book_num%";
 }
+
 if (!empty($selected_author)) {
     $query .= " AND author_name LIKE ?";
+    $types .= 's';
+    $params[] = "%$selected_author%";
 }
+
 if (!empty($selected_publication)) {
     $query .= " AND publication LIKE ?";
+    $types .= 's';
+    $params[] = "%$selected_publication%";
 }
 
 // Prepare the query with placeholders
 $stmt = mysqli_prepare($connection, $query);
 
 // Bind parameters if they exist
-$types = '';
-$params = [];
-if (!empty($selected_faculty)) {
-    $types .= 's';
-    $params[] = $selected_faculty;
-}
-if (!empty($selected_semester)) {
-    $types .= 's';
-    $params[] = $selected_semester;
-}
-if (!empty($selected_book_name)) {
-    $types .= 's';
-    $params[] = "%$selected_book_name%";
-}
-if (!empty($selected_book_num)) {
-    $types .= 's';
-    $params[] = "%$selected_book_num%";
-}
-if (!empty($selected_author)) {
-    $types .= 's';
-    $params[] = "%$selected_author%";
-}
-if (!empty($selected_publication)) {
-    $types .= 's';
-    $params[] = "%$selected_publication%";
-}
-
 if (!empty($params)) {
-    mysqli_stmt_bind_param($stmt, $types, ...$params);
+    // For PHP versions that support spread operator
+    if (version_compare(PHP_VERSION, '5.6.0', '>=')) {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    } else {
+        // For older PHP versions
+        $bind_params = array($stmt, $types);
+        foreach ($params as $key => $value) {
+            $bind_params[] = &$params[$key];
+        }
+        call_user_func_array('mysqli_stmt_bind_param', $bind_params);
+    }
 }
 
 // Execute the query

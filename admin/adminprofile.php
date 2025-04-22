@@ -191,184 +191,288 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Profile</title>
-    <link rel="stylesheet" href="../style1.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
-        .dashboard-container {
+        :root {
+            --primary-color: #6c63ff;
+            --secondary-color: #f4f4f4;
+            --text-color: #333;
+            --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--secondary-color);
+            margin: 0;
+            padding: 0;
+        }
+        .main{
             display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
+        }
+
+        .side-bar {
+            width: 250px;
+            background-color: white;
+            padding: 20px 15px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .side-bar a {
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 12px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .side-bar a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .side-bar a i {
+            font-size: 18px;
+        }
+
+        .container {
+            flex-grow: 1;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
             gap: 20px;
         }
-        
-        .card {
-            width: 300px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        
-        .card-body {
-            padding: 20px;
-        }
-        
-        .card-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .card-text {
-            font-size: 16px;
-            margin: 15px 0;
-        }
-        
-        .btn-primary {
-            display: inline-block;
-            padding: 8px 15px;
-            border-radius: 4px;
-            text-decoration: none;
-            color: white;
-            transition: background-color 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            opacity: 0.9;
-        }
-        
-        .chart-container {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto 30px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .filters-container {
+
+        .cards-container {
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 10px;
-            background-color: #f5f5f5;
-            border-radius: 8px;
+            gap: 20px;
         }
-        
+
+        .card {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .card h5{
+            font-size: large;
+        }
+
+        .card-title i {
+            font-size: 24px;
+        }
+
+        .card-text {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 20px;
+            width: 100%;
+        }
+
+        #libraryStatsChart {
+            height: 500px !important; /* Explicitly set height */
+            width: 100% !important;
+        }
+
+    .filters-container {
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    #filterForm {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 15px;
+        justify-content: start;
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-group label {
+        color: #6c757d;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    .filter-group select, 
+    .filter-group input[type="date"] {
+        padding: 8px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
+    }
+
+    .filter-group select:focus, 
+    .filter-group input[type="date"]:focus {
+        outline: none;
+        border-color: #6c63ff;
+        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+    }
+
+    .filter-btn {
+        background-color: #6c63ff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-weight: 500;
+    }
+
+    .filter-btn:hover {
+        background-color: #5a50d4;
+    }
+
+    #customDateRange {
+        align-items: center;
+    }
+
+    @media (max-width: 768px) {
+        #filterForm {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
         .filter-group {
-            margin: 10px;
+            width: 100%;
         }
-        
-        select, input[type="date"] {
-            padding: 6px 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-right: 10px;
+
+        .filter-group select, 
+        .filter-group input[type="date"] {
+            width: 100%;
         }
-        
-        .filter-btn {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        .filter-btn:hover {
-            background-color: #45a049;
-        }
-        
-        #customDateRange {
-            display: none;
-        }
+    }
     </style>
 </head>
 <body>
 <?php include('adminnavbar.php'); ?>
 
-<!-- Chart Container with Filters -->
-<div class="chart-container">
-    <h5 class="card-title">Library Activity Statistics</h5><hr>
-    
-    <div class="filters-container">
-        <form id="filterForm" method="GET" action="">
-            <div class="filter-group">
-                <label for="viewType">View:</label>
-                <select id="viewType" name="view_type" onchange="toggleCustomDateFields()">
-                    <option value="daily" <?php echo $view_type == 'daily' ? 'selected' : ''; ?>>Daily</option>
-                    <option value="weekly" <?php echo $view_type == 'weekly' ? 'selected' : ''; ?>>Weekly</option>
-                </select>
+<div class="main">
+
+<?php include('sidebar.php'); ?>
+
+
+<div class="container">
+    <div class='cards-container'>
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-users"></i>
+                <h5>Registered Users</h5>
             </div>
-            
-            <div class="filter-group">
-                <label for="dateRangeType">Date Range:</label>
-                <select id="dateRangeType" name="custom_range" onchange="toggleCustomDateFields()">
-                    <option value="0" <?php echo !$custom_range ? 'selected' : ''; ?>>Default Range</option>
-                    <option value="1" <?php echo $custom_range ? 'selected' : ''; ?>>Custom Range</option>
-                </select>
+            <p class="card-text"><?php echo get_user_count();?></p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-book"></i>
+                <h5>Registered Books</h5>
             </div>
-            
-            <div id="customDateRange" class="filter-group" <?php echo $custom_range ? 'style="display: flex;"' : ''; ?>>
-                <label for="startDate">From:</label>
-                <input type="date" id="startDate" name="start_date" value="<?php echo $start_date; ?>">
-                
-                <label for="endDate">To:</label>
-                <input type="date" id="endDate" name="end_date" value="<?php echo $end_date; ?>">
+            <p class="card-text"><?php echo get_book_count();?></p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-pen-nib"></i>
+                <h5>Registered Authors</h5>
             </div>
-            
-            <div class="filter-group">
-                <button type="submit" class="filter-btn">Apply Filters</button>
+            <p class="card-text"><?php echo get_author_count();?></p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-bookmark"></i>
+                <h5>Issued Books</h5>
             </div>
-        </form>
+            <p class="card-text"><?php echo get_issue_count();?></p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-paper-plane"></i>
+                <h5>Request Books</h5>
+            </div>
+            <p class="card-text"><?php echo get_request_count();?></p>
+        </div>
     </div>
-    
-    <canvas id="libraryStatsChart"></canvas>
+
+    <div class="chart-container">
+        <h5 class="card-title">Library Activity Statistics</h5><hr>
+        
+        <div class="filters-container">
+            <form id="filterForm" method="GET" action="">
+                <div class="filter-group">
+                    <label for="viewType">View:</label>
+                    <select id="viewType" name="view_type" onchange="toggleCustomDateFields()">
+                        <option value="daily" <?php echo $view_type == 'daily' ? 'selected' : ''; ?>>Daily</option>
+                        <option value="weekly" <?php echo $view_type == 'weekly' ? 'selected' : ''; ?>>Weekly</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="dateRangeType">Date Range:</label>
+                    <select id="dateRangeType" name="custom_range" onchange="toggleCustomDateFields()">
+                        <option value="0" <?php echo !$custom_range ? 'selected' : ''; ?>>Default Range</option>
+                        <option value="1" <?php echo $custom_range ? 'selected' : ''; ?>>Custom Range</option>
+                    </select>
+                </div>
+                
+                <div id="customDateRange" class="filter-group" <?php echo $custom_range ? 'style="display: flex;"' : ''; ?>>
+                    <label for="startDate">From:</label>
+                    <input type="date" id="startDate" name="start_date" value="<?php echo $start_date; ?>">
+                    
+                    <label for="endDate">To:</label>
+                    <input type="date" id="endDate" name="end_date" value="<?php echo $end_date; ?>">
+                </div>
+                
+                <div class="filter-group">
+                    <button type="submit" class="filter-btn">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+        
+        <canvas id="libraryStatsChart"></canvas>
+    </div>
 </div>
 
-<div class="dashboard-container">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Registered Users</h5><hr>
-        <p class="card-text">No.of Total Users: <?php echo get_user_count();?></p>
-        <a href="registeruser.php" class="btn-primary">View Users</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Registered Books</h5><hr>
-        <p class="card-text">No.of Total Books: <?php echo get_book_count();?></p>
-        <a href="registerbooks.php" class="btn-primary" style="background-color: rgb(134, 39, 207);">View Books</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Registered Authors</h5><hr>
-        <p class="card-text">No.of Total Authors: <?php echo get_author_count();?></p>
-        <a href="registerauthors.php" class="btn-primary" style="background-color: rgb(235, 46, 46);">View Authors</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Issued Books</h5><hr>
-        <p class="card-text">No.of Issued Books: <?php echo get_issue_count();?></p>
-        <a href="registerissue.php" class="btn-primary" style="background-color: rgb(50, 46, 156);">View Issues</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Request Books</h5><hr>
-        <p class="card-text">No.of Request Books: <?php echo get_request_count();?></p>
-        <a href="bookrequest.php" class="btn-primary" style="background-color: rgb(50, 46, 156);">View Requested Book</a>
-      </div>
-    </div>
 </div>
 
 <script>
@@ -419,7 +523,7 @@
         },
         options: {
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true,

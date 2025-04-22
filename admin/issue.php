@@ -93,46 +93,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Issue/Return Books</title>
     <style>
-       
-     
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            font-size: 16px;
-        }
-        .form-group button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .form-group button:hover {
-            background-color: #45a049;
-        }
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.container {
+    max-width: 800px;
+    background: white;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: fit-content;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.forms-container{
+
+    display: flex;
+    gap: 60px;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    color: #555;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+.form-group button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(to right, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.form-group button:hover {
+    background: linear-gradient(to right, #45a049, #3e8e41);
+    transform: translateY(-2px);
+}
+
+hr {
+    margin: 30px 0;
+    border: none;
+    height: 1px;
+    background-color: #ddd;
+}
+
     </style>
 </head>
 <body>
     <?php include('adminnavbar.php'); ?>
 
+    <div class="main">
+    <?php include('sidebar.php'); ?>
+
+        <div class="container">
+
+
     <div class="container">
         <h2>Issue/Return Books</h2>
+
+        <div class="forms-container">
 
         <!-- Issue Book Form -->
         <form method="POST">
@@ -165,6 +224,11 @@
                 <button type="submit" name="return-book-btn">Return Book</button>
             </div>
         </form>
+        </div>
+
     </div>
+    </div>
+    </div>
+
 </body>
 </html>

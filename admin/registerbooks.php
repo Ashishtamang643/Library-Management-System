@@ -29,10 +29,12 @@
         $query .= " AND author_name LIKE '%$author_filter%'";
     }
     if (!empty($faculty_filter)) {
-        $query .= " AND faculty = '$faculty_filter'";
+        // Check if the selected faculty exists in the comma-separated list
+        $query .= " AND (faculty = '$faculty_filter' OR faculty LIKE '$faculty_filter,%' OR faculty LIKE '%, $faculty_filter,%' OR faculty LIKE '%, $faculty_filter')";
     }
     if (!empty($semester_filter)) {
-        $query .= " AND semester = '$semester_filter'";
+        // Check if the selected semester exists in the comma-separated list
+        $query .= " AND (semester = '$semester_filter' OR semester LIKE '$semester_filter,%' OR semester LIKE '%, $semester_filter,%' OR semester LIKE '%, $semester_filter')";
     }
 ?>
 
@@ -43,6 +45,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registered Books</title>
     <link rel="stylesheet" href="../style2.css">
+    <link rel="stylesheet" href="adminstyle.css">
     <style>
         .filter-container {
             margin-bottom: 20px;
@@ -80,6 +83,10 @@
 <body>
     <?php include('adminnavbar.php'); ?>
 
+    <div class="main">
+    <?php include('sidebar.php'); ?>
+
+    <div class="container" >
     <h2 class="h2-register-header">Registered Books</h2>
 
     <!-- Filter Section -->
@@ -97,7 +104,7 @@
             <label for="faculty">Faculty:</label>
             <select name="faculty" id="faculty">
                 <option value="">All</option>
-                <option value="BSc.CSIT" <?php echo ($faculty_filter == 'BSc.CSIT') ? 'selected' : ''; ?>>BSc.CSIT</option>
+                <option value="Bsc.Csit" <?php echo ($faculty_filter == 'Bsc.Csit') ? 'selected' : ''; ?>>Bsc.Csit</option>
                 <option value="BIM" <?php echo ($faculty_filter == 'BIM') ? 'selected' : ''; ?>>BIM</option>
                 <option value="BCA" <?php echo ($faculty_filter == 'BCA') ? 'selected' : ''; ?>>BCA</option>
                 <option value="BBM" <?php echo ($faculty_filter == 'BBM') ? 'selected' : ''; ?>>BBM</option>
@@ -162,5 +169,9 @@
              }
             ?>
     </table>
+            </div>
+
+    </div>
+
 </body>
 </html>

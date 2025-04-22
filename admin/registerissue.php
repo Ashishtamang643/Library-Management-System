@@ -163,6 +163,13 @@ if ($filter_returned !== '') {
 <body>
 <?php include('adminnavbar.php'); ?>
 
+<div class="main">
+<?php include('sidebar.php'); ?>
+
+    <div class="container">
+
+
+
     <h2 class="h2-register-header">Issued Books</h2>
 
     <!-- Filter Form -->
@@ -240,5 +247,8 @@ if ($filter_returned !== '') {
             <?php } ?>
         </tbody>
     </table>
+
+    </div>
+    </div>
 </body>
 </html>

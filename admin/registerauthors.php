@@ -22,6 +22,12 @@
 <body>
 <?php include('adminnavbar.php'); ?>
 
+<div class="main">
+<?php include('sidebar.php'); ?>
+
+
+<div class="container">
+
 
 
     <h2 class="h2-register-header">Registered Authors</h2>
@@ -44,5 +50,8 @@
              }
             ?>
     </table>
+
+    </div>
+</div>
 </body>
 </html>

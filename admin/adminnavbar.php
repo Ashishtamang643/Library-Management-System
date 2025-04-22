@@ -20,11 +20,12 @@ body {
     background-color: #333; /* Dark gray background */
     padding: 15px 0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    height: 100px;
 }
 
-.container {
+.admin-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
@@ -103,8 +104,10 @@ color:white;
 /* Responsive Design for Smaller Screens */
 @media (max-width: 768px) {
     .container {
-        flex-direction: column;
+        display: flex;
+        flex-direction: row;
         align-items: flex-start;
+
     }
     
     .nav-item {
@@ -127,7 +130,7 @@ color:white;
 
     <!-- Navigation Bar -->
     <div class="second-nav-bar">
-        <div class="container">
+        <div class="admin-container">
             <a href="adminprofile.php">
                 <h3 class="nav-item">Dashboard</h3>
             </a>

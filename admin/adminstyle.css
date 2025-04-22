@@ -1,0 +1,18 @@
+:root {
+    --primary-color: #6c63ff;
+    --secondary-color: #f4f4f4;
+    --text-color: #333;
+    --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.main{
+    display: flex;
+}
+
+.container {
+    flex-grow: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}

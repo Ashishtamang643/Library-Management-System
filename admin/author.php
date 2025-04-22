@@ -42,6 +42,8 @@ if (!isset($_SESSION['Name'])) {
     <link rel="stylesheet" href="../style2.css">
 </head>
 <body>
+
+
     <div class="navigation-bar">
         <div class="nav-container">
          <h1><a href="adminprofile.php">Library Management System</a></h1>

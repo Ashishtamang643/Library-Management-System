@@ -193,6 +193,13 @@ $total_books = $total_books_row['total_books'];
 
 <?php include('adminnavbar.php'); ?>
 
+
+<div class="main">
+<?php include('sidebar.php'); ?>
+
+    <div class="container">
+
+
     <h2 class="h2-register-header">Manage Books</h2>
 
     <!-- Filter Form -->
@@ -291,5 +298,8 @@ $total_books = $total_books_row['total_books'];
             ?>
         </tbody>
     </table>
+            
+    </div>
+</div>
 </body>
 </html>

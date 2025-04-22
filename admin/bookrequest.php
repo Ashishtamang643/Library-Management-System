@@ -211,6 +211,13 @@ $query_run = mysqli_query($connection, $query);
 <body>
 <?php include('adminnavbar.php'); ?>
 
+
+<div class="main">
+<?php include('sidebar.php'); ?>
+
+<div class="container">
+
+
     <h2 class="title">Book Requests Management</h2>
 
     <!-- Filter Container -->
@@ -332,5 +339,8 @@ $query_run = mysqli_query($connection, $query);
             ?>
         </tbody>
     </table>
+
+    </div>
+</div>
 </body>
 </html>
