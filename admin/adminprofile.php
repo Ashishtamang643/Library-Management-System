@@ -192,196 +192,182 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Profile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="dashboard.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
     <style>
-        :root {
-            --primary-color: #6c63ff;
-            --secondary-color: #f4f4f4;
-            --text-color: #333;
-            --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        /* Print styles for the report */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .print-report, .print-report * {
+                visibility: visible;
+            }
+            
+            .print-report {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            .page-break {
+                page-break-before: always;
+            }
         }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: var(--secondary-color);
-            margin: 0;
-            padding: 0;
-        }
-        .main{
-            display: flex;
-        }
-
-        .side-bar {
-            width: 250px;
-            background-color: white;
-            padding: 20px 15px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .side-bar a {
-            text-decoration: none;
-            color: var(--text-color);
-            padding: 12px 15px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .side-bar a:hover {
-            background-color: var(--primary-color);
+        
+        /* Report generation button styles */
+        .report-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-        }
-
-        .side-bar a i {
-            font-size: 18px;
-        }
-
-        .container {
-            flex-grow: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .cards-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .card {
-            flex: 1;
-            background: white;
-            border-radius: 12px;
-            box-shadow: var(--card-shadow);
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-title {
-            display: flex;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            color: var(--primary-color);
+            gap: 8px;
         }
-
-        .card h5{
-            font-size: large;
+        
+        .report-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
-
-        .card-title i {
-            font-size: 24px;
+        
+        /* Print report styles */
+        .print-report {
+            display: none;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
         }
-
-        .card-text {
-            font-size: 36px;
+        
+        .report-header {
+            text-align: center;
+            border-bottom: 3px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .report-title {
+            font-size: 28px;
             font-weight: bold;
-            color: var(--text-color);
+            color: #333;
+            margin: 0;
         }
-
-        .chart-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: var(--card-shadow);
-            padding: 20px;
+        
+        .report-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin: 5px 0 0 0;
+        }
+        
+        .report-meta {
+            font-size: 14px;
+            color: #888;
+            margin: 10px 0 0 0;
+        }
+        
+        .report-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            border: 2px solid #eee;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .chart-data-table {
             width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
-
-        #libraryStatsChart {
-            height: 500px !important; /* Explicitly set height */
-            width: 100% !important;
+        
+        .chart-data-table th,
+        .chart-data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
         }
-
-    .filters-container {
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-
-    #filterForm {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 15px;
-        justify-content: start;
-    }
-
-    .filter-group {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .filter-group label {
-        color: #6c757d;
-        font-weight: 500;
-        white-space: nowrap;
-    }
-
-    .filter-group select, 
-    .filter-group input[type="date"] {
-        padding: 8px 12px;
-        border: 1px solid #ced4da;
-        border-radius: 6px;
-        font-size: 14px;
-        transition: border-color 0.3s ease;
-    }
-
-    .filter-group select:focus, 
-    .filter-group input[type="date"]:focus {
-        outline: none;
-        border-color: #6c63ff;
-        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
-    }
-
-    .filter-btn {
-        background-color: #6c63ff;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        font-weight: 500;
-    }
-
-    .filter-btn:hover {
-        background-color: #5a50d4;
-    }
-
-    #customDateRange {
-        align-items: center;
-    }
-
-    @media (max-width: 768px) {
-        #filterForm {
-            flex-direction: column;
-            align-items: stretch;
+        
+        .chart-data-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
         }
-
-        .filter-group {
-            width: 100%;
+        
+        .chart-data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
-
-        .filter-group select, 
-        .filter-group input[type="date"] {
-            width: 100%;
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
         }
-    }
+        
+        .summary-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .summary-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .summary-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
     </style>
+    
 </head>
 <body>
 <?php include('adminnavbar.php'); ?>
@@ -435,7 +421,14 @@
     </div>
 
     <div class="chart-container">
-        <h5 class="card-title">Library Activity Statistics</h5><hr>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h5 class="card-title">Library Activity Statistics</h5>
+            <button class="report-btn no-print" onclick="generateReport()">
+                <i class="fas fa-file-pdf"></i>
+                Generate Report
+            </button>
+        </div>
+        <hr>
         
         <div class="filters-container">
             <form id="filterForm" method="GET" action="">
@@ -475,6 +468,99 @@
 
 </div>
 
+<!-- Hidden Print Report -->
+<div class="print-report" id="printReport">
+    <div class="report-header">
+        <h1 class="report-title">Library Management System</h1>
+        <p class="report-subtitle">Dashboard Report</p>
+        <p class="report-meta">
+            Generated on: <?php echo date('F j, Y \a\t g:i A'); ?><br>
+            Report Period: <?php echo date('M j, Y', strtotime($start_date)) . ' - ' . date('M j, Y', strtotime($end_date)); ?><br>
+            View Type: <?php echo ucfirst($view_type); ?>
+        </p>
+    </div>
+    
+    <div class="report-section">
+        <h2 class="section-title">Library Overview</h2>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value"><?php echo get_user_count(); ?></div>
+                <div class="stat-label">Registered Users</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value"><?php echo get_book_count(); ?></div>
+                <div class="stat-label">Registered Books</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value"><?php echo get_author_count(); ?></div>
+                <div class="stat-label">Registered Authors</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value"><?php echo get_issue_count(); ?></div>
+                <div class="stat-label">Issued Books</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value"><?php echo get_request_count(); ?></div>
+                <div class="stat-label">Book Requests</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="report-section page-break">
+        <h2 class="section-title"><?php echo $chart_title; ?></h2>
+        
+        <table class="chart-data-table">
+            <thead>
+                <tr>
+                    <th><?php echo $x_title; ?></th>
+                    <th>Book Requests</th>
+                    <th>Books Issued</th>
+                    <th>Books Returned</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php for ($i = 0; $i < count($labels); $i++): ?>
+                <tr>
+                    <td><?php echo $labels[$i]; ?></td>
+                    <td><?php echo $data['requests'][$i]; ?></td>
+                    <td><?php echo $data['issued'][$i]; ?></td>
+                    <td><?php echo $data['returned'][$i]; ?></td>
+                </tr>
+                <?php endfor; ?>
+            </tbody>
+        </table>
+        
+        <div class="summary-stats">
+            <div class="summary-item">
+                <div class="summary-value"><?php echo array_sum($data['requests']); ?></div>
+                <div class="summary-label">Total Requests</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-value"><?php echo array_sum($data['issued']); ?></div>
+                <div class="summary-label">Total Issued</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-value"><?php echo array_sum($data['returned']); ?></div>
+                <div class="summary-label">Total Returned</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="report-section">
+        <h2 class="section-title">Report Summary</h2>
+        <p>This report provides a comprehensive overview of the library management system's current status and activity for the specified period. The data includes user registrations, book inventory, author database, and transaction statistics.</p>
+        
+        <p><strong>Key Insights:</strong></p>
+        <ul>
+            <li>Total library users: <?php echo get_user_count(); ?></li>
+            <li>Total books in collection: <?php echo get_book_count(); ?></li>
+            <li>Active book requests in period: <?php echo array_sum($data['requests']); ?></li>
+            <li>Books issued in period: <?php echo array_sum($data['issued']); ?></li>
+            <li>Books returned in period: <?php echo array_sum($data['returned']); ?></li>
+        </ul>
+    </div>
+</div>
+
 <script>
     // Function to toggle custom date fields visibility
     function toggleCustomDateFields() {
@@ -490,6 +576,22 @@
     
     // Initialize toggle on page load
     document.addEventListener('DOMContentLoaded', toggleCustomDateFields);
+    
+    // Function to generate and print report
+    function generateReport() {
+        const printReport = document.getElementById('printReport');
+        printReport.style.display = 'block';
+        
+        // Small delay to ensure content is rendered
+        setTimeout(function() {
+            window.print();
+            
+            // Hide the report again after printing
+            setTimeout(function() {
+                printReport.style.display = 'none';
+            }, 1000);
+        }, 100);
+    }
     
     // Create chart with the data from PHP
     const statsCtx = document.getElementById('libraryStatsChart').getContext('2d');

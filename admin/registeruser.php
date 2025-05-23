@@ -43,6 +43,7 @@
              <th>Faculty</th>
              <th>Address</th>
              <th>Cell</th>
+             <th>Action</th>
           </tr>
         </thead>
         <?php
@@ -63,6 +64,10 @@
             <td><?php echo $faculty;?></td>
             <td><?php echo $address;?></td>
             <td><?php echo $cell;?></td>
+               <td>
+        <a href="delete_user.php?id=<?php echo $id; ?>" 
+           onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+    </td>
         </tr>
         <?php
              }

@@ -1,0 +1,189 @@
+
+        :root {
+            --primary-color: #6c63ff;
+            --secondary-color: #f4f4f4;
+            --text-color: #333;
+            --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--secondary-color);
+            margin: 0;
+            padding: 0;
+        }
+        .main{
+            display: flex;
+        }
+
+        .side-bar {
+            width: 250px;
+            background-color: white;
+            padding: 20px 15px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .side-bar a {
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 12px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .side-bar a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .side-bar a i {
+            font-size: 18px;
+        }
+
+        .container {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .card {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .card h5{
+            font-size: large;
+        }
+
+        .card-title i {
+            font-size: 24px;
+        }
+
+        .card-text {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 20px;
+            width: 100%;
+        }
+
+        #libraryStatsChart {
+            height: 500px !important; /* Explicitly set height */
+            width: 100% !important;
+        }
+
+    .filters-container {
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    #filterForm {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 15px;
+        justify-content: start;
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-group label {
+        color: #6c757d;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    .filter-group select, 
+    .filter-group input[type="date"] {
+        padding: 8px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
+    }
+
+    .filter-group select:focus, 
+    .filter-group input[type="date"]:focus {
+        outline: none;
+        border-color: #6c63ff;
+        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+    }
+
+    .filter-btn {
+        background-color: #6c63ff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-weight: 500;
+    }
+
+    .filter-btn:hover {
+        background-color: #5a50d4;
+    }
+
+    #customDateRange {
+        align-items: center;
+    }
+
+    @media (max-width: 768px) {
+        #filterForm {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filter-group {
+            width: 100%;
+        }
+
+        .filter-group select, 
+        .filter-group input[type="date"] {
+            width: 100%;
+        }
+    }
+ 

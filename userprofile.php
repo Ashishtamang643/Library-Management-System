@@ -106,7 +106,9 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
         }
 
         .filter-container {
+            text-align: center;
             margin-bottom: 20px;
+            /* padding-left: 160px; */
         }
 
         .filter-container select,
@@ -313,6 +315,8 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
             ?>
         </div>
     </div>
+    <?php include("Recommended_Books.php"); ?>
+
 </body>
 
 </html>

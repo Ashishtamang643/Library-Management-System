@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Recommendations</title>
+    <style>
+        .recommendations-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .recommendation-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            margin-bottom: 0;
+        }
+
+        .recommendation-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .recommendation-header p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .recommendation-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .book-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .book-author {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .book-publication {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .similarity-info {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .similarity-score {
+            font-weight: bold;
+            color: #1976d2;
+        }
+
+        .recommendation-reason {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .matched-book {
+            font-size: 12px;
+            color: #757575;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        .availability {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .issue-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        .issue-button:hover {
+            background: #5a6fd8;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .no-recommendations {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #c62828;
+        }
+
+        .user-history {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-books {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .history-book {
+            background: #e8f5e8;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="recommendations-container">
+        <!-- User Input Section -->
+        <div class="user-history">
+            <h3>Get Book Recommendations</h3>
+            <div style="margin-bottom: 15px;">
+                <label for="userId">User ID:</label>
+                <input type="number" id="userId" placeholder="Enter user ID" style="margin-left: 10px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                <button onclick="loadRecommendations()" style="margin-left: 10px; padding: 8px 15px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer;">Get Recommendations</button>
+            </div>
+            <div id="userHistory" style="display: none;">
+                <p><strong>Based on your reading history:</strong></p>
+                <div class="history-books" id="historyBooks"></div>
+            </div>
+        </div>
+
+        <!-- Recommendations Section -->
+        <div id="recommendationsSection" style="display: none;">
+            <div class="recommendation-header">
+                <h2>📚 Recommended Books for You</h2>
+                <p>Based on your reading preferences and borrowing history</p>
+            </div>
+            <div class="recommendations-grid" id="recommendationsGrid">
+                <!-- Recommendations will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading" style="display: none;">
+            <p>🔍 Finding perfect books for you...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+        <!-- No Recommendations -->
+        <div id="noRecommendations" class="no-recommendations" style="display: none;">
+            <h3>📖 No specific recommendations yet</h3>
+            <p>Start borrowing books to get personalized recommendations!</p>
+        </div>
+    </div>
+
+    <script>
+        // Configuration - Update these according to your setup
+        const API_BASE_URL = 'recommendation_system.php'; // Path to your PHP file
+        
+        // Load recommendations for a user
+        async function loadRecommendations() {
+            const userId = document.getElementById('userId').value;
+            
+            if (!userId) {
+                showError('Please enter a valid User ID');
+                return;
+            }
+
+            showLoading(true);
+            hideAllSections();
+
+            try {
+                const response = await fetch(`${API_BASE_URL}?action=recommendations&user_id=${userId}&limit=8`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const recommendations = await response.json();
+                
+                if (recommendations.error) {
+                    throw new Error(recommendations.error);
+                }
+
+                showLoading(false);
+                displayRecommendations(recommendations, userId);
+                
+            } catch (error) {
+                showLoading(false);
+                showError('Failed to load recommendations: ' + error.message);
+                console.error('Error:', error);
+            }
+        }
+
+        // Display recommendations in the grid
+        function displayRecommendations(recommendations, userId) {
+            const grid = document.getElementById('recommendationsGrid');
+            const section = document.getElementById('recommendationsSection');
+            const noRecommendations = document.getElementById('noRecommendations');
+
+            if (!recommendations || recommendations.length === 0) {
+                noRecommendations.style.display = 'block';
+                return;
+            }
+
+            // Clear previous recommendations
+            grid.innerHTML = '';
+
+            // Create recommendation cards
+            recommendations.forEach(book => {
+                const card = createRecommendationCard(book, userId);
+                grid.appendChild(card);
+            });
+
+            section.style.display = 'block';
+        }
+
+        // Create a recommendation card
+        function createRecommendationCard(book, userId) {
+            const card = document.createElement('div');
+            card.className = 'recommendation-card';
+            
+            card.innerHTML = `
+                <div class="book-title">${escapeHtml(book.book_name)}</div>
+                <div class="book-author">📝 ${escapeHtml(book.author_name || 'Unknown Author')}</div>
+                <div class="book-publication">🏢 ${escapeHtml(book.publication || 'Unknown Publisher')}</div>
+                
+                <div class="similarity-info">
+                    <div class="similarity-score">${book.similarity_score}% Match - ${book.recommendation_reason}</div>
+                    <div class="recommendation-reason">Similar to books in your reading history</div>
+                    <div class="matched-book">💡 Because you read: "${escapeHtml(book.matched_with)}"</div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <span class="availability">${book.available_quantity} Available</span>
+                </div>
+                
+                <button class="issue-button" onclick="issueBook(${book.book_id}, ${userId})">
+                    📖 Issue This Book
+                </button>
+            `;
+            
+            return card;
+        }
+
+        // Issue a book (integrate with your existing issue system)
+        function issueBook(bookId, userId) {
+            // This is where you integrate with your existing book issue system
+            // For now, we'll show an alert - replace this with your actual issue logic
+            
+            if (confirm(`Do you want to issue this book for User ID: ${userId}?`)) {
+                // Replace this with your actual issue book API call
+                alert(`Book issue request sent for Book ID: ${bookId} and User ID: ${userId}`);
+                
+                // You might want to call your existing issue book function here
+                // Example: issueBookToUser(bookId, userId);
+                
+                // After successful issue, you might want to refresh recommendations
+                // loadRecommendations();
+            }
+        }
+
+        // Utility functions
+        function showLoading(show) {
+            document.getElementById('loadingState').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            // Hide error after 5 seconds
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function hideAllSections() {
+            document.getElementById('recommendationsSection').style.display = 'none';
+            document.getElementById('noRecommendations').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Load recommendations on page load if user ID is provided in URL
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('user_id');
+            
+            if (userId) {
+                document.getElementById('userId').value = userId;
+                loadRecommendations();
+            }
+        });
+
+        // Allow Enter key to trigger search
+        document.getElementById('userId').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loadRecommendations();
+            }
+        });
+    </script>
+</body>
+</html>

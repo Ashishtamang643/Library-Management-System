@@ -10,7 +10,7 @@
 
     /* Navigation Bar */
     .navigation-bar {
-        background: #222; /* Dark Gray Background */
+        background: #000; 
         color: white;
         padding: 15px 30px;
         display: flex;
@@ -37,6 +37,8 @@
         display: flex;
         align-items: center;
         gap: 20px;
+        background: #000;
+        opacity: 1;
     }
 
     .profile-logout a {
@@ -90,7 +92,7 @@
 <div class="navigation-bar">
     <h1><a href="userprofile.php">📚 Library Management System</a></h1>
     <div class="profile-logout">
-        <a href="viewbooks.php">📖 Books</a>
+        <a href="viewbooks.php" style="color: white;">📖 Books</a>
         <a href="viewprofile.php">👤 Profile</a>
         <li class="logout-btn"><a href="logout.php">🚪 Logout</a></li>
     </div>

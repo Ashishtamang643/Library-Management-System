@@ -199,6 +199,8 @@ mysqli_close($connection);
         <button type="submit" class="edit-btn">Update</button>
     </form>
 
+    
+
     <script>
     function validateForm() {
         // Client-side validation
