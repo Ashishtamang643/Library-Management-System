@@ -77,32 +77,23 @@ $selected_book_num = isset($_GET['book_num']) ? $_GET['book_num'] : '';
 $selected_author = isset($_GET['author']) ? $_GET['author'] : '';
 $selected_publication = isset($_GET['publication']) ? $_GET['publication'] : '';
 
-$query = "SELECT DISTINCT book_num, available_quantity, book_name, book_edition, author_name, faculty, semester, publication FROM books WHERE 1=1";
+$query = "SELECT DISTINCT book_num, available_quantity, book_name, book_edition, author_name, faculty, semester, publication, description, picture FROM books WHERE 1=1";
 
 // Build parameter arrays first
 $types = '';
 $params = [];
 
-    if (!empty($selected_faculty)) {
-        $query .= " AND REPLACE(CONCAT(',', REPLACE(faculty, ' ', ''), ','), ' ', '') LIKE CONCAT('%,', ?, ',%')";
-        $types .= 's';
-        $params[] = str_replace(' ', '', $selected_faculty); // ensures param is also space-free
-    }
+if (!empty($selected_faculty)) {
+    $query .= " AND REPLACE(CONCAT(',', REPLACE(faculty, ' ', ''), ','), ' ', '') LIKE CONCAT('%,', ?, ',%')";
+    $types .= 's';
+    $params[] = str_replace(' ', '', $selected_faculty);
+}
 
-    if (!empty($selected_semester)) {
-        $query .= " AND REPLACE(CONCAT(',', REPLACE(semester, ' ', ''), ','), ' ', '') LIKE CONCAT('%,', ?, ',%')";
-        $types .= 's';
-        $params[] = str_replace(' ', '', $selected_semester); // ensures param is also space-free
-    }
-
-// if (!empty($selected_semester)) {
-//     $query .= " AND (semester = ? OR semester LIKE CONCAT(?, ',%') OR semester LIKE CONCAT('%,', ?, ',%') OR semester LIKE CONCAT('%,', ?))";
-//     $types .= 'ssss'; // Four placeholders for semester
-//     $params[] = $selected_semester;
-//     $params[] = $selected_semester;
-//     $params[] = $selected_semester;
-//     $params[] = $selected_semester;
-// }
+if (!empty($selected_semester)) {
+    $query .= " AND REPLACE(CONCAT(',', REPLACE(semester, ' ', ''), ','), ' ', '') LIKE CONCAT('%,', ?, ',%')";
+    $types .= 's';
+    $params[] = str_replace(' ', '', $selected_semester);
+}
 
 if (!empty($selected_book_name)) {
     $query .= " AND book_name LIKE ?";
@@ -133,11 +124,9 @@ $stmt = mysqli_prepare($connection, $query);
 
 // Bind parameters if they exist
 if (!empty($params)) {
-    // For PHP versions that support spread operator
     if (version_compare(PHP_VERSION, '5.6.0', '>=')) {
         mysqli_stmt_bind_param($stmt, $types, ...$params);
     } else {
-        // For older PHP versions
         $bind_params = array($stmt, $types);
         foreach ($params as $key => $value) {
             $bind_params[] = &$params[$key];
@@ -163,67 +152,327 @@ $query_result = mysqli_stmt_get_result($stmt);
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #f8f9fa;
         }
-        .navigation-bar {
-            background-color: #333;
-            color: white;
+        
+        .welcome-user {
+            display: block;
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #333;
+            background-color: #e9ecef;
+            margin: 0;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #333;
+            margin: 30px 0;
+        }
+        
+        .filter-container {
+            background: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .filter-container label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .filter-container select, 
+        .filter-container input {
+            padding: 8px 12px;
+            margin: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 180px;
+        }
+        
+        .filter-container button {
             padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+        
+        .filter-container button:hover {
+            background-color: #0056b3;
+        }
+        
+        .books-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .book-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .book-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background-color: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .book-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .book-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .book-author {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .book-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+        
+        .book-semester, .book-faculty {
+            background-color: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 11px;
+            color: #495057;
+        }
+        
+        .book-availability {
+            text-align: center;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        
+        .available {
+            color: #28a745;
+        }
+        
+        .unavailable {
+            color: #dc3545;
+        }
+        
+        .book-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-pending {
+            background-color: #ffc107;
+            color: #856404;
+        }
+        
+        .status-approved {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .status-issued {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .navigation-bar a {
-            color: white;
-            text-decoration: none;
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
         }
-        .profile-logout {
+        
+        .close {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+        
+        .close:hover {
+            color: #333;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-book-image {
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            float: left;
+            margin-right: 20px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            border: 2px dashed #dee2e6;
             display: flex;
             align-items: center;
-        }
-        .profile-logout h3 {
-            margin: 0 20px;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 12px;
         }
         
-        
-        input{
-            width:200px;
-
+        .modal-book-info h3 {
+            color: #333;
+            margin-bottom: 10px;
         }
+        
+        .modal-book-info p {
+            margin: 8px 0;
+            color: #555;
+        }
+        
+        .modal-book-info strong {
+            color: #333;
+        }
+        
+        .book-description {
+            clear: both;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+        }
+        
         .request-btn {
-            background-color: #4CAF50;
+            background-color: #28a745;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 12px 24px;
+            border-radius: 6px;
             cursor: pointer;
-        }
-        .request-btn:hover {
-            background-color: #45a049;
-        }
-        .status-message {
-            color: #333;
+            font-size: 16px;
             font-weight: bold;
         }
-        .filter-container {
-            text-align: center;
-            margin: 20px 0;
+        
+        .request-btn:hover {
+            background-color: #218838;
         }
-        .filter-container select, .filter-container input {
-            padding: 8px;
-            margin: 0 10px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
+        
+        .status-message {
+            color: #6c757d;
+            font-weight: bold;
+            padding: 12px 24px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
         }
-        .filter-container button {
-            padding: 8px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .filter-container button:hover {
-            background-color: #45a049;
+        
+        @media (max-width: 768px) {
+            .books-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                padding: 10px;
+                gap: 15px;
+            }
+            
+            .filter-container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .filter-container select,
+            .filter-container input {
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+            
+            .modal-book-image {
+                float: none;
+                display: block;
+                margin: 0 auto 15px;
+            }
         }
     </style>
 </head>
@@ -232,7 +481,7 @@ $query_result = mysqli_stmt_get_result($stmt);
     <?php include('navbar.php'); ?>
 
     <span class="welcome-user">Welcome: <?php echo $_SESSION['Name']; ?></span>
-    <h2 style="margin-top: 20px; text-align: center;">Available Books</h2>
+    <h2>Available Books</h2>
 
     <!-- Filter Form -->
     <div class="filter-container">
@@ -272,100 +521,174 @@ $query_result = mysqli_stmt_get_result($stmt);
         </form>
     </div>
 
-    <!-- Books Table -->
-    <table>
-        <thead>
-            <tr>
-                <th>Book Name</th>
-                <th>Edition</th>
-                <th>Book Num</th>
-                <th>Author</th>
-                <th>Faculty</th>
-                <th>Available Qty</th>
-                <th>Semester</th>
-                <th>Publication</th>
-                <th>Action / Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            while ($row = mysqli_fetch_assoc($query_result)) {
-                $bname = $row['book_name'];
-                $bedition = $row['book_edition'];
-                $author = $row['author_name'];
-                $faculty = $row['faculty'];
-                $semester = $row['semester'];
-                $book_num = $row['book_num'];
-                $available_quantity = $row['available_quantity'];
-                $publication = $row['publication'];
+    <!-- Books Cards Container -->
+    <div class="books-container">
+        <?php
+        while ($row = mysqli_fetch_assoc($query_result)) {
+            $bname = $row['book_name'];
+            $bedition = $row['book_edition'];
+            $author = $row['author_name'];
+            $faculty = $row['faculty'];
+            $semester = $row['semester'];
+            $book_num = $row['book_num'];
+            $available_quantity = $row['available_quantity'];
+            $publication = $row['publication'];
+            $description = isset($row['description']) ? $row['description'] : '';
+            $picture = isset($row['picture']) ? $row['picture'] : '';
 
-                // Check if the user has already requested this book
-                $student_id = $_SESSION['ID'];
-                $check_query = "SELECT status FROM book_request 
-                                WHERE student_id = ? 
-                                AND book_num = ?";
-                $stmt = mysqli_prepare($connection, $check_query);
-                mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
-                mysqli_stmt_execute($stmt);
-                $check_result = mysqli_stmt_get_result($stmt);
-                $status = "";
-                if (mysqli_num_rows($check_result) > 0) {
-                    $status_row = mysqli_fetch_assoc($check_result);
-                    $status = $status_row['status'];
-                }
+            // Check if the user has already requested this book
+            $student_id = $_SESSION['ID'];
+            $check_query = "SELECT status FROM book_request 
+                            WHERE student_id = ? 
+                            AND book_num = ?";
+            $stmt = mysqli_prepare($connection, $check_query);
+            mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
+            mysqli_stmt_execute($stmt);
+            $check_result = mysqli_stmt_get_result($stmt);
+            $status = "";
+            if (mysqli_num_rows($check_result) > 0) {
+                $status_row = mysqli_fetch_assoc($check_result);
+                $status = $status_row['status'];
+            }
 
-                // Check if the book is issued to the current user
-                $check_issued_query = "SELECT * FROM issued 
-                                       WHERE student_id = ? 
-                                       AND book_num = ?";
-                $stmt = mysqli_prepare($connection, $check_issued_query);
-                mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
-                mysqli_stmt_execute($stmt);
-                $check_issued_result = mysqli_stmt_get_result($stmt);
-                if (mysqli_num_rows($check_issued_result) > 0) {
-                    $status = "issued";
-                }
-            ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($bname); ?></td>
-                    <td><?php echo htmlspecialchars($bedition); ?></td>
-                    <td><?php echo htmlspecialchars($book_num); ?></td>
-                    <td><?php echo htmlspecialchars($author); ?></td>
-                    <td><?php echo htmlspecialchars($faculty); ?></td>
-                    <td><?php echo htmlspecialchars($available_quantity); ?></td>
-                    <td><?php echo htmlspecialchars($semester); ?></td>
-                    <td><?php echo htmlspecialchars($publication); ?></td>
-                    <td>
+            // Check if the book is issued to the current user
+            $check_issued_query = "SELECT * FROM issued 
+                                   WHERE student_id = ? 
+                                   AND book_num = ?";
+            $stmt = mysqli_prepare($connection, $check_issued_query);
+            mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
+            mysqli_stmt_execute($stmt);
+            $check_issued_result = mysqli_stmt_get_result($stmt);
+            if (mysqli_num_rows($check_issued_result) > 0) {
+                $status = "issued";
+            }
+        ?>
+            <div class="book-card" onclick="openModal('<?php echo htmlspecialchars($book_num); ?>')">
+                <?php if (!empty($status)) { ?>
+                    <div class="book-status status-<?php echo htmlspecialchars($status); ?>">
+                        <?php echo ucfirst(htmlspecialchars($status)); ?>
+                    </div>
+                <?php } ?>
+                
+                <div class="book-image">
+                    <?php if (!empty($picture) && file_exists("./admin/upload/{$picture}")) { ?>
+                        <img src="./admin/upload/<?php echo htmlspecialchars($picture); ?>" alt="<?php echo htmlspecialchars($bname); ?>">
+                    <?php } else { ?>
+                       <img src="./admin/upload/placeholder.png" alt="No Image Available">
+                    <?php } ?>
+                </div>
+                
+                <div class="book-title"><?php echo htmlspecialchars($bname); ?></div>
+                <div class="book-author">by <?php echo htmlspecialchars($author); ?></div>
+                
+                <div class="book-details">
+                    <span class="book-semester">Sem <?php echo htmlspecialchars($semester); ?></span>
+                    <span class="book-faculty"><?php echo htmlspecialchars($faculty); ?></span>
+                </div>
+                
+                <div class="book-availability <?php echo ($available_quantity > 0) ? 'available' : 'unavailable'; ?>">
+                    <?php echo ($available_quantity > 0) ? $available_quantity . ' Available' : 'Out of Stock'; ?>
+                </div>
+            </div>
+
+            <!-- Modal for each book -->
+            <div id="modal_<?php echo htmlspecialchars($book_num); ?>" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title"><?php echo htmlspecialchars($bname); ?></h2>
+                        <span class="close" onclick="closeModal('<?php echo htmlspecialchars($book_num); ?>')">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="modal-book-image">
+                            <?php if (!empty($picture) && file_exists("./admin/upload/{$picture}")) { ?>
+                                <img src="./admin/upload/<?php echo htmlspecialchars($picture); ?>" alt="<?php echo htmlspecialchars($bname); ?>" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                            <?php } else { ?>
+                                <img src="./admin/upload/placeholder.png" alt="No Image Available" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                            <?php } ?>
+                        </div>
+                        <div class="modal-book-info">
+                            <h3><?php echo htmlspecialchars($bname); ?></h3>
+                            <p><strong>Author:</strong> <?php echo htmlspecialchars($author); ?></p>
+                            <p><strong>Edition:</strong> <?php echo htmlspecialchars($bedition); ?></p>
+                            <p><strong>Book Number:</strong> <?php echo htmlspecialchars($book_num); ?></p>
+                            <p><strong>Faculty:</strong> <?php echo htmlspecialchars($faculty); ?></p>
+                            <p><strong>Semester:</strong> <?php echo htmlspecialchars($semester); ?></p>
+                            <p><strong>Publication:</strong> <?php echo htmlspecialchars($publication); ?></p>
+                            <p><strong>Available Quantity:</strong> 
+                                <span class="<?php echo ($available_quantity > 0) ? 'available' : 'unavailable'; ?>">
+                                    <?php echo htmlspecialchars($available_quantity); ?>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="book-description">
+                            <h4>Description:</h4>
+                            <p><?php 
+                                if (!empty($description)) {
+                                    echo htmlspecialchars($description);
+                                } else {
+                                    echo "No description available.";
+                                }
+                            ?></p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
                         <?php if (empty($status)) { ?>
-                            <!-- Show the "Request" button if the book hasn't been requested -->
                             <form method="POST" action="" style="display:inline;" id="request_form_<?php echo htmlspecialchars($book_num); ?>">
                                 <input type="hidden" name="book_name" value="<?php echo htmlspecialchars($bname); ?>">
                                 <input type="hidden" name="book_edition" value="<?php echo htmlspecialchars($bedition); ?>">
                                 <input type="hidden" name="author_name" value="<?php echo htmlspecialchars($author); ?>">
                                 <input type="hidden" name="book_num" value="<?php echo htmlspecialchars($book_num); ?>">
                                 <input type="hidden" name="request_book" value="1">
-                                <button type="button" class="request-btn" onclick="confirmRequest('<?php echo htmlspecialchars(addslashes($bname)); ?>', '<?php echo htmlspecialchars($book_num); ?>')">Request</button>
+                                <button type="button" class="request-btn" onclick="confirmRequest('<?php echo htmlspecialchars(addslashes($bname)); ?>', '<?php echo htmlspecialchars($book_num); ?>')">Request Book</button>
                             </form>
                         <?php } else { ?>
-                            <!-- Show the status message if the book has already been requested or issued -->
                             <span class="status-message">Status: <?php echo ucfirst(htmlspecialchars($status)); ?></span>
                         <?php } ?>
-                    </td>
-                </tr>
-            <?php
-            }
-            ?>
-        </tbody>
-    </table>
+                    </div>
+                </div>
+            </div>
+        <?php
+        }
+        ?>
+    </div>
 
     <script>
+    function openModal(bookNum) {
+        document.getElementById("modal_" + bookNum).style.display = "block";
+        document.body.style.overflow = "hidden"; // Prevent background scrolling
+    }
+
+    function closeModal(bookNum) {
+        document.getElementById("modal_" + bookNum).style.display = "none";
+        document.body.style.overflow = "auto"; // Restore background scrolling
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+    }
+
     function confirmRequest(bookName, bookNum) {
-        // Ask the user for confirmation
         if (confirm("Are you sure you want to request the book: " + bookName + "?")) {
-            // If the user confirms, submit the form associated with the book
             document.getElementById("request_form_" + bookNum).submit();
         }
     }
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (modal.style.display === 'block') {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = "auto";
+                }
+            });
+        }
+    });
     </script>
 
 </body>

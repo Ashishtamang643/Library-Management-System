@@ -78,6 +78,92 @@
         .filter-container button:hover {
             background-color: #45a049;
         }
+
+        /* Book image and name styling */
+        .book-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .book-image {
+            width: 50px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            flex-shrink: 0;
+        }
+
+        .book-name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .no-image {
+            width: 50px;
+            height: 60px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        /* Adjust table cell padding for better image display */
+        table td {
+            padding: 8px;
+            vertical-align: middle;
+        }
+
+        /* Make the book name column wider to accommodate images */
+        table th:first-child,
+        table td:first-child {
+            width: 200px;
+            min-width: 200px;
+        }
+
+        /* Image modal styles */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            cursor: pointer;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            color: white;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -86,7 +172,7 @@
     <div class="main">
     <?php include('sidebar.php'); ?>
 
-    <div class="container" >
+    <div class="container">
     <h2 class="h2-register-header">Registered Books</h2>
 
     <!-- Filter Section -->
@@ -126,7 +212,7 @@
     <table>
         <thead>
           <tr>
-             <th>Book Name</th>
+             <th>Book Info</th>
              <th>Book Num</th>
              <th>Edition</th>
              <th>Author</th>
@@ -138,6 +224,7 @@
              <th>Issued Quantity</th>
           </tr>
         </thead>
+        <tbody>
         <?php
              $query_run = mysqli_query($connection,$query);
              while($row = mysqli_fetch_assoc($query_run))
@@ -152,26 +239,69 @@
                 $total_quantity = $row['total_quantity'];
                 $available_quantity = $row['available_quantity'];
                 $issued_quantity = $total_quantity - $available_quantity;
+                $picture = $row['picture'];
                 ?>
         <tr>
-            <td><?php echo $bname;?></td>
-            <td><?php echo $bnum;?></td>
-            <td><?php echo $bedition;?></td>
-            <td><?php echo $author;?></td>
-            <td><?php echo $publication;?></td>
-            <td><?php echo $faculty;?></td>
-            <td><?php echo $semester;?></td>
-            <td><?php echo $total_quantity;?></td>
-            <td><?php echo $available_quantity;?></td>
-            <td><?php echo $issued_quantity;?></td>
+            <td>
+                <div class="book-info">
+                    <?php if (!empty($picture) && file_exists('upload/' . $picture)): ?>
+                        <img src="upload/<?php echo htmlspecialchars($picture); ?>" 
+                             alt="<?php echo htmlspecialchars($bname); ?>" 
+                             class="book-image" 
+                             onclick="openImageModal('upload/<?php echo htmlspecialchars($picture); ?>', '<?php echo htmlspecialchars($bname); ?>')"
+                             title="Click to view larger image">
+                    <?php else: ?>
+                        <div class="no-image">No Image</div>
+                    <?php endif; ?>
+                    <div class="book-name"><?php echo htmlspecialchars($bname); ?></div>
+                </div>
+            </td>
+            <td><?php echo htmlspecialchars($bnum); ?></td>
+            <td><?php echo htmlspecialchars($bedition); ?></td>
+            <td><?php echo htmlspecialchars($author); ?></td>
+            <td><?php echo htmlspecialchars($publication); ?></td>
+            <td><?php echo htmlspecialchars($faculty); ?></td>
+            <td><?php echo htmlspecialchars($semester); ?></td>
+            <td><?php echo htmlspecialchars($total_quantity); ?></td>
+            <td><?php echo htmlspecialchars($available_quantity); ?></td>
+            <td><?php echo htmlspecialchars($issued_quantity); ?></td>
         </tr>
         <?php
              }
             ?>
+        </tbody>
     </table>
-            </div>
+    </div>
 
     </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="close-modal" onclick="closeImageModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <script>
+        function openImageModal(imageSrc, bookName) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            
+            modal.style.display = 'block';
+            modalImg.src = imageSrc;
+            modalImg.alt = bookName;
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Close modal when pressing Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+    </script>
 
 </body>
 </html>

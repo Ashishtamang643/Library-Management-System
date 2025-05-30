@@ -31,8 +31,8 @@
             if ($book && $book['available_quantity'] > 0) {
                 // Insert the issue record
                       // Insert the issue record into the 'issued' table
-                      $issue_query = "INSERT INTO issued (student_id, book_num, issue_date, book_name, book_author, semester, faculty, publication) 
-                      VALUES ('$studentID', '$bnum', '$issuedate', '" . $book['book_name'] . "', '" . $book['author_name'] . "', '" . $book['semester'] . "', '" . $book['faculty'] . "', '" . $book['publication'] . "')";
+                      $issue_query = "INSERT INTO issued (student_id, book_num, issue_date, book_name, book_author, semester, faculty, publication, picture) 
+                      VALUES ('$studentID', '$bnum', '$issuedate', '" . $book['book_name'] . "', '" . $book['author_name'] . "', '" . $book['semester'] . "', '" . $book['faculty'] . "', '" . $book['publication'] . "', '" . $book['picture'] . "')";
       $issue_query_run = mysqli_query($connection, $issue_query);
 
                 // Update available quantity in books table

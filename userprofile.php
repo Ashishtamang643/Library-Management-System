@@ -127,7 +127,123 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
             padding: 20px;
         }
 
-        
+        /* Book Cards Styles */
+        .books-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+
+        .book-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(67, 97, 238, 0.08);
+            padding: 24px;
+            border: 1px solid rgba(67, 97, 238, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4361ee, #7c3aed);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(67, 97, 238, 0.15);
+            border-color: rgba(67, 97, 238, 0.2);
+        }
+
+        .book-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(67, 97, 238, 0.1);
+        }
+
+        .book-card-header .book-icon {
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #4361ee, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-right: 16px;
+        }
+
+        .book-card-header .book-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+            flex-grow: 1;
+            line-height: 1.3;
+        }
+
+        .book-card-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .book-detail {
+            margin-bottom: 4px;
+        }
+
+        .book-detail-label {
+            font-weight: 500;
+            color: #64748b;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .book-detail-label i {
+            color: #4361ee;
+            width: 14px;
+        }
+
+        .book-detail-value {
+            color: #334155;
+            font-size: 0.975rem;
+            font-weight: 500;
+            margin-left: 20px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 20px;
+        }
+
+        .status-returned {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .status-not-returned {
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
 
         .empty-state {
             padding: 40px;
@@ -196,68 +312,81 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
             </form>
         </div>
 
-        <!-- Currently Issued Books Section -->
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th><i class="fas fa-book fa-sm"></i> Book Name</th>
-                        <th><i class="fas fa-hashtag fa-sm"></i> Book Number</th>
-                        <th><i class="fas fa-user-edit fa-sm"></i> Author</th>
-                        <th><i class="fas fa-building fa-sm"></i> Publication</th>
-                        <th><i class="fas fa-graduation-cap fa-sm"></i> Faculty</th>
-                        <th><i class="fas fa-calendar-alt fa-sm"></i> Semester</th>
-                        <th><i class="fas fa-calendar-alt fa-sm"></i> Issue Date</th>
-                        <th><i class="fas fa-check-circle fa-sm"></i> Status</th>
-                        <th><i class="fas fa-check-circle fa-sm"></i> Returned Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $query_run = mysqli_query($connection, $query);
-                    $row_count = mysqli_num_rows($query_run);
+        <!-- Currently Issued Books Section - Card View -->
+        <div class="books-cards-container">
+            <?php
+            $query_run = mysqli_query($connection, $query);
+            $row_count = mysqli_num_rows($query_run);
 
-                    if ($row_count > 0) {
-                        while ($row = mysqli_fetch_assoc($query_run)) {
-                            $bname = $row['book_name'];
-                            $bnum = $row['book_num'];
-                            $author = $row['book_author'];
-                            $publication = $row['publication'];
-                            $faculty = $row['faculty'];
-                            $semester = $row['semester'];
-                            $date = $row['issue_date'];
-                            $returned = $row['returned'];
-                            $returned_date = $row['returned_date'];
+            if ($row_count > 0) {
+                while ($row = mysqli_fetch_assoc($query_run)) {
+                    $bname = $row['book_name'];
+                    $bnum = $row['book_num'];
+                    $author = $row['book_author'];
+                    $publication = $row['publication'];
+                    $faculty = $row['faculty'];
+                    $semester = $row['semester'];
+                    $date = $row['issue_date'];
+                    $returned = $row['returned'];
+                    $returned_date = $row['returned_date'];
 
-                            // Determine the return status
-                            $status = ($returned == 1) ? 'Returned' : 'Not Returned';
-                    ?>
-                            <tr>
-                                <td><?php echo $bname; ?></td>
-                                <td><?php echo $bnum; ?></td>
-                                <td><?php echo $author; ?></td>
-                                <td><?php echo $publication; ?></td>
-                                <td><?php echo $faculty; ?></td>
-                                <td><?php echo $semester; ?></td>
-                                <td><?php echo $date; ?></td>
-                                <td><?php echo $status; ?></td>
-                                <td><?php echo $returned_date ? $returned_date : '-'; ?></td>
-                            </tr>
-                    <?php
-                        }
-                    } else {
-                    ?>
-                        <tr>
-                            <td colspan="9" class="empty-state">
-                                <i class="fas fa-books"></i>
-                                <p>You haven't borrowed any books yet.</p>
-                            </td>
-                        </tr>
-                    <?php
-                    }
-                    ?>
-                </tbody>
-            </table>
+                    // Determine the return status
+                    $status = ($returned == 1) ? 'Returned' : 'Not Returned';
+                    $statusClass = ($returned == 1) ? 'status-returned' : 'status-not-returned';
+            ?>
+                    <div class="book-card">
+                        <div class="book-card-header">
+                            <i class="fas fa-book book-icon"></i>
+                            <h3 class="book-title"><?php echo $bname; ?></h3>
+                        </div>
+                        <div class="book-card-body">
+                            <div class="book-detail">
+                                <span class="book-detail-label"><i class="fas fa-hashtag fa-sm"></i> Book Number:</span>
+                                <div class="book-detail-value"><?php echo $bnum; ?></div>
+                            </div>
+                            <div class="book-detail">
+                                <span class="book-detail-label"><i class="fas fa-user-edit fa-sm"></i> Author:</span>
+                                <div class="book-detail-value"><?php echo $author; ?></div>
+                            </div>
+                            <div class="book-detail">
+                                <span class="book-detail-label"><i class="fas fa-building fa-sm"></i> Publication:</span>
+                                <div class="book-detail-value"><?php echo $publication; ?></div>
+                            </div>
+                            <div class="book-detail">
+                                <span class="book-detail-label"><i class="fas fa-graduation-cap fa-sm"></i> Faculty:</span>
+                                <div class="book-detail-value"><?php echo $faculty; ?></div>
+                            </div>
+                            <div class="book-detail">
+                                <span class="book-detail-label"><i class="fas fa-calendar-alt fa-sm"></i> Semester:</span>
+                                <div class="book-detail-value"><?php echo $semester; ?></div>
+                            </div>
+                            <div class="book-detail">
+                                <span class="book-detail-label"><i class="fas fa-calendar-alt fa-sm"></i> Issue Date:</span>
+                                <div class="book-detail-value"><?php echo $date; ?></div>
+                            </div>
+                            <div class="book-detail">
+                                <span class="book-detail-label"><i class="fas fa-check-circle fa-sm"></i> Status:</span>
+                                <div class="book-detail-value">
+                                    <span class="status-badge <?php echo $statusClass; ?>"><?php echo $status; ?></span>
+                                </div>
+                            </div>
+                            <div class="book-detail">
+                                <span class="book-detail-label"><i class="fas fa-calendar-check fa-sm"></i> Returned Date:</span>
+                                <div class="book-detail-value"><?php echo $returned_date ? $returned_date : '-'; ?></div>
+                            </div>
+                        </div>
+                    </div>
+            <?php
+                }
+            } else {
+            ?>
+                <div class="empty-state" style="grid-column: 1 / -1;">
+                    <i class="fas fa-books"></i>
+                    <p>You haven't borrowed any books yet.</p>
+                </div>
+            <?php
+            }
+            ?>
         </div>
 
         <!-- Button to Show Requested Books -->

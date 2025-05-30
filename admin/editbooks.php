@@ -16,6 +16,8 @@ $semester = "";
 $faculty = "";
 $publication = "";
 $total_quantity = "";
+$description = "";
+$picture = "";
 
 $query = "SELECT * FROM books WHERE book_num = '$_GET[bn]'";
 $query_run = mysqli_query($connection, $query);
@@ -28,8 +30,113 @@ while ($row = mysqli_fetch_assoc($query_run)) {
     $faculty = $row['faculty'];
     $publication = $row['publication'];
     $total_quantity = $row['total_quantity'];
+    $description = $row['description'] ?? "";
+    $picture = $row['picture'] ?? "";
 }
 
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
+    // Validate and sanitize input fields
+    $bname = htmlspecialchars(trim($_POST['bname']));
+    $bedition = htmlspecialchars(trim($_POST['bedition']));
+    $bnum = htmlspecialchars(trim($_POST['bnum']));
+    $author = htmlspecialchars(trim($_POST['author_name']));
+    $description = htmlspecialchars(trim($_POST['description']));
+    
+    // Handle multiple faculty selection
+    if (isset($_POST['faculty']) && is_array($_POST['faculty'])) {
+        $faculty_new = implode(", ", array_map('htmlspecialchars', $_POST['faculty']));
+    } else {
+        $faculty_new = "";
+    }
+    
+    // Handle multiple semester selection
+    if (isset($_POST['semester']) && is_array($_POST['semester'])) {
+        $semester_new = implode(", ", array_map('htmlspecialchars', $_POST['semester']));
+    } else {
+        $semester_new = "";
+    }
+    
+    $publication = htmlspecialchars(trim($_POST['publication']));
+    $total_quantity = intval($_POST['total_quantity']);
+
+    // Handle image upload
+    $picture_new = $picture; // Keep existing image by default
+    if (isset($_FILES['picture']) && $_FILES['picture']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = 'upload/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $fileExtension = strtolower(pathinfo($_FILES['picture']['name'], PATHINFO_EXTENSION));
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        
+        if (in_array($fileExtension, $allowedExtensions)) {
+            $fileName = uniqid() . '_' . time() . '.' . $fileExtension;
+            $targetPath = $uploadDir . $fileName;
+            
+            if ($_FILES['picture']['size'] <= 5 * 1024 * 1024) {
+                if (move_uploaded_file($_FILES['picture']['tmp_name'], $targetPath)) {
+                    // Delete old image if it exists
+                    if (!empty($picture) && file_exists($uploadDir . $picture)) {
+                        unlink($uploadDir . $picture);
+                    }
+                    $picture_new = $fileName;
+                } else {
+                    echo "<script>alert('Error uploading image!'); window.location.href = 'managebooks.php';</script>";
+                    exit();
+                }
+            } else {
+                echo "<script>alert('Image size must be less than 5MB!'); window.location.href = 'managebooks.php';</script>";
+                exit();
+            }
+        } else {
+            echo "<script>alert('Only JPG, JPEG, PNG, and GIF files are allowed!'); window.location.href = 'managebooks.php';</script>";
+            exit();
+        }
+    }
+
+    // Validate required fields
+    if (empty($bname) || empty($bedition) || empty($bnum) || empty($author) || empty($faculty_new) || empty($semester_new) || empty($publication) || empty($total_quantity) || empty($description)) {
+        echo "<script>alert('All fields are required!'); window.location.href = 'managebooks.php';</script>";
+        exit();
+    }
+
+    // Fetch the current total quantity and available quantity
+    $fetch_query = "SELECT total_quantity, available_quantity FROM books WHERE book_num = '$bnum'";
+    $fetch_result = mysqli_query($connection, $fetch_query);
+    $row = mysqli_fetch_assoc($fetch_result);
+    $current_total_quantity = $row['total_quantity'];
+    $current_available_quantity = $row['available_quantity'];
+
+    // Update available quantity based on the difference
+    $new_available_quantity = $current_available_quantity + ($total_quantity - $current_total_quantity);
+
+    // Update the book details
+    $update_query = "UPDATE books SET 
+                     book_name = '$bname', 
+                     book_edition = '$bedition', 
+                     author_name = '$author', 
+                     publication = '$publication', 
+                     total_quantity = '$total_quantity', 
+                     available_quantity = '$new_available_quantity', 
+                     semester = '$semester_new', 
+                     faculty = '$faculty_new',
+                     description = '$description',
+                     picture = '$picture_new'
+                     WHERE book_num = '$bnum'";
+    $update_result = mysqli_query($connection, $update_query);
+
+    if ($update_result) {
+        echo "<script>alert('Book details updated successfully.'); window.location.href = 'managebooks.php';</script>";
+    } else {
+        echo "<script>alert('Error updating book details: " . mysqli_error($connection) . "');</script>";
+    }
+}
+
+// Convert comma-separated values back to arrays for multi-select
+$faculty_array = !empty($faculty) ? explode(", ", $faculty) : [];
+$semester_array = !empty($semester) ? explode(", ", $semester) : [];
 ?>
 
 <!DOCTYPE html>
@@ -57,7 +164,7 @@ while ($row = mysqli_fetch_assoc($query_run)) {
 
         /* Form container */
         .editbooksdetails {
-            max-width: 600px;
+            max-width: 800px;
             margin: 40px auto;
             padding: 35px 40px;
             background-color: #fff;
@@ -90,13 +197,16 @@ while ($row = mysqli_fetch_assoc($query_run)) {
             background-color: #4361ee;
         }
 
-        /* Form groups */
-        .form-group {
-            margin-bottom: 10px;
-            position: relative;
+        /* Form grid */
+        .form-grid {
             display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two equal columns */
-    gap: 15px; /* Space between grid items */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-grid .full-width {
+            grid-column: span 2;
         }
 
         /* Form labels */
@@ -109,9 +219,10 @@ while ($row = mysqli_fetch_assoc($query_run)) {
             transition: all 0.3s;
         }
 
-        /* Form inputs and select */
+        /* Form inputs, select, and textarea */
         .editbooksdetails input,
-        .editbooksdetails select {
+        .editbooksdetails select,
+        .editbooksdetails textarea {
             width: 100%;
             padding: 12px 15px;
             border: 1px solid #e2e8f0;
@@ -124,10 +235,28 @@ while ($row = mysqli_fetch_assoc($query_run)) {
         }
 
         .editbooksdetails input:focus,
-        .editbooksdetails select:focus {
+        .editbooksdetails select:focus,
+        .editbooksdetails textarea:focus {
             border-color: #4361ee;
             outline: none;
             box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+        }
+
+        .editbooksdetails textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Multi-select styling */
+        .multi-select {
+            height: auto;
+            min-height: 100px;
+        }
+
+        .select-help {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
         }
 
         /* Icon styling for inputs */
@@ -141,6 +270,7 @@ while ($row = mysqli_fetch_assoc($query_run)) {
             transform: translateY(-50%);
             left: 15px;
             color: #a0aec0;
+            z-index: 1;
         }
 
         .input-icon input,
@@ -154,6 +284,69 @@ while ($row = mysqli_fetch_assoc($query_run)) {
             cursor: not-allowed;
             color: #718096;
             border: 1px dashed #cbd5e0;
+        }
+
+        /* Image upload container */
+        .image-upload-container {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            background-color: #fafafa;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .image-upload-container:hover {
+            border-color: #4361ee;
+        }
+
+        .image-upload-container input[type="file"] {
+            display: none;
+        }
+
+        .upload-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4361ee;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-label:hover {
+            background-color: #3050e0;
+        }
+
+        .file-info {
+            font-size: 14px;
+            margin-top: 10px;
+            color: #666;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .current-image {
+            margin-bottom: 15px;
+        }
+
+        .current-image img {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .current-image p {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
         }
 
         /* Button styling */
@@ -195,6 +388,16 @@ while ($row = mysqli_fetch_assoc($query_run)) {
         }
 
         /* Responsive adjustments */
+        @media (max-width: 800px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid .full-width {
+                grid-column: span 1;
+            }
+        }
+
         @media (max-width: 700px) {
             .editbooksdetails {
                 margin: 25px 15px;
@@ -215,132 +418,143 @@ while ($row = mysqli_fetch_assoc($query_run)) {
 <?php include('sidebar.php'); ?>
 
     <div class="container">
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . '?bn=' . urlencode($_GET['bn']); ?>" method="POST" class="editbooksdetails" enctype="multipart/form-data">
+            <h2>Edit Book Details</h2>
+            
+            <div class="form-grid">
+                <div>
+                    <label for="bname">Book Name</label>
+                    <div class="input-icon">
+                        <i class="fas fa-book"></i>
+                        <input type="text" id="bname" name="bname" value="<?php echo htmlspecialchars($bname); ?>" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="bnum">Book Number</label>
+                    <div class="input-icon">
+                        <i class="fas fa-hashtag"></i>
+                        <input type="text" id="bnum" name="bnum" value="<?php echo htmlspecialchars($bnum); ?>" readonly>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="bedition">Book Edition</label>
+                    <div class="input-icon">
+                        <i class="fas fa-bookmark"></i>
+                        <input type="text" id="bedition" name="bedition" value="<?php echo htmlspecialchars($edition); ?>" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="author_name">Author Name</label>
+                    <div class="input-icon">
+                        <i class="fas fa-user-edit"></i>
+                        <input type="text" id="author_name" name="author_name" value="<?php echo htmlspecialchars($author); ?>" required>
+                    </div>
+                </div>
+                
+                <div class="full-width">
+                    <label for="faculty">Faculty</label>
+                    <div class="input-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                        <select multiple name="faculty[]" id="faculty" class="multi-select" required>
+                            <option value="Bsc.Csit" <?php echo in_array('Bsc.Csit', $faculty_array) ? 'selected' : ''; ?>>Bsc.Csit</option>
+                            <option value="BIM" <?php echo in_array('BIM', $faculty_array) ? 'selected' : ''; ?>>BIM</option>
+                            <option value="BCA" <?php echo in_array('BCA', $faculty_array) ? 'selected' : ''; ?>>BCA</option>
+                            <option value="BBM" <?php echo in_array('BBM', $faculty_array) ? 'selected' : ''; ?>>BBM</option>
+                        </select>
+                    </div>
+                    <p class="select-help">Hold Ctrl or Cmd to select multiple</p>
+                </div>
 
+                <div class="full-width">
+                    <label for="semester">Semester</label>
+                    <div class="input-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                        <select multiple name="semester[]" id="semester" class="multi-select" required>
+                            <?php for ($i = 1; $i <= 8; $i++) { ?>
+                                <option value="<?php echo $i; ?>" <?php echo in_array((string)$i, $semester_array) ? 'selected' : ''; ?>>Semester <?php echo $i; ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <p class="select-help">Hold Ctrl or Cmd to select multiple</p>
+                </div>
+                
+                <div>
+                    <label for="publication">Publication</label>
+                    <div class="input-icon">
+                        <i class="fas fa-building"></i>
+                        <input type="text" id="publication" name="publication" value="<?php echo htmlspecialchars($publication); ?>" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="total_quantity">Total Quantity</label>
+                    <div class="input-icon">
+                        <i class="fas fa-layer-group"></i>
+                        <input type="number" id="total_quantity" name="total_quantity" value="<?php echo htmlspecialchars($total_quantity); ?>" min="1" required>
+                    </div>
+                </div>
+                
+                <div class="full-width">
+                    <label for="description">Description</label>
+                    <textarea name="description" id="description" placeholder="Write short book description..." required><?php echo htmlspecialchars($description); ?></textarea>
+                </div>
 
-
-    <form action="editupdatebooks.php" method="POST" class="editbooksdetails">
-        <h2>Edit Book Details</h2>
-        
-        <div class="form-group">
-            <label for="bname">Book Name</label>
-            <div class="input-icon">
-                <i class="fas fa-book"></i>
-                <input type="text" id="bname" name="bname" value="<?php echo $bname; ?>" required>
+                <div class="full-width">
+                    <label for="picture">Book Cover Image</label>
+                    
+                    <?php if (!empty($picture) && file_exists("upload/" . $picture)) { ?>
+                        <div class="current-image">
+                            <img src="upload/<?php echo htmlspecialchars($picture); ?>" alt="Current book cover">
+                            <p>Current Image</p>
+                        </div>
+                    <?php } ?>
+                    
+                    <div class="image-upload-container">
+                        <input type="file" name="picture" id="picture" accept="image/*" onchange="previewImage(this)">
+                        <label for="picture" class="upload-label">
+                            <i class="fas fa-upload"></i> Choose New Image
+                        </label>
+                        <div class="file-info">
+                            <p>Supported formats: JPG, JPEG, PNG, GIF</p>
+                            <p>Maximum size: 5MB</p>
+                            <p><em>Leave empty to keep current image</em></p>
+                            <span id="file-name"></span>
+                        </div>
+                        <img id="image-preview" class="image-preview" style="display: none;">
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="bnum">Book Number</label>
-            <div class="input-icon">
-                <i class="fas fa-hashtag"></i>
-                <input type="text" id="bnum" name="bnum" value="<?php echo $bnum; ?>" readonly>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="edition">Edition</label>
-            <div class="input-icon">
-                <i class="fas fa-bookmark"></i>
-                <input type="number" id="edition" name="edition" value="<?php echo $edition; ?>" required>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="author">Author</label>
-            <div class="input-icon">
-                <i class="fas fa-user-edit"></i>
-                <input type="text" id="author" name="author" value="<?php echo $author; ?>" required>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="publication">Publication</label>
-            <div class="input-icon">
-                <i class="fas fa-building"></i>
-                <input type="text" id="publication" name="publication" value="<?php echo $publication; ?>" required>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="total_quantity">Total Quantity</label>
-            <div class="input-icon">
-                <i class="fas fa-layer-group"></i>
-                <input type="number" id="total_quantity" name="total_quantity" value="<?php echo $total_quantity; ?>" required>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="semester">Semester</label>
-            <div class="input-icon">
-                <i class="fas fa-calendar-alt"></i>
-                <input type="number" id="semester" name="semester" value="<?php echo $semester; ?>" required>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="faculty">Faculty</label>
-            <div class="input-icon">
-                <i class="fas fa-graduation-cap"></i>
-                <select id="faculty" name="faculty">
-                    <option value="Bsc.Csit" <?php echo ($faculty == 'Bsc.Csit') ? 'selected' : ''; ?>>Bsc.Csit</option>
-                    <option value="BIM" <?php echo ($faculty == 'BIM') ? 'selected' : ''; ?>>BIM</option>
-                    <option value="BCA" <?php echo ($faculty == 'BCA') ? 'selected' : ''; ?>>BCA</option>
-                    <option value="BBM" <?php echo ($faculty == 'BBM') ? 'selected' : ''; ?>>BBM</option>
-                </select>
-            </div>
-        </div>
-        
-        <button type="submit" class="update-btn" name="update">
-            <i class="fas fa-sync-alt"></i> Update Book Details
-        </button>
-    </form>
-
+            
+            <button type="submit" class="update-btn" name="update">
+                <i class="fas fa-sync-alt"></i> Update Book Details
+            </button>
+        </form>
     </div>
-    </div>
-</body>
-</html>
+</div>
 
-<?php
-if (isset($_POST['update'])) {
-    $connection = mysqli_connect("localhost", "root", "");
-    $db = mysqli_select_db($connection, "library");
-    
-    $bname = $_POST['bname'];
-    $bnum = $_POST['bnum'];
-    $edition = $_POST['edition'];
-    $author = $_POST['author'];
-    $publication = $_POST['publication'];
-    $total_quantity = $_POST['total_quantity'];
-    $semester = $_POST['semester'];
-    $faculty = $_POST['faculty'];
+<script>
+function previewImage(input) {
+    const fileName = document.getElementById('file-name');
+    const preview = document.getElementById('image-preview');
 
-    // Fetch the current total quantity and available quantity
-    $fetch_query = "SELECT total_quantity, available_quantity FROM books WHERE book_num = '$bnum'";
-    $fetch_result = mysqli_query($connection, $fetch_query);
-    $row = mysqli_fetch_assoc($fetch_result);
-    $current_total_quantity = $row['total_quantity'];
-    $current_available_quantity = $row['available_quantity'];
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        fileName.textContent = `Selected: ${file.name}`;
 
-    // Update available quantity based on the difference
-    $new_available_quantity = $current_available_quantity + ($total_quantity - $current_total_quantity);
-
-    // Update the book details
-    $update_query = "UPDATE books SET 
-                     book_name = '$bname', 
-                     book_edition = '$edition', 
-                     author_name = '$author', 
-                     publication = '$publication', 
-                     total_quantity = '$total_quantity', 
-                     available_quantity = '$new_available_quantity', 
-                     semester = '$semester', 
-                     faculty = '$faculty' 
-                     WHERE book_num = '$bnum'";
-    $update_result = mysqli_query($connection, $update_query);
-
-    if ($update_result) {
-        echo "<script>alert('Book details updated successfully.'); window.location.href = 'managebooks.php';</script>";
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
     } else {
-        echo "<script>alert('Error updating book details: " . mysqli_error($connection) . "');</script>";
+        fileName.textContent = '';
+        preview.style.display = 'none';
     }
 }
-?>
+</script>
+</body>
+</html>

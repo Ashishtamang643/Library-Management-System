@@ -62,10 +62,10 @@ if (isset($_POST['issue_book'])) {
 
         $issue_date = date("Y-m-d");
 
-        $insert_issue_query = "INSERT INTO issued (student_id, book_num, book_name, book_author, issue_date, semester, faculty, publication) 
-                               VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $insert_issue_query = "INSERT INTO issued (student_id, book_num, book_name, book_author, issue_date, semester, faculty, publication, picture) 
+                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($connection, $insert_issue_query);
-        mysqli_stmt_bind_param($stmt, "ssssssss",
+        mysqli_stmt_bind_param($stmt, "sssssssss",
             $student_id,
             $book_num,
             $book['book_name'],
@@ -73,7 +73,8 @@ if (isset($_POST['issue_book'])) {
             $issue_date,
             $book['semester'],
             $book['faculty'],
-            $book['publication']
+            $book['publication'],
+            $book['picture']    
         );
 
         if (mysqli_stmt_execute($stmt)) {
