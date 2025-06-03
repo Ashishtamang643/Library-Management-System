@@ -32,7 +32,8 @@ if (isset($_POST['request_book'])) {
         $book_num = $_POST['book_num'];
 
         // Check if the book is already requested by this student
-        $check_request_query = "SELECT * FROM book_request WHERE student_id=? AND book_num=?";
+        $check_request_query = "SELECT * FROM book_request WHERE student_id=? AND book_num=? AND status <> ''";
+         // Prepare the statement to prevent SQL injection
         $stmt = mysqli_prepare($connection, $check_request_query);
         mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
         mysqli_stmt_execute($stmt);
@@ -42,7 +43,7 @@ if (isset($_POST['request_book'])) {
             echo "<script>alert('You have already requested this book.');</script>";
         } else {
             // Check if the book is already issued to this student
-            $check_issued_query = "SELECT * FROM issued WHERE student_id=? AND book_num=?";
+            $check_issued_query = "SELECT * FROM issued WHERE student_id=? AND book_num=? AND returned = 0";
             $stmt = mysqli_prepare($connection, $check_issued_query);
             mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
             mysqli_stmt_execute($stmt);
@@ -53,7 +54,7 @@ if (isset($_POST['request_book'])) {
             } else {
                 // Insert book request into database
                 $query = "INSERT INTO book_request (user_email, student_id, student_name, book_name, book_edition, author_name, book_num, status) 
-                          VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')";
+                        VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')";
                 $stmt = mysqli_prepare($connection, $query);
                 mysqli_stmt_bind_param($stmt, "sssssss", $user_email, $student_id, $student_name, $book_name, $book_edition, $author_name, $book_num);
 
@@ -196,17 +197,33 @@ $query_result = mysqli_stmt_get_result($stmt);
         
         .filter-container button {
             padding: 10px 20px;
-            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
             margin: 5px;
+            transition: background-color 0.3s ease;
         }
         
-        .filter-container button:hover {
+        .filter-btn {
+            background-color: #007bff;
+        }
+        
+        .filter-btn:hover {
             background-color: #0056b3;
+        }
+        
+        .reset-btn {
+            background-color: #6c757d;
+        }
+        
+        .reset-btn:hover {
+            background-color: #545b62;
+        }
+        
+        .filter-buttons {
+            margin-top: 15px;
         }
         
         .books-container {
@@ -485,7 +502,7 @@ $query_result = mysqli_stmt_get_result($stmt);
 
     <!-- Filter Form -->
     <div class="filter-container">
-        <form method="GET" action="">
+        <form method="GET" action="" id="filterForm">
             <label for="faculty">Faculty:</label>
             <select name="faculty" id="faculty">
                 <option value="">All</option>
@@ -517,7 +534,10 @@ $query_result = mysqli_stmt_get_result($stmt);
             <label for="publication">Publication:</label>
             <input type="text" name="publication" id="publication" value="<?php echo htmlspecialchars($selected_publication); ?>" placeholder="Enter publication">
 
-            <button type="submit">Filter</button>
+            <div class="filter-buttons">
+                <button type="submit" class="filter-btn">Filter</button>
+                <button type="button" class="reset-btn" onclick="resetFilters()">Reset Filters</button>
+            </div>
         </form>
     </div>
 
@@ -554,7 +574,8 @@ $query_result = mysqli_stmt_get_result($stmt);
             // Check if the book is issued to the current user
             $check_issued_query = "SELECT * FROM issued 
                                    WHERE student_id = ? 
-                                   AND book_num = ?";
+                                   AND book_num = ?
+                                   AND returned = 0";
             $stmt = mysqli_prepare($connection, $check_issued_query);
             mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
             mysqli_stmt_execute($stmt);
@@ -689,7 +710,18 @@ $query_result = mysqli_stmt_get_result($stmt);
             });
         }
     });
-    </script>
 
-</body>
-</html>
+    // Reset filter function
+    function resetFilters() {
+        // Clear all form fields
+        document.getElementById('faculty').value = '';
+        document.getElementById('semester').value = '';
+        document.getElementById('book_name').value = '';
+        document.getElementById('book_num').value = '';
+        document.getElementById('author').value = '';
+        document.getElementById('publication').value = '';
+        
+        // Redirect to the same page without query parameters
+        window.location.href = window.location.pathname;
+    }
+    </script>

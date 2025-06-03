@@ -11,8 +11,8 @@ $bookNumFilter = isset($_GET['book_num']) ? $_GET['book_num'] : ''; // Book Numb
 $semesterFilter = isset($_GET['semester']) ? $_GET['semester'] : ''; // Semester filter
 $facultyFilter = isset($_GET['faculty']) ? $_GET['faculty'] : ''; // Faculty filter
 
-// SQL query to get currently issued books for the logged-in student
-$query = "SELECT book_name, book_num, book_author, issue_date, returned_date, publication, faculty, semester, returned FROM issued WHERE student_id = $_SESSION[ID]";
+// SQL query to get currently issued books for the logged-in student - INCLUDING PICTURE COLUMN
+$query = "SELECT book_name, book_num, book_author, issue_date, returned_date, publication, faculty, semester, returned, picture FROM issued WHERE student_id = $_SESSION[ID]";
 
 // Add conditions to filter by return status, book name, book number, semester, and faculty
 if ($returnedFilter === 'returned') {
@@ -108,7 +108,6 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
         .filter-container {
             text-align: center;
             margin-bottom: 20px;
-            /* padding-left: 160px; */
         }
 
         .filter-container select,
@@ -127,128 +126,173 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
             padding: 20px;
         }
 
-        /* Book Cards Styles */
+        /* NEW Book Cards Styles - Matching the image design */
         .books-cards-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
             margin-top: 20px;
         }
 
         .book-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(67, 97, 238, 0.08);
-            padding: 24px;
-            border: 1px solid rgba(67, 97, 238, 0.1);
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            padding: 16px;
+            border: 1px solid #f0f0f0;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-        }
-
-        .book-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #4361ee, #7c3aed);
-            border-radius: 16px 16px 0 0;
+            height: fit-content;
         }
 
         .book-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(67, 97, 238, 0.15);
-            border-color: rgba(67, 97, 238, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
 
-        .book-card-header {
+        .book-image-container {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1 / 1.1;
+
+            margin-bottom: 12px;
+            position: relative;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(67, 97, 238, 0.1);
+            justify-content: center;
         }
 
-        .book-card-header .book-icon {
-            font-size: 2.2rem;
-            background: linear-gradient(135deg, #4361ee, #7c3aed);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-right: 16px;
+        .book-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
-        .book-card-header .book-title {
-            font-size: 1.25rem;
+        .placeholder-image {
+            color: white;
+            font-size: 4rem;
+            opacity: 0.7;
+            object-fit: contain;
+        }
+
+        .book-title {
+            font-size: 1.1rem;
             font-weight: 600;
-            color: #1e293b;
-            margin: 0;
-            flex-grow: 1;
+            color: #2d3748;
+            margin: 0 0 8px 0;
             line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        .book-card-body {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+        .book-author {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 12px;
+            font-style: italic;
         }
 
-        .book-detail {
-            margin-bottom: 4px;
-        }
-
-        .book-detail-label {
-            font-weight: 500;
-            color: #64748b;
-            font-size: 0.875rem;
+        .book-details {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 6px;
-            margin-bottom: 4px;
         }
 
-        .book-detail-label i {
-            color: #4361ee;
-            width: 14px;
+        .book-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
         }
 
-        .book-detail-value {
-            color: #334155;
-            font-size: 0.975rem;
+        .detail-label {
+            color: #4a5568;
             font-weight: 500;
-            margin-left: 20px;
+        }
+
+        .detail-value {
+            color: #2d3748;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .semester-faculty {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .semester-badge, .faculty-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .semester-badge {
+            background: #e6f3ff;
+            color: #0066cc;
+        }
+
+        .faculty-badge {
+            background: #f0f9ff;
+            color: #0284c7;
+        }
+
+        .status-container {
+            margin-top: 12px;
+            text-align: center;
+            position:absolute;
+            top: 0;
+            right:10px;
         }
 
         .status-badge {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             padding: 6px 12px;
-            border-radius: 12px;
+            border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-left: 20px;
+            width: 100%;
         }
 
         .status-returned {
-            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-            color: #166534;
-            border: 1px solid #86efac;
+            background: #10b981;
+            color: white;
         }
 
         .status-not-returned {
-            background: linear-gradient(135deg, #fef2f2, #fecaca);
-            color: #991b1b;
-            border: 1px solid #fca5a5;
+            background: #ef4444;
+            color: white;
+        }
+
+        .availability-count {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #10b981;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
         .empty-state {
             padding: 40px;
             text-align: center;
             color: #a0aec0;
+            grid-column: 1 / -1;
         }
 
         .requested-books-section {
@@ -312,7 +356,7 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
             </form>
         </div>
 
-        <!-- Currently Issued Books Section - Card View -->
+        <!-- Currently Issued Books Section - Updated Card View -->
         <div class="books-cards-container">
             <?php
             $query_run = mysqli_query($connection, $query);
@@ -329,58 +373,55 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
                     $date = $row['issue_date'];
                     $returned = $row['returned'];
                     $returned_date = $row['returned_date'];
+                    $picture = $row['picture']; // Get the picture column
 
                     // Determine the return status
                     $status = ($returned == 1) ? 'Returned' : 'Not Returned';
                     $statusClass = ($returned == 1) ? 'status-returned' : 'status-not-returned';
             ?>
                     <div class="book-card">
-                        <div class="book-card-header">
-                            <i class="fas fa-book book-icon"></i>
-                            <h3 class="book-title"><?php echo $bname; ?></h3>
+                        <div class="book-image-container">
+                            <?php if (!empty($picture) && file_exists("./admin/upload/{$picture}")) { ?>
+                        <img src="./admin/upload/<?php echo htmlspecialchars($picture); ?>" alt="<?php echo htmlspecialchars($bname); ?>">
+                    <?php } else { ?>
+                       <img src="./admin/upload/placeholder.png" alt="No Image Available">
+                    <?php } ?>
                         </div>
-                        <div class="book-card-body">
-                            <div class="book-detail">
-                                <span class="book-detail-label"><i class="fas fa-hashtag fa-sm"></i> Book Number:</span>
-                                <div class="book-detail-value"><?php echo $bnum; ?></div>
+                        
+                        <h3 class="book-title"><?php echo $bname; ?></h3>
+                        <p class="book-author">by <?php echo $author; ?></p>
+                        
+                        <div class="book-details">
+                            <div class="book-detail-row">
+                                <span class="detail-label">Book #:</span>
+                                <span class="detail-value"><?php echo $bnum; ?></span>
                             </div>
-                            <div class="book-detail">
-                                <span class="book-detail-label"><i class="fas fa-user-edit fa-sm"></i> Author:</span>
-                                <div class="book-detail-value"><?php echo $author; ?></div>
+                            <div class="book-detail-row">
+                                <span class="detail-label">Issue Date:</span>
+                                <span class="detail-value"><?php echo date('M d, Y', strtotime($date)); ?></span>
                             </div>
-                            <div class="book-detail">
-                                <span class="book-detail-label"><i class="fas fa-building fa-sm"></i> Publication:</span>
-                                <div class="book-detail-value"><?php echo $publication; ?></div>
+                            <?php if ($returned_date) { ?>
+                            <div class="book-detail-row">
+                                <span class="detail-label">Return Date:</span>
+                                <span class="detail-value"><?php echo date('M d, Y', strtotime($returned_date)); ?></span>
                             </div>
-                            <div class="book-detail">
-                                <span class="book-detail-label"><i class="fas fa-graduation-cap fa-sm"></i> Faculty:</span>
-                                <div class="book-detail-value"><?php echo $faculty; ?></div>
-                            </div>
-                            <div class="book-detail">
-                                <span class="book-detail-label"><i class="fas fa-calendar-alt fa-sm"></i> Semester:</span>
-                                <div class="book-detail-value"><?php echo $semester; ?></div>
-                            </div>
-                            <div class="book-detail">
-                                <span class="book-detail-label"><i class="fas fa-calendar-alt fa-sm"></i> Issue Date:</span>
-                                <div class="book-detail-value"><?php echo $date; ?></div>
-                            </div>
-                            <div class="book-detail">
-                                <span class="book-detail-label"><i class="fas fa-check-circle fa-sm"></i> Status:</span>
-                                <div class="book-detail-value">
-                                    <span class="status-badge <?php echo $statusClass; ?>"><?php echo $status; ?></span>
-                                </div>
-                            </div>
-                            <div class="book-detail">
-                                <span class="book-detail-label"><i class="fas fa-calendar-check fa-sm"></i> Returned Date:</span>
-                                <div class="book-detail-value"><?php echo $returned_date ? $returned_date : '-'; ?></div>
-                            </div>
+                            <?php } ?>
+                        </div>
+                        
+                        <div class="semester-faculty">
+                            <span class="semester-badge">Sem <?php echo $semester; ?></span>
+                            <span class="faculty-badge"><?php echo $faculty; ?></span>
+                        </div>
+                        
+                        <div class="status-container">
+                            <span class="status-badge <?php echo $statusClass; ?>"><?php echo $status; ?></span>
                         </div>
                     </div>
             <?php
                 }
             } else {
             ?>
-                <div class="empty-state" style="grid-column: 1 / -1;">
+                <div class="empty-state">
                     <i class="fas fa-books"></i>
                     <p>You haven't borrowed any books yet.</p>
                 </div>

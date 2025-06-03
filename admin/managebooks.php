@@ -33,33 +33,37 @@ if (isset($_GET['delete_id'])) {
     exit();
 }
 
-// Fetch filter values from the form
-$selected_faculty = isset($_GET['faculty']) ? $_GET['faculty'] : '';
-$selected_semester = isset($_GET['semester']) ? $_GET['semester'] : '';
-$search_book_name = isset($_GET['book_name']) ? $_GET['book_name'] : '';
-$search_author = isset($_GET['author']) ? $_GET['author'] : '';
-$search_book_num = isset($_GET['book_num']) ? $_GET['book_num'] : '';
-$search_publication = isset($_GET['publication']) ? $_GET['publication'] : '';
+// Initialize filter variables
+$book_name_filter = isset($_GET['book_name']) ? $_GET['book_name'] : '';
+$publication_filter = isset($_GET['publication']) ? $_GET['publication'] : '';
+$author_filter = isset($_GET['author']) ? $_GET['author'] : '';
+$faculty_filter = isset($_GET['faculty']) ? $_GET['faculty'] : '';
+$semester_filter = isset($_GET['semester']) ? $_GET['semester'] : '';
+$book_num_filter = isset($_GET['book_num']) ? $_GET['book_num'] : '';
 
-// Build the query based on filters
+// Base query
 $query = "SELECT * FROM books WHERE 1=1";
-if (!empty($selected_faculty)) {
-    $query .= " AND faculty = '$selected_faculty'";
+
+// Add filters to the query
+if (!empty($book_name_filter)) {
+    $query .= " AND book_name LIKE '%$book_name_filter%'";
 }
-if (!empty($selected_semester)) {
-    $query .= " AND semester = '$selected_semester'";
+if (!empty($publication_filter)) {
+    $query .= " AND publication LIKE '%$publication_filter%'";
 }
-if (!empty($search_book_name)) {
-    $query .= " AND book_name LIKE '%$search_book_name%'";
+if (!empty($author_filter)) {
+    $query .= " AND author_name LIKE '%$author_filter%'";
 }
-if (!empty($search_author)) {
-    $query .= " AND author_name LIKE '%$search_author%'";
+if (!empty($faculty_filter)) {
+    // Check if the selected faculty exists in the comma-separated list
+    $query .= " AND (faculty = '$faculty_filter' OR faculty LIKE '$faculty_filter,%' OR faculty LIKE '%, $faculty_filter,%' OR faculty LIKE '%, $faculty_filter')";
 }
-if (!empty($search_book_num)) {
-    $query .= " AND book_num LIKE '%$search_book_num%'";
+if (!empty($semester_filter)) {
+    // Check if the selected semester exists in the comma-separated list
+    $query .= " AND (semester = '$semester_filter' OR semester LIKE '$semester_filter,%' OR semester LIKE '%, $semester_filter,%' OR semester LIKE '%, $semester_filter')";
 }
-if (!empty($search_publication)) {
-    $query .= " AND publication LIKE '%$search_publication%'";
+if (!empty($book_num_filter)) {
+    $query .= " AND book_num LIKE '%$book_num_filter%'";
 }
 
 // Count total books based on the filtered query
@@ -76,17 +80,15 @@ $total_books = $total_books_row['total_books'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Books</title>
     <link rel="stylesheet" href="../style2.css">
+    <link rel="stylesheet" href="adminstyle.css">
     <style>
-        /* Previous styles remain the same */
-        
         /* Enhanced Filter Styling */
         .filter-container {
             background-color: #f8f9fa;
-            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin: 20px auto;
-            max-width: 900px;
+            max-width: 1500px;
+            padding:20px;
             transition: all 0.3s ease;
         }
 
@@ -116,7 +118,7 @@ $total_books = $total_books_row['total_books'];
             font-size: 14px;
             transition: all 0.3s ease;
             outline: none;
-            width: 180px;
+            width: 150px;
         }
 
         .filter-container select:focus,
@@ -137,6 +139,7 @@ $total_books = $total_books_row['total_books'];
             letter-spacing: 1px;
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            margin: 0 5px;
         }
 
         .filter-container button:hover {
@@ -150,156 +153,352 @@ $total_books = $total_books_row['total_books'];
             box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
 
+        .clear-btn {
+            background-color: #6c757d !important;
+        }
+
+        .clear-btn:hover {
+            background-color: #5a6268 !important;
+        }
+
         .total-books-container {
             text-align: center;
-            margin: 15px 0;
-            font-size: 16px;
+            font-size: 18px;
             color: #555;
-            background-color: #f1f1f1;
-            padding: 10px;
+            background-color: #e8f5e8;
+            padding: 12px;
             border-radius: 6px;
             max-width: 300px;
             margin-left: auto;
             margin-right: auto;
+            font-weight: bold;
+        }
+
+        /* Book image and name styling */
+        .book-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-height: 80px;
+        }
+
+        .book-image {
+            width: 60px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 2px solid #ddd;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .book-image:hover {
+            border-color: #4CAF50;
+            transform: scale(1.05);
+        }
+
+        .book-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .book-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 4px;
+            word-wrap: break-word;
+        }
+
+        .book-meta {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .no-image {
+            width: 60px;
+            height: 75px;
+            background-color: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #6c757d;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        /* Action buttons styling */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-direction: column;
         }
 
         .editbooks-btn {
             background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 8px 16px;
             cursor: pointer;
             text-decoration: none;
+            border-radius: 4px;
+            font-size: 13px;
+            text-align: center;
+            transition: all 0.3s ease;
         }
+
         .delete-btn {
             background-color: #f44336;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 8px 16px;
             cursor: pointer;
             text-decoration: none;
-        }
-        .editbooks-btn:hover {
-            background-color: #45a049;
-        }
-        .delete-btn:hover {
-            background-color: #d32f2f;
+            border-radius: 4px;
+            font-size: 13px;
+            text-align: center;
+            transition: all 0.3s ease;
         }
 
-        
+        .editbooks-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-1px);
+        }
+
+        .delete-btn:hover {
+            background-color: #d32f2f;
+            transform: translateY(-1px);
+        }
+
+        /* Image modal styles */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            cursor: pointer;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            color: white;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .close-modal:hover {
+            opacity: 0.7;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .filter-container form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-container select,
+            .filter-container input[type="text"] {
+                width: 100%;
+            }
+            
+            .book-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .action-buttons {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
+    <?php include('adminnavbar.php'); ?>
 
-<?php include('adminnavbar.php'); ?>
+    <div class="main">
+        <?php include('sidebar.php'); ?>
 
+        <div class="container">
+            <h2 class="h2-register-header">Manage Books</h2>
 
-<div class="main">
-<?php include('sidebar.php'); ?>
+            <!-- Filter Section -->
+            <div class="filter-container">
+                <form method="GET" action="">
+                    <label for="book_name">Book Name:</label>
+                    <input type="text" id="book_name" name="book_name" value="<?php echo htmlspecialchars($book_name_filter); ?>" placeholder="Search book name">
 
-    <div class="container">
+                    <label for="book_num">Book Number:</label>
+                    <input type="text" id="book_num" name="book_num" value="<?php echo htmlspecialchars($book_num_filter); ?>" placeholder="Search book number">
 
+                    <label for="author">Author:</label>
+                    <input type="text" id="author" name="author" value="<?php echo htmlspecialchars($author_filter); ?>" placeholder="Search author">
 
-    <h2 class="h2-register-header">Manage Books</h2>
+                    <label for="publication">Publication:</label>
+                    <input type="text" id="publication" name="publication" value="<?php echo htmlspecialchars($publication_filter); ?>" placeholder="Search publication">
 
-    <!-- Filter Form -->
-    <div class="filter-container">
-        <form method="GET" action="">
-            <label for="faculty">Faculty:</label>
-            <select name="faculty" id="faculty">
-                <option value="">All</option>
-                <option value="Bsc.Csit" <?php echo ($selected_faculty == 'Bsc.Csit') ? 'selected' : ''; ?>>Bsc.Csit</option>
-                <option value="BIM" <?php echo ($selected_faculty == 'BIM') ? 'selected' : ''; ?>>BIM</option>
-                <option value="BCA" <?php echo ($selected_faculty == 'BCA') ? 'selected' : ''; ?>>BCA</option>
-                <option value="BBM" <?php echo ($selected_faculty == 'BBM') ? 'selected' : ''; ?>>BBM</option>
-            </select>
+                    <label for="faculty">Faculty:</label>
+                    <select name="faculty" id="faculty">
+                        <option value="">All</option>
+                        <option value="Bsc.Csit" <?php echo ($faculty_filter == 'Bsc.Csit') ? 'selected' : ''; ?>>Bsc.Csit</option>
+                        <option value="BIM" <?php echo ($faculty_filter == 'BIM') ? 'selected' : ''; ?>>BIM</option>
+                        <option value="BCA" <?php echo ($faculty_filter == 'BCA') ? 'selected' : ''; ?>>BCA</option>
+                        <option value="BBM" <?php echo ($faculty_filter == 'BBM') ? 'selected' : ''; ?>>BBM</option>
+                    </select>
 
-            <label for="semester">Semester:</label>
-            <select name="semester" id="semester">
-                <option value="">All</option>
-                <?php for ($i = 1; $i <= 8; $i++) { ?>
-                    <option value="<?php echo $i; ?>" <?php echo ($selected_semester == $i) ? 'selected' : ''; ?>>
-                        Semester <?php echo $i; ?>
-                    </option>
-                <?php } ?>
-            </select>
+                    <label for="semester">Semester:</label>
+                    <select name="semester" id="semester">
+                        <option value="">All</option>
+                        <?php for ($i = 1; $i <= 8; $i++): ?>
+                            <option value="<?php echo $i; ?>" <?php echo ($semester_filter == $i) ? 'selected' : ''; ?>><?php echo $i; ?></option>
+                        <?php endfor; ?>
+                    </select>
 
-            <label for="book_name">Book Name:</label>
-            <input type="text" name="book_name" id="book_name" value="<?php echo htmlspecialchars($search_book_name); ?>" placeholder="Search book name">
+                    <button type="submit">Apply Filters</button>
+                    <button type="button" class="clear-btn" onclick="window.location.href = window.location.pathname;">Clear Filters</button>
+                </form>
+            </div>
 
-            <label for="author">Author:</label>
-            <input type="text" name="author" id="author" value="<?php echo htmlspecialchars($search_author); ?>" placeholder="Search author">
+            <!-- Total Books Count -->
+            <div class="total-books-container">
+                Total Books: <?php echo $total_books; ?>
+            </div>
 
-            <label for="book_num">Book Number:</label>
-            <input type="text" name="book_num" id="book_num" value="<?php echo htmlspecialchars($search_book_num); ?>" placeholder="Search book number">
-
-            <label for="publication">Publication:</label>
-            <input type="text" name="publication" id="publication" value="<?php echo htmlspecialchars($search_publication); ?>" placeholder="Search publication">
-
-            <button type="submit">Filter</button>
-        </form>
-    </div>
-
-    <!-- Total Books Count -->
-    <div class="total-books-container">
-        Total Books: <?php echo $total_books; ?>
-    </div>
-
-    <!-- Books Table -->
-    <table>
-        <thead>
-            <tr>
-                <th>Book Name</th>
-                <th>Book Num</th>
-                <th>Edition</th>
-                <th>Author</th>
-                <th>Publication</th>
-                <th>Faculty</th>
-                <th>Semester</th>
-                <th>Total Quantity</th>
-                <th>Available Quantity</th>
-                <th>Issued Quantity</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            $query_run = mysqli_query($connection, $query);
-            while ($row = mysqli_fetch_assoc($query_run)) {
-                $bname = $row['book_name'];
-                $bnum = $row['book_num'];
-                $bedition = $row['book_edition'];
-                $author = $row['author_name'];
-                $publication = $row['publication'];
-                $faculty = $row['faculty'];
-                $semester = $row['semester'];
-                $total_quantity = $row['total_quantity'];
-                $available_quantity = $row['available_quantity'];
-                $issued_quantity = $row['total_quantity'] - $row['available_quantity'];
-            ?>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Book Info</th>
+                        <th>Book Num</th>
+                        <th>Edition</th>
+                        <th>Publication</th>
+                        <th>Faculty</th>
+                        <th>Semester</th>
+                        <th>Total Qty</th>
+                        <th>Available Qty</th>
+                        <th>Issued Qty</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $query_run = mysqli_query($connection, $query);
+                while($row = mysqli_fetch_assoc($query_run)) {
+                    $bname = $row['book_name'];
+                    $bnum = $row['book_num'];
+                    $bedition = $row['book_edition'];
+                    $author = $row['author_name'];
+                    $publication = $row['publication'];
+                    $faculty = $row['faculty'];
+                    $semester = $row['semester'];
+                    $total_quantity = $row['total_quantity'];
+                    $available_quantity = $row['available_quantity'];
+                    $issued_quantity = $total_quantity - $available_quantity;
+                    $picture = $row['picture'];
+                ?>
                 <tr>
-                    <td><?php echo $bname; ?></td>
-                    <td><?php echo $bnum; ?></td>
-                    <td><?php echo $bedition; ?></td>
-                    <td><?php echo $author; ?></td>
-                    <td><?php echo $publication; ?></td>
-                    <td><?php echo $faculty; ?></td>
-                    <td><?php echo $semester; ?></td>
-                    <td><?php echo $total_quantity; ?></td>
-                    <td><?php echo $available_quantity; ?></td>
-                    <td><?php echo $issued_quantity; ?></td>
                     <td>
-                        <a href="editbooks.php?bn=<?php echo $row['book_num']; ?>" class="editbooks-btn">Edit</a>
-                        <a href="managebooks.php?delete_id=<?php echo $row['book_num']; ?>" class="delete-btn" onclick="return confirm('Are you sure you want to delete this book?')">Delete</a>
+                        <div class="book-info">
+                            <?php if (!empty($picture) && file_exists('upload/' . $picture)): ?>
+                                <img src="upload/<?php echo htmlspecialchars($picture); ?>" 
+                                     alt="<?php echo htmlspecialchars($bname); ?>" 
+                                     class="book-image" 
+                                     onclick="openImageModal('upload/<?php echo htmlspecialchars($picture); ?>', '<?php echo htmlspecialchars($bname); ?>')"
+                                     title="Click to view larger image">
+                            <?php else: ?>
+                                <div class="no-image">No Image</div>
+                            <?php endif; ?>
+                            <div class="book-details">
+                                <div class="book-name"><?php echo htmlspecialchars($bname); ?></div>
+                                <div class="book-meta">
+                                    <strong>Author:</strong> <?php echo htmlspecialchars($author); ?><br>
+                                    <strong>Edition:</strong> <?php echo htmlspecialchars($bedition); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><?php echo htmlspecialchars($bnum); ?></td>
+                    <td><?php echo htmlspecialchars($bedition); ?></td>
+                    <td><?php echo htmlspecialchars($publication); ?></td>
+                    <td><?php echo htmlspecialchars($faculty); ?></td>
+                    <td><?php echo htmlspecialchars($semester); ?></td>
+                    <td><?php echo htmlspecialchars($total_quantity); ?></td>
+                    <td><?php echo htmlspecialchars($available_quantity); ?></td>
+                    <td><?php echo htmlspecialchars($issued_quantity); ?></td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="editbooks.php?bn=<?php echo $row['book_num']; ?>" class="editbooks-btn">Edit</a>
+                            <a href="managebooks.php?delete_id=<?php echo $row['book_num']; ?>" 
+                               class="delete-btn" 
+                               onclick="return confirm('Are you sure you want to delete this book?')">Delete</a>
+                        </div>
                     </td>
                 </tr>
-            <?php
-            }
-            ?>
-        </tbody>
-    </table>
-            
+                <?php
+                }
+                ?>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="close-modal" onclick="closeImageModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <script>
+        function openImageModal(imageSrc, bookName) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            
+            modal.style.display = 'block';
+            modalImg.src = imageSrc;
+            modalImg.alt = bookName;
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Close modal when pressing Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+
+        // Prevent modal from closing when clicking on the image
+        document.getElementById('modalImage').addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    </script>
+
 </body>
 </html>

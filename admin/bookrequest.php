@@ -29,7 +29,7 @@ if (isset($_POST['issue_book'])) {
     $book_num = $_POST['book_num'];
     $student_id = $_POST['student_id'];
 
-    $check_issued_query = "SELECT * FROM issued WHERE student_id = ? AND book_num = ?";
+    $check_issued_query = "SELECT * FROM issued WHERE student_id = ? AND book_num = ? AND returned IS NULL";
     $stmt = mysqli_prepare($connection, $check_issued_query);
     mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
     mysqli_stmt_execute($stmt);
@@ -258,18 +258,17 @@ $query_run = mysqli_query($connection, $query);
                 $request_date = $row['request_date'];
                 $status = $row['status'];
 
+                // Check if book is currently issued to this student
                 $check_issued_query = "SELECT * FROM issued WHERE student_id = ? AND book_num = ?";
                 $stmt = mysqli_prepare($connection, $check_issued_query);
                 mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
                 mysqli_stmt_execute($stmt);
                 $check_result = mysqli_stmt_get_result($stmt);
-                $is_issued = mysqli_num_rows($check_result) > 0;
+                $is_currently_issued = mysqli_num_rows($check_result) > 0;
 
-                $is_returned = false;
-                if ($is_issued) {
-                    $issued_row = mysqli_fetch_assoc($check_result);
-                    $is_returned = isset($issued_row['returned']) && $issued_row['returned'] == 1;
-                }
+                // Determine if book is returned based on your logic:
+                // If status is empty/null, then it's returned
+                $is_returned = empty($status) || is_null($status);
         ?>
         <tr>
             <td><?php echo htmlspecialchars($request_id); ?></td>
@@ -284,7 +283,7 @@ $query_run = mysqli_query($connection, $query);
             <td>
                 <?php if ($is_returned) { ?>
                     <span class="returned-text">Returned</span>
-                <?php } elseif ($status == 'issued' || $is_issued) { ?>
+                <?php } elseif ($status == 'issued') { ?>
                     <span class="issued-text">Issued</span>
                 <?php } else { ?>
                     <form method="POST" action="" style="display:inline;">
@@ -301,7 +300,7 @@ $query_run = mysqli_query($connection, $query);
             <td>
                 <?php if ($is_returned) { ?>
                     <span class="returned-text">Returned</span>
-                <?php } elseif ($status == 'issued' || $is_issued) { ?>
+                <?php } elseif ($status == 'issued') { ?>
                     <span class="issued-text">Issued</span>
                 <?php } elseif ($status == 'rejected') { ?>
                     <button class="issue-btn" disabled>Issue Book</button>

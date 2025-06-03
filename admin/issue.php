@@ -60,16 +60,17 @@
         $check_issued_query = "SELECT * FROM issued 
                                WHERE student_id = '$studentID' 
                                AND book_num = '$bnum' 
-                               AND returned = 0";
+                               AND returned IS NULL";
         $check_issued_result = mysqli_query($connection, $check_issued_query);
-
-        if (mysqli_num_rows($check_issued_result) > 0) {
+        echo "<script>console.log('Check issued query: $bnum');</script>";
+        echo "<script>console.log('Check issued result: " . mysqli_num_rows($check_issued_result) . "');</script>";
+        if (mysqli_num_rows($check_issued_result) > 0) {    
             // Update the issued table to set returned date
             $update_return_query = "UPDATE issued 
                                     SET returned_date = '$returned_date', returned = 1
-                                    WHERE student_id = '$studentID' 
-                                    AND book_num = '$bnum' 
-                                    AND returned = 0";
+                                    WHERE student_id = '$studentID'
+                                    AND book_num = '$bnum'
+                                    AND returned IS NULL";
             $update_return_result = mysqli_query($connection, $update_return_query);
 
             // Update available quantity in books table
@@ -91,6 +92,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' href='adminstyle.css'>
     <title>Issue/Return Books</title>
     <style>
 body {
@@ -153,20 +155,23 @@ form {
     box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
 }
 
-.form-group button {
-    width: 100%;
-    padding: 12px;
-    background: linear-gradient(to right, #4CAF50, #45a049);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 18px;
-    transition: all 0.3s ease;
+button{
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
 }
 
 .form-group button:hover {
-    background: linear-gradient(to right, #45a049, #3e8e41);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
     transform: translateY(-2px);
 }
 

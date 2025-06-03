@@ -55,7 +55,7 @@
 <div class="side-bar">
     <a href="adminprofile.php" data-page="adminprofile.php"><i class="fas fa-dashboard"></i> Dashboard</a>
     <a href="registeruser.php" data-page="registeruser.php"><i class="fas fa-users"></i> View Users</a>
-    <a href="registerbooks.php" data-page="registerbooks.php"><i class="fas fa-book"></i> View Books</a>
+    <a href="managebooks.php" data-page="managebooks.php"><i class="fas fa-book"></i> Manage Books</a>
     <a href="registerauthors.php" data-page="registerauthors.php"><i class="fas fa-pen-nib"></i> View Authors</a>
     <a href="registerissue.php" data-page="registerissue.php"><i class="fas fa-bookmark"></i> View Issues</a>
     <a href="bookrequest.php" data-page="bookrequest.php"><i class="fas fa-paper-plane"></i> View Requested Book</a>

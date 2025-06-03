@@ -145,394 +145,522 @@ $semester_array = !empty($semester) ? explode(", ", $semester) : [];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Book</title>
-    <link rel="stylesheet" href="../style2.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Reset and base styles */
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
-
         body {
-            font-family: 'Poppins', 'Arial', sans-serif;
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 0;
         }
 
-        /* Form container */
-        .editbooksdetails {
-            max-width: 800px;
+        .navigation-bar {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .navigation-bar a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .navigation-bar a:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1000px;
             margin: 40px auto;
-            padding: 35px 40px;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            position: relative;
-            border-top: 5px solid #4361ee;
+            padding: 0 20px;
         }
 
-        /* Form heading */
-        .editbooksdetails h2 {
-            font-size: 28px;
-            color: #2d3748;
-            margin-bottom: 30px;
+        .form-wrapper {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-header {
             text-align: center;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #edf2f7;
-            position: relative;
-            font-weight: 600;
+            margin-bottom: 40px;
         }
 
-        .editbooksdetails h2:after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 2px;
-            background-color: #4361ee;
+        .form-header h2 {
+            font-size: 32px;
+            color: #2c3e50;
+            font-weight: 300;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
         }
 
-        /* Form grid */
+        .form-header .edit-icon {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .form-header p {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
         }
 
-        .form-grid .full-width {
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: span 3;
+        }
+
+        .form-group.half-width {
             grid-column: span 2;
         }
 
-        /* Form labels */
-        .editbooksdetails label {
-            display: block;
+        .form-group label {
+            font-weight: 600;
+            color: #2c3e50;
             margin-bottom: 8px;
-            font-weight: 500;
-            color: #4a5568;
-            font-size: 15px;
-            transition: all 0.3s;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* Form inputs, select, and textarea */
-        .editbooksdetails input,
-        .editbooksdetails select,
-        .editbooksdetails textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: all 0.3s;
-            background-color: #fff;
-            color: #2d3748;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: inherit;
         }
 
-        .editbooksdetails input:focus,
-        .editbooksdetails select:focus,
-        .editbooksdetails textarea:focus {
-            border-color: #4361ee;
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
         }
 
-        .editbooksdetails textarea {
+        .form-group input[readonly] {
+            background: linear-gradient(135deg, #f8f9fc, #e9ecef);
+            color: #6c757d;
+            cursor: not-allowed;
+            border-style: dashed;
+            position: relative;
+        }
+
+        .readonly-label {
+            position: relative;
+        }
+
+        .readonly-label::after {
+            content: "🔒 Read Only";
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #6c757d;
+            background: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+
+        .form-group textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 120px;
+            font-family: inherit;
         }
 
-        /* Multi-select styling */
         .multi-select {
-            height: auto;
-            min-height: 100px;
+            min-height: 120px;
+            padding: 10px 15px;
+        }
+
+        .multi-select option {
+            padding: 8px;
+            margin: 2px 0;
         }
 
         .select-help {
             font-size: 12px;
-            color: #666;
+            color: #95a5a6;
             margin-top: 5px;
+            font-style: italic;
         }
 
-        /* Icon styling for inputs */
-        .input-icon {
-            position: relative;
-        }
-
-        .input-icon i {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            left: 15px;
-            color: #a0aec0;
-            z-index: 1;
-        }
-
-        .input-icon input,
-        .input-icon select {
-            padding-left: 45px;
-        }
-
-        /* Read-only input styling */
-        .editbooksdetails input[readonly] {
-            background-color: #f8fafc;
-            cursor: not-allowed;
-            color: #718096;
-            border: 1px dashed #cbd5e0;
-        }
-
-        /* Image upload container */
-        .image-upload-container {
-            border: 2px dashed #ccc;
+        .current-image-section {
+            background: #f8f9fc;
+            border-radius: 15px;
             padding: 20px;
+            margin-bottom: 20px;
             text-align: center;
-            background-color: #fafafa;
-            border-radius: 8px;
-            transition: all 0.3s;
+            border: 2px solid #e1e8ed;
         }
 
-        .image-upload-container:hover {
-            border-color: #4361ee;
+        .current-image-section h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 16px;
         }
 
-        .image-upload-container input[type="file"] {
-            display: none;
-        }
-
-        .upload-label {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #4361ee;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .upload-label:hover {
-            background-color: #3050e0;
-        }
-
-        .file-info {
-            font-size: 14px;
-            margin-top: 10px;
-            color: #666;
-        }
-
-        .image-preview {
-            margin-top: 15px;
+        .current-image-section img {
             max-width: 200px;
             max-height: 200px;
-            border-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 3px solid white;
         }
 
-        .current-image {
+        .image-upload-section {
+            background: #f8f9fc;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 2px dashed #d1d9e6;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-upload-section:hover {
+            border-color: #667eea;
+            background: #f0f3ff;
+        }
+
+        .image-upload-section input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .upload-content {
+            pointer-events: none;
+        }
+
+        .upload-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .upload-text {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .upload-subtext {
+            font-size: 14px;
+            color: #7f8c8d;
             margin-bottom: 15px;
         }
 
-        .current-image img {
-            max-width: 150px;
-            max-height: 150px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        .file-info {
+            font-size: 12px;
+            color: #95a5a6;
         }
 
-        .current-image p {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #666;
+        .image-preview {
+            margin-top: 20px;
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 3px solid white;
         }
 
-        /* Button styling */
-        .update-btn {
-            display: block;
-            width: 100%;
-            background-color: #4361ee;
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 14px;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 25px;
-            transition: all 0.3s ease;
+            padding: 18px 40px;
+            font-size: 18px;
             font-weight: 600;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(66, 99, 235, 0.15);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .update-btn:hover {
-            background-color: #3050e0;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(66, 99, 235, 0.25);
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
         }
 
-        .update-btn:active {
-            transform: translateY(0);
+        .submit-btn:active {
+            transform: translateY(-1px);
         }
 
-        /* Optional animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .cancel-btn {
+            background: transparent;
+            color: #6c757d;
+            border: 2px solid #6c757d;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .editbooksdetails {
-            animation: fadeIn 0.5s ease-out;
+        .cancel-btn:hover {
+            background: #6c757d;
+            color: white;
+            transform: translateY(-3px);
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 800px) {
+        /* Responsive Design */
+        @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
             }
-            
-            .form-grid .full-width {
+
+            .form-group.full-width,
+            .form-group.half-width {
                 grid-column: span 1;
+            }
+
+            .form-wrapper {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+
+            .form-header h2 {
+                font-size: 24px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .container {
+                margin: 20px auto;
+                padding: 0 10px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: stretch;
             }
         }
 
-        @media (max-width: 700px) {
-            .editbooksdetails {
-                margin: 25px 15px;
-                padding: 25px 20px;
+        @media (max-width: 1024px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
-            
-            .editbooksdetails h2 {
-                font-size: 22px;
-                margin-bottom: 20px;
+
+            .form-group.half-width {
+                grid-column: span 2;
             }
+        }
+
+        /* Animation for form appearance */
+        .form-wrapper {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Status indicator for fields with existing data */
+        .has-data {
+            position: relative;
+        }
+
+        .has-data::before {
+            content: "✓";
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #28a745;
+            font-weight: bold;
+            z-index: 1;
         }
     </style>
 </head>
 <body>
 <?php include('adminnavbar.php'); ?>
-
 <div class="main">
 <?php include('sidebar.php'); ?>
 
-    <div class="container">
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . '?bn=' . urlencode($_GET['bn']); ?>" method="POST" class="editbooksdetails" enctype="multipart/form-data">
-            <h2>Edit Book Details</h2>
-            
+<div class="container">
+    <div class="form-wrapper">
+        <div class="form-header">
+            <h2>
+                <div class="edit-icon">✏️</div>
+                Edit Book Details
+            </h2>
+            <p>Update the information below to modify the book record</p>
+        </div>
+
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . '?bn=' . urlencode($_GET['bn']); ?>" method="POST" enctype="multipart/form-data">
             <div class="form-grid">
-                <div>
+                <div class="form-group">
                     <label for="bname">Book Name</label>
-                    <div class="input-icon">
-                        <i class="fas fa-book"></i>
-                        <input type="text" id="bname" name="bname" value="<?php echo htmlspecialchars($bname); ?>" required>
-                    </div>
+                    <input type="text" name="bname" id="bname" value="<?php echo htmlspecialchars($bname); ?>" placeholder="Enter book title" class="has-data" required>
                 </div>
-                
-                <div>
-                    <label for="bnum">Book Number</label>
-                    <div class="input-icon">
-                        <i class="fas fa-hashtag"></i>
-                        <input type="text" id="bnum" name="bnum" value="<?php echo htmlspecialchars($bnum); ?>" readonly>
-                    </div>
+
+                <div class="form-group">
+                    <label for="bnum" class="readonly-label">Book Number</label>
+                    <input type="text" name="bnum" id="bnum" value="<?php echo htmlspecialchars($bnum); ?>" readonly>
                 </div>
-                
-                <div>
+
+                <div class="form-group">
                     <label for="bedition">Book Edition</label>
-                    <div class="input-icon">
-                        <i class="fas fa-bookmark"></i>
-                        <input type="text" id="bedition" name="bedition" value="<?php echo htmlspecialchars($edition); ?>" required>
-                    </div>
+                    <input type="text" name="bedition" id="bedition" value="<?php echo htmlspecialchars($edition); ?>" placeholder="e.g., 1st, 2nd, Latest" class="has-data" required>
                 </div>
-                
-                <div>
+
+                <div class="form-group">
                     <label for="author_name">Author Name</label>
-                    <div class="input-icon">
-                        <i class="fas fa-user-edit"></i>
-                        <input type="text" id="author_name" name="author_name" value="<?php echo htmlspecialchars($author); ?>" required>
-                    </div>
-                </div>
-                
-                <div class="full-width">
-                    <label for="faculty">Faculty</label>
-                    <div class="input-icon">
-                        <i class="fas fa-graduation-cap"></i>
-                        <select multiple name="faculty[]" id="faculty" class="multi-select" required>
-                            <option value="Bsc.Csit" <?php echo in_array('Bsc.Csit', $faculty_array) ? 'selected' : ''; ?>>Bsc.Csit</option>
-                            <option value="BIM" <?php echo in_array('BIM', $faculty_array) ? 'selected' : ''; ?>>BIM</option>
-                            <option value="BCA" <?php echo in_array('BCA', $faculty_array) ? 'selected' : ''; ?>>BCA</option>
-                            <option value="BBM" <?php echo in_array('BBM', $faculty_array) ? 'selected' : ''; ?>>BBM</option>
-                        </select>
-                    </div>
-                    <p class="select-help">Hold Ctrl or Cmd to select multiple</p>
+                    <input type="text" name="author_name" id="author_name" value="<?php echo htmlspecialchars($author); ?>" placeholder="Enter author's name" class="has-data" required>
                 </div>
 
-                <div class="full-width">
-                    <label for="semester">Semester</label>
-                    <div class="input-icon">
-                        <i class="fas fa-calendar-alt"></i>
-                        <select multiple name="semester[]" id="semester" class="multi-select" required>
-                            <?php for ($i = 1; $i <= 8; $i++) { ?>
-                                <option value="<?php echo $i; ?>" <?php echo in_array((string)$i, $semester_array) ? 'selected' : ''; ?>>Semester <?php echo $i; ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                    <p class="select-help">Hold Ctrl or Cmd to select multiple</p>
-                </div>
-                
-                <div>
+                <div class="form-group">
                     <label for="publication">Publication</label>
-                    <div class="input-icon">
-                        <i class="fas fa-building"></i>
-                        <input type="text" id="publication" name="publication" value="<?php echo htmlspecialchars($publication); ?>" required>
-                    </div>
-                </div>
-                
-                <div>
-                    <label for="total_quantity">Total Quantity</label>
-                    <div class="input-icon">
-                        <i class="fas fa-layer-group"></i>
-                        <input type="number" id="total_quantity" name="total_quantity" value="<?php echo htmlspecialchars($total_quantity); ?>" min="1" required>
-                    </div>
-                </div>
-                
-                <div class="full-width">
-                    <label for="description">Description</label>
-                    <textarea name="description" id="description" placeholder="Write short book description..." required><?php echo htmlspecialchars($description); ?></textarea>
+                    <input type="text" name="publication" id="publication" value="<?php echo htmlspecialchars($publication); ?>" placeholder="Enter publisher name" class="has-data" required>
                 </div>
 
-                <div class="full-width">
+                <div class="form-group">
+                    <label for="total_quantity">Total Quantity</label>
+                    <input type="number" name="total_quantity" id="total_quantity" value="<?php echo htmlspecialchars($total_quantity); ?>" min="1" placeholder="Number of copies" class="has-data" required>
+                </div>
+
+                <div class="form-group half-width">
+                    <label for="faculty">Faculty</label>
+                    <select multiple name="faculty[]" id="faculty" class="multi-select" required>
+                        <option value="Bsc.Csit" <?php echo in_array('Bsc.Csit', $faculty_array) ? 'selected' : ''; ?>>Bsc.Csit</option>
+                        <option value="BIM" <?php echo in_array('BIM', $faculty_array) ? 'selected' : ''; ?>>BIM</option>
+                        <option value="BCA" <?php echo in_array('BCA', $faculty_array) ? 'selected' : ''; ?>>BCA</option>
+                        <option value="BBM" <?php echo in_array('BBM', $faculty_array) ? 'selected' : ''; ?>>BBM</option>
+                    </select>
+                    <p class="select-help">Hold Ctrl (Cmd on Mac) to select multiple faculties</p>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="semester">Semester</label>
+                    <select multiple name="semester[]" id="semester" class="multi-select" required>
+                        <?php for ($i = 1; $i <= 8; $i++) { ?>
+                            <option value="<?php echo $i; ?>" <?php echo in_array((string)$i, $semester_array) ? 'selected' : ''; ?>>Semester <?php echo $i; ?></option>
+                        <?php } ?>
+                    </select>
+                    <p class="select-help">Hold Ctrl (Cmd on Mac) to select multiple semesters</p>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="description">Description</label>
+                    <textarea name="description" id="description" placeholder="Write a brief description about the book, its content, and target audience..." class="has-data" required><?php echo htmlspecialchars($description); ?></textarea>
+                </div>
+
+                <div class="form-group full-width">
                     <label for="picture">Book Cover Image</label>
                     
                     <?php if (!empty($picture) && file_exists("upload/" . $picture)) { ?>
-                        <div class="current-image">
+                        <div class="current-image-section">
+                            <h4>📖 Current Book Cover</h4>
                             <img src="upload/<?php echo htmlspecialchars($picture); ?>" alt="Current book cover">
-                            <p>Current Image</p>
                         </div>
                     <?php } ?>
                     
-                    <div class="image-upload-container">
+                    <div class="image-upload-section">
                         <input type="file" name="picture" id="picture" accept="image/*" onchange="previewImage(this)">
-                        <label for="picture" class="upload-label">
-                            <i class="fas fa-upload"></i> Choose New Image
-                        </label>
-                        <div class="file-info">
-                            <p>Supported formats: JPG, JPEG, PNG, GIF</p>
-                            <p>Maximum size: 5MB</p>
-                            <p><em>Leave empty to keep current image</em></p>
-                            <span id="file-name"></span>
+                        <div class="upload-content">
+                            <div class="upload-icon">🖼️</div>
+                            <div class="upload-text">Click to upload new cover</div>
+                            <div class="upload-subtext">or drag and drop your image here</div>
+                            <div class="file-info">
+                                <p>Supported formats: JPG, JPEG, PNG, GIF | Maximum size: 5MB</p>
+                                <p><em>Leave empty to keep current image</em></p>
+                                <span id="file-name"></span>
+                            </div>
+                            <img id="image-preview" class="image-preview" style="display: none;">
                         </div>
-                        <img id="image-preview" class="image-preview" style="display: none;">
                     </div>
                 </div>
             </div>
-            
-            <button type="submit" class="update-btn" name="update">
-                <i class="fas fa-sync-alt"></i> Update Book Details
-            </button>
+
+            <div class="action-buttons">
+                <a href="managebooks.php" class="cancel-btn">
+                    ❌ Cancel
+                </a>
+                <button type="submit" name="update" class="submit-btn">
+                    💾 Update Book
+                </button>
+            </div>
         </form>
     </div>
+</div>
 </div>
 
 <script>
@@ -543,6 +671,8 @@ function previewImage(input) {
     if (input.files && input.files[0]) {
         const file = input.files[0];
         fileName.textContent = `Selected: ${file.name}`;
+        fileName.style.color = '#667eea';
+        fileName.style.fontWeight = '600';
 
         const reader = new FileReader();
         reader.onload = function(e) {

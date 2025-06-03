@@ -1,0 +1,301 @@
+﻿book_id,book_name,total_quantity,available_quantity,book_num,book_edition,author_name,publication,faculty,semester,picture,description
+1,Data Mining,12,0,9786233121118,1th,Abraham Silberschatz,Oxford,Bsc.Csit,8,data_mining.jpg,Data Mining by Abraham Silberschatz for semester 8 of Bsc.Csit faculty.
+2,Object Oriented Programming,8,8,9783631420167,3th,E. Balagurusamy,Schaum's Outlines,BCA,2,object_oriented_programming.jpg,Object Oriented Programming by E. Balagurusamy for semester 2 of BCA faculty.
+3,Project Management,10,7,9785386505125,4th,Kenneth Laudon,Wiley,BIM,2,project_management.jpg,Project Management by Kenneth Laudon for semester 2 of BIM faculty.
+4,Project Management,10,5,9781302591112,3th,David A. Patterson,Oxford,BIM,1,project_management.jpg,Project Management by David A. Patterson for semester 1 of BIM faculty.
+5,Operating System Concepts,20,10,9789840472409,3th,E. Balagurusamy,Oxford,BIM,5,operating_system_concepts.jpg,Operating System Concepts by E. Balagurusamy for semester 5 of BIM faculty.
+6,Object Oriented Programming,9,2,9782236952826,5th,Seymour Lipschutz,Oxford,BCA,5,object_oriented_programming.jpg,Object Oriented Programming by Seymour Lipschutz for semester 5 of BCA faculty.
+7,Computer Architecture,11,3,9782840292216,2th,Stephen P. Robbins,Cambridge,BIM,2,computer_architecture.jpg,Computer Architecture by Stephen P. Robbins for semester 2 of BIM faculty.
+8,Mobile Application Development,9,5,9786093462704,3th,Stuart Russell,Pearson,Bsc.Csit,4,mobile_application_development.jpg,Mobile Application Development by Stuart Russell for semester 4 of Bsc.Csit faculty.
+9,System Analysis and Design,12,5,9781450995121,3th,Korth & Sudarshan,McGraw-Hill,Bsc.Csit,2,system_analysis_and_design.jpg,System Analysis and Design by Korth & Sudarshan for semester 2 of Bsc.Csit faculty.
+10,Computer Architecture,8,6,9782738915825,2th,Korth & Sudarshan,Schaum's Outlines,Bsc.Csit,1,computer_architecture.jpg,Computer Architecture by Korth & Sudarshan for semester 1 of Bsc.Csit faculty.
+11,Data Structures & Algorithms,13,8,9784811202864,2th,E. Balagurusamy,Schaum's Outlines,Bsc.Csit,7,data_structures_&_algorithms.jpg,Data Structures & Algorithms by E. Balagurusamy for semester 7 of Bsc.Csit faculty.
+12,Financial Accounting,6,1,9782853101041,5th,Kenneth Laudon,Oxford,Bsc.Csit,2,financial_accounting.jpg,Financial Accounting by Kenneth Laudon for semester 2 of Bsc.Csit faculty.
+13,Digital Logic,9,2,9783120124853,2th,Ralph M. Stair,Oxford,BCA,1,digital_logic.jpg,Digital Logic by Ralph M. Stair for semester 1 of BCA faculty.
+14,Database Management Systems,11,11,9781077917694,4th,Stephen P. Robbins,Schaum's Outlines,BCA,1,database_management_systems.jpg,Database Management Systems by Stephen P. Robbins for semester 1 of BCA faculty.
+15,Business Communication,7,7,9785997211312,5th,Ralph M. Stair,Wiley,BIM,3,business_communication.jpg,Business Communication by Ralph M. Stair for semester 3 of BIM faculty.
+16,E-Governance,16,16,9781346612406,1th,Kenneth Laudon,McGraw-Hill,BBM,6,e-governance.jpg,E-Governance by Kenneth Laudon for semester 6 of Bsc.Csit faculty.
+17,Distributed Systems,7,2,9781928087678,1th,Seymour Lipschutz,Pearson,BIM,1,distributed_systems.jpg,Distributed Systems by Seymour Lipschutz for semester 1 of BIM faculty.
+18,Data Mining,11,2,9789303209161,2th,Kenneth Laudon,Cambridge,BCA,2,data_mining.jpg,Data Mining by Kenneth Laudon for semester 2 of BCA faculty.
+19,Business Communication,13,5,9789234657908,1th,Ian Sommerville,Wiley,BBM,7,business_communication.jpg,Business Communication by Ian Sommerville for semester 7 of BCA faculty.
+20,Data Mining,13,4,9785904240354,2th,Seymour Lipschutz,Wiley,BIM,7,data_mining.jpg,Data Mining by Seymour Lipschutz for semester 7 of BIM faculty.
+21,Human Computer Interaction,10,0,9782511962648,5th,Philip Kotler,McGraw-Hill,BBM,5,human_computer_interaction.jpg,Human Computer Interaction by Philip Kotler for semester 5 of BIM faculty.
+22,E-Governance,17,17,9783330524034,5th,Abraham Silberschatz,Schaum's Outlines,BIM,8,e-governance.jpg,E-Governance by Abraham Silberschatz for semester 8 of BIM faculty.
+23,Artificial Intelligence,10,1,9784837428827,3th,Philip Kotler,Tata McGraw-Hill,BCA,3,artificial_intelligence.jpg,Artificial Intelligence by Philip Kotler for semester 3 of BCA faculty.
+24,Information Security,12,8,9784907049707,5th,Ralph M. Stair,Cambridge,Bsc.Csit,8,information_security.jpg,Information Security by Ralph M. Stair for semester 8 of Bsc.Csit faculty.
+25,Financial Accounting,14,8,9782968336288,2th,Seymour Lipschutz,Tata McGraw-Hill,BBM,4,financial_accounting.jpg,Financial Accounting by Seymour Lipschutz for semester 4 of Bsc.Csit faculty.
+26,E-Commerce Essentials,19,3,9788469127427,1th,Stephen P. Robbins,Schaum's Outlines,Bsc.Csit,2,e-commerce_essentials.jpg,E-Commerce Essentials by Stephen P. Robbins for semester 2 of Bsc.Csit faculty.
+27,E-Governance,10,8,9784377081759,2th,Seymour Lipschutz,Tata McGraw-Hill,Bsc.Csit,3,e-governance.jpg,E-Governance by Seymour Lipschutz for semester 3 of Bsc.Csit faculty.
+28,E-Commerce Essentials,5,5,9788066203172,5th,Stuart Russell,Pearson,BCA,1,e-commerce_essentials.jpg,E-Commerce Essentials by Stuart Russell for semester 1 of BCA faculty.
+29,Artificial Intelligence,8,1,9783457845566,5th,Stephen P. Robbins,Schaum's Outlines,Bsc.Csit,6,artificial_intelligence.jpg,Artificial Intelligence by Stephen P. Robbins for semester 6 of Bsc.Csit faculty.
+30,Business Communication,8,1,9784138010801,1th,David A. Patterson,Pearson,BBM,3,business_communication.jpg,Business Communication by David A. Patterson for semester 3 of BCA faculty.
+31,Distributed Systems,7,5,9781888024913,1th,Ralph M. Stair,McGraw-Hill,Bsc.Csit,8,distributed_systems.jpg,Distributed Systems by Ralph M. Stair for semester 8 of Bsc.Csit faculty.
+32,Introduction to C Programming,7,4,9786734967789,4th,Ian Sommerville,Pearson,BIM,5,introduction_to_c_programming.jpg,Introduction to C Programming by Ian Sommerville for semester 5 of BIM faculty.
+33,Introduction to C Programming,12,1,9786730753370,4th,E. Balagurusamy,Tata McGraw-Hill,BCA,8,introduction_to_c_programming.jpg,Introduction to C Programming by E. Balagurusamy for semester 8 of BCA faculty.
+34,E-Governance,12,2,9783780548579,3th,Ian Sommerville,McGraw-Hill,BIM,6,e-governance.jpg,E-Governance by Ian Sommerville for semester 6 of BIM faculty.
+35,Financial Accounting,13,1,9783748660623,2th,George Reynolds,McGraw-Hill,BBM,3,financial_accounting.jpg,Financial Accounting by George Reynolds for semester 3 of Bsc.Csit faculty.
+36,Data Mining,20,9,9786747156844,4th,Seymour Lipschutz,Cambridge,BCA,7,data_mining.jpg,Data Mining by Seymour Lipschutz for semester 7 of BCA faculty.
+37,E-Governance,17,10,9787394451965,5th,E. Balagurusamy,Schaum's Outlines,Bsc.Csit,3,e-governance.jpg,E-Governance by E. Balagurusamy for semester 3 of Bsc.Csit faculty.
+38,Data Structures & Algorithms,13,11,9789845116029,5th,Kenneth Laudon,McGraw-Hill,Bsc.Csit,1,data_structures_&_algorithms.jpg,Data Structures & Algorithms by Kenneth Laudon for semester 1 of Bsc.Csit faculty.
+39,Data Structures & Algorithms,6,5,9785945913452,1th,Ian Sommerville,Oxford,Bsc.Csit,1,data_structures_&_algorithms.jpg,Data Structures & Algorithms by Ian Sommerville for semester 1 of Bsc.Csit faculty.
+40,Artificial Intelligence,20,19,9783127759274,2th,Abraham Silberschatz,McGraw-Hill,BCA,2,artificial_intelligence.jpg,Artificial Intelligence by Abraham Silberschatz for semester 2 of BCA faculty.
+41,Web Technologies,7,2,9784973666913,2th,Ian Sommerville,Wiley,BIM,6,web_technologies.jpg,Web Technologies by Ian Sommerville for semester 6 of BIM faculty.
+42,Data Structures & Algorithms,14,14,9784576255155,1th,E. Balagurusamy,Schaum's Outlines,BCA,6,data_structures_&_algorithms.jpg,Data Structures & Algorithms by E. Balagurusamy for semester 6 of BCA faculty.
+43,Computer Architecture,5,2,9789724428314,3th,E. Balagurusamy,Tata McGraw-Hill,BIM,1,computer_architecture.jpg,Computer Architecture by E. Balagurusamy for semester 1 of BIM faculty.
+44,Database Management Systems,18,8,9783168104745,4th,Andrew S. Tanenbaum,Oxford,BCA,4,database_management_systems.jpg,Database Management Systems by Andrew S. Tanenbaum for semester 4 of BCA faculty.
+45,Computer Networks,18,7,9786970679225,4th,Philip Kotler,Pearson,BIM,4,computer_networks.jpg,Computer Networks by Philip Kotler for semester 4 of BIM faculty.
+46,Data Structures & Algorithms,6,0,9781403099398,5th,Rajiv Sabherwal,Pearson,Bsc.Csit,1,data_structures_&_algorithms.jpg,Data Structures & Algorithms by Rajiv Sabherwal for semester 1 of Bsc.Csit faculty.
+47,Object Oriented Programming,6,5,9785716260414,3th,George Reynolds,McGraw-Hill,BIM,7,object_oriented_programming.jpg,Object Oriented Programming by George Reynolds for semester 7 of BIM faculty.
+48,Digital Logic,15,9,9782274219154,1th,Philip Kotler,Wiley,BIM,1,digital_logic.jpg,Digital Logic by Philip Kotler for semester 1 of BIM faculty.
+49,Computer Networks,18,3,9783661667767,4th,Ian Sommerville,Oxford,BIM,4,computer_networks.jpg,Computer Networks by Ian Sommerville for semester 4 of BIM faculty.
+50,Human Computer Interaction,19,2,9781835961661,4th,Ralph M. Stair,McGraw-Hill,BBM,7,human_computer_interaction.jpg,Human Computer Interaction by Ralph M. Stair for semester 7 of BCA faculty.
+51,Digital Logic,8,3,9784288147950,2th,Seymour Lipschutz,Pearson,BIM,5,digital_logic.jpg,Digital Logic by Seymour Lipschutz for semester 5 of BIM faculty.
+52,Cloud Computing,6,2,9785478846340,5th,Ian Sommerville,McGraw-Hill,BCA,7,cloud_computing.jpg,Cloud Computing by Ian Sommerville for semester 7 of BCA faculty.
+53,Financial Accounting,9,6,9789332482073,1th,Andrew S. Tanenbaum,Tata McGraw-Hill,BIM,8,financial_accounting.jpg,Financial Accounting by Andrew S. Tanenbaum for semester 8 of BIM faculty.
+54,Mobile Application Development,12,1,9781215861326,5th,David A. Patterson,Wiley,Bsc.Csit,5,mobile_application_development.jpg,Mobile Application Development by David A. Patterson for semester 5 of Bsc.Csit faculty.
+55,Computer Networks,16,16,9781751979035,2th,Robert Lafore,Cambridge,BIM,4,computer_networks.jpg,Computer Networks by Robert Lafore for semester 4 of BIM faculty.
+56,Marketing Management,7,7,9788325615861,5th,Korth & Sudarshan,Tata McGraw-Hill,BIM,4,marketing_management.jpg,Marketing Management by Korth & Sudarshan for semester 4 of BIM faculty.
+57,Financial Accounting,7,6,9782608843360,3th,Philip Kotler,Cambridge,BIM,7,financial_accounting.jpg,Financial Accounting by Philip Kotler for semester 7 of BIM faculty.
+58,Object Oriented Programming,19,1,9785679468275,3th,George Reynolds,Oxford,BCA,4,object_oriented_programming.jpg,Object Oriented Programming by George Reynolds for semester 4 of BCA faculty.
+59,Operating System Concepts,15,8,9789933831318,2th,Robert Lafore,Schaum's Outlines,BIM,6,operating_system_concepts.jpg,Operating System Concepts by Robert Lafore for semester 6 of BIM faculty.
+60,Marketing Management,10,2,9786767186145,3th,Ralph M. Stair,Wiley,BIM,3,marketing_management.jpg,Marketing Management by Ralph M. Stair for semester 3 of BIM faculty.
+61,Data Structures & Algorithms,15,5,9781435133695,3th,Robert Lafore,Wiley,BIM,1,data_structures_&_algorithms.jpg,Data Structures & Algorithms by Robert Lafore for semester 1 of BIM faculty.
+62,Distributed Systems,5,0,9789297176476,3th,Andrew S. Tanenbaum,Schaum's Outlines,BIM,1,distributed_systems.jpg,Distributed Systems by Andrew S. Tanenbaum for semester 1 of BIM faculty.
+63,Database Management Systems,15,1,9784181843730,4th,David A. Patterson,Oxford,BIM,2,database_management_systems.jpg,Database Management Systems by David A. Patterson for semester 2 of BIM faculty.
+64,Object Oriented Programming,6,3,9785443744557,5th,Ralph M. Stair,Pearson,BCA,6,object_oriented_programming.jpg,Object Oriented Programming by Ralph M. Stair for semester 6 of BCA faculty.
+65,Computer Architecture,17,17,9788520085300,1th,George Reynolds,Schaum's Outlines,BCA,3,computer_architecture.jpg,Computer Architecture by George Reynolds for semester 3 of BCA faculty.
+66,Business Communication,20,8,9782114869951,5th,Seymour Lipschutz,Schaum's Outlines,Bsc.Csit,6,business_communication.jpg,Business Communication by Seymour Lipschutz for semester 6 of Bsc.Csit faculty.
+67,Database Management Systems,18,3,9782920587827,4th,Robert Lafore,Cambridge,Bsc.Csit,1,database_management_systems.jpg,Database Management Systems by Robert Lafore for semester 1 of Bsc.Csit faculty.
+68,Information Security,12,12,9784190607879,1th,Stuart Russell,Schaum's Outlines,BCA,8,information_security.jpg,Information Security by Stuart Russell for semester 8 of BCA faculty.
+69,Mobile Application Development,20,13,9787011558147,3th,Andrew S. Tanenbaum,Tata McGraw-Hill,BIM,6,mobile_application_development.jpg,Mobile Application Development by Andrew S. Tanenbaum for semester 6 of BIM faculty.
+70,Organizational Behavior,16,14,9785612734900,4th,Philip Kotler,Schaum's Outlines,Bsc.Csit,7,organizational_behavior.jpg,Organizational Behavior by Philip Kotler for semester 7 of Bsc.Csit faculty.
+71,Organizational Behavior,19,9,9783810794942,2th,Philip Kotler,Tata McGraw-Hill,BIM,1,organizational_behavior.jpg,Organizational Behavior by Philip Kotler for semester 1 of BIM faculty.
+72,E-Commerce Essentials,5,3,9782688373654,2th,Robert Lafore,Cambridge,Bsc.Csit,7,e-commerce_essentials.jpg,E-Commerce Essentials by Robert Lafore for semester 7 of Bsc.Csit faculty.
+73,Organizational Behavior,9,5,9782094833278,3th,David A. Patterson,Oxford,Bsc.Csit,7,organizational_behavior.jpg,Organizational Behavior by David A. Patterson for semester 7 of Bsc.Csit faculty.
+74,E-Commerce Essentials,12,4,9783469138189,4th,Robert Lafore,Pearson,Bsc.Csit,6,e-commerce_essentials.jpg,E-Commerce Essentials by Robert Lafore for semester 6 of Bsc.Csit faculty.
+75,E-Commerce Essentials,10,1,9786410414776,5th,Korth & Sudarshan,Wiley,Bsc.Csit,7,e-commerce_essentials.jpg,E-Commerce Essentials by Korth & Sudarshan for semester 7 of Bsc.Csit faculty.
+76,Financial Accounting,18,0,9785512393684,4th,Ian Sommerville,Schaum's Outlines,BIM,8,financial_accounting.jpg,Financial Accounting by Ian Sommerville for semester 8 of BIM faculty.
+77,Mobile Application Development,5,3,9785765447891,2th,Ian Sommerville,Pearson,BCA,7,mobile_application_development.jpg,Mobile Application Development by Ian Sommerville for semester 7 of BCA faculty.
+78,Data Mining,12,4,9785280102191,2th,E. Balagurusamy,Tata McGraw-Hill,BIM,1,data_mining.jpg,Data Mining by E. Balagurusamy for semester 1 of BIM faculty.
+79,Mobile Application Development,8,2,9785001657767,3th,Philip Kotler,Tata McGraw-Hill,Bsc.Csit,8,mobile_application_development.jpg,Mobile Application Development by Philip Kotler for semester 8 of Bsc.Csit faculty.
+80,Project Management,19,5,9785936698008,1th,Korth & Sudarshan,Schaum's Outlines,BCA,7,project_management.jpg,Project Management by Korth & Sudarshan for semester 7 of BCA faculty.
+81,Computer Architecture,11,9,9785435606140,1th,Rajiv Sabherwal,Oxford,Bsc.Csit,5,computer_architecture.jpg,Computer Architecture by Rajiv Sabherwal for semester 5 of Bsc.Csit faculty.
+82,E-Commerce Essentials,11,1,9786030201229,3th,Stephen P. Robbins,Cambridge,BIM,1,e-commerce_essentials.jpg,E-Commerce Essentials by Stephen P. Robbins for semester 1 of BIM faculty.
+83,Distributed Systems,18,11,9786146029165,4th,Ian Sommerville,Schaum's Outlines,Bsc.Csit,3,distributed_systems.jpg,Distributed Systems by Ian Sommerville for semester 3 of Bsc.Csit faculty.
+84,Computer Networks,18,3,9783181042333,4th,David A. Patterson,Tata McGraw-Hill,BIM,1,computer_networks.jpg,Computer Networks by David A. Patterson for semester 1 of BIM faculty.
+85,Data Mining,11,6,9788110351848,2th,Stuart Russell,Tata McGraw-Hill,BCA,4,data_mining.jpg,Data Mining by Stuart Russell for semester 4 of BCA faculty.
+86,Object Oriented Programming,20,13,9786965502440,1th,George Reynolds,Oxford,BCA,8,object_oriented_programming.jpg,Object Oriented Programming by George Reynolds for semester 8 of BCA faculty.
+87,Web Technologies,5,1,9789571817393,3th,Rajiv Sabherwal,Oxford,BCA,5,web_technologies.jpg,Web Technologies by Rajiv Sabherwal for semester 5 of BCA faculty.
+88,Digital Logic,16,13,9788857285940,2th,Philip Kotler,Tata McGraw-Hill,BIM,6,digital_logic.jpg,Digital Logic by Philip Kotler for semester 6 of BIM faculty.
+89,Information Security,5,3,9783472665299,5th,Seymour Lipschutz,Oxford,BIM,5,information_security.jpg,Information Security by Seymour Lipschutz for semester 5 of BIM faculty.
+90,Data Mining,15,4,9788621645814,4th,Philip Kotler,McGraw-Hill,Bsc.Csit,2,data_mining.jpg,Data Mining by Philip Kotler for semester 2 of Bsc.Csit faculty.
+91,Information Security,12,8,9781356751589,5th,Korth & Sudarshan,Pearson,BCA,6,information_security.jpg,Information Security by Korth & Sudarshan for semester 6 of BCA faculty.
+92,Data Mining,17,13,9789091270352,3th,Kenneth Laudon,Cambridge,BIM,7,data_mining.jpg,Data Mining by Kenneth Laudon for semester 7 of BIM faculty.
+93,Business Communication,8,7,9784454858356,1th,Robert Lafore,Oxford,BBM,6,business_communication.jpg,Business Communication by Robert Lafore for semester 6 of BCA faculty.
+94,Mobile Application Development,11,6,9786438139015,1th,Andrew S. Tanenbaum,McGraw-Hill,BCA,8,mobile_application_development.jpg,Mobile Application Development by Andrew S. Tanenbaum for semester 8 of BCA faculty.
+95,Software Engineering,7,2,9789513660757,4th,George Reynolds,Pearson,BIM,6,software_engineering.jpg,Software Engineering by George Reynolds for semester 6 of BIM faculty.
+96,E-Governance,19,2,9784120307871,2th,Kenneth Laudon,Pearson,BIM,2,e-governance.jpg,E-Governance by Kenneth Laudon for semester 2 of BIM faculty.
+97,E-Governance,10,9,9787060398904,1th,Andrew S. Tanenbaum,Schaum's Outlines,BIM,6,e-governance.jpg,E-Governance by Andrew S. Tanenbaum for semester 6 of BIM faculty.
+98,Database Management Systems,12,11,9784759744764,3th,Seymour Lipschutz,Schaum's Outlines,Bsc.Csit,3,database_management_systems.jpg,Database Management Systems by Seymour Lipschutz for semester 3 of Bsc.Csit faculty.
+99,Digital Logic,20,1,9787395876637,4th,Ralph M. Stair,McGraw-Hill,BIM,7,digital_logic.jpg,Digital Logic by Ralph M. Stair for semester 7 of BIM faculty.
+100,Organizational Behavior,17,7,9786097957758,1th,E. Balagurusamy,McGraw-Hill,BCA,3,organizational_behavior.jpg,Organizational Behavior by E. Balagurusamy for semester 3 of BCA faculty.
+101,E-Governance,15,9,9781534151706,4th,Stephen P. Robbins,Cambridge,Bsc.Csit,7,e-governance.jpg,E-Governance by Stephen P. Robbins for semester 7 of Bsc.Csit faculty.
+102,Distributed Systems,9,7,9786245581079,3th,Andrew S. Tanenbaum,Schaum's Outlines,BIM,6,distributed_systems.jpg,Distributed Systems by Andrew S. Tanenbaum for semester 6 of BIM faculty.
+103,Computer Architecture,18,1,9784598574799,3th,George Reynolds,Schaum's Outlines,BIM,6,computer_architecture.jpg,Computer Architecture by George Reynolds for semester 6 of BIM faculty.
+104,Information Security,19,11,9785909097215,4th,Stuart Russell,Pearson,Bsc.Csit,6,information_security.jpg,Information Security by Stuart Russell for semester 6 of Bsc.Csit faculty.
+105,Object Oriented Programming,20,0,9782466396505,3th,Stuart Russell,Cambridge,BCA,8,object_oriented_programming.jpg,Object Oriented Programming by Stuart Russell for semester 8 of BCA faculty.
+106,Project Management,7,5,9789919003815,4th,George Reynolds,Oxford,BIM,2,project_management.jpg,Project Management by George Reynolds for semester 2 of BIM faculty.
+107,System Analysis and Design,7,1,9786307747729,1th,Ian Sommerville,Wiley,BIM,8,system_analysis_and_design.jpg,System Analysis and Design by Ian Sommerville for semester 8 of BIM faculty.
+108,Software Engineering,17,8,9788290001046,5th,Ian Sommerville,Cambridge,BCA,3,software_engineering.jpg,Software Engineering by Ian Sommerville for semester 3 of BCA faculty.
+109,Marketing Management,11,10,9785638214105,4th,Kenneth Laudon,Oxford,BBM,8,marketing_management.jpg,Marketing Management by Kenneth Laudon for semester 8 of Bsc.Csit faculty.
+110,Cloud Computing,13,11,9784325913243,1th,Ian Sommerville,Pearson,BCA,3,cloud_computing.jpg,Cloud Computing by Ian Sommerville for semester 3 of BCA faculty.
+111,Operating System Concepts,6,4,9788110657366,2th,Kenneth Laudon,McGraw-Hill,BIM,6,operating_system_concepts.jpg,Operating System Concepts by Kenneth Laudon for semester 6 of BIM faculty.
+112,Marketing Management,18,7,9785167958054,5th,David A. Patterson,Tata McGraw-Hill,BIM,6,marketing_management.jpg,Marketing Management by David A. Patterson for semester 6 of BIM faculty.
+113,Object Oriented Programming,8,0,9789858980869,4th,Korth & Sudarshan,Cambridge,BCA,4,object_oriented_programming.jpg,Object Oriented Programming by Korth & Sudarshan for semester 4 of BCA faculty.
+114,Distributed Systems,7,7,9784982901739,4th,David A. Patterson,Tata McGraw-Hill,BCA,2,distributed_systems.jpg,Distributed Systems by David A. Patterson for semester 2 of BCA faculty.
+115,Database Management Systems,17,16,9781699472520,3th,Ian Sommerville,Oxford,BIM,5,database_management_systems.jpg,Database Management Systems by Ian Sommerville for semester 5 of BIM faculty.
+116,Financial Accounting,9,8,9785902873218,3th,Abraham Silberschatz,Oxford,BCA,7,financial_accounting.jpg,Financial Accounting by Abraham Silberschatz for semester 7 of BCA faculty.
+117,E-Governance,7,1,9784523682949,4th,Philip Kotler,Oxford,Bsc.Csit,7,e-governance.jpg,E-Governance by Philip Kotler for semester 7 of Bsc.Csit faculty.
+118,Distributed Systems,7,3,9781545029215,4th,Korth & Sudarshan,Wiley,BIM,3,distributed_systems.jpg,Distributed Systems by Korth & Sudarshan for semester 3 of BIM faculty.
+119,Computer Architecture,17,3,9787353311341,2th,Philip Kotler,Wiley,Bsc.Csit,1,computer_architecture.jpg,Computer Architecture by Philip Kotler for semester 1 of Bsc.Csit faculty.
+120,Artificial Intelligence,14,14,9783302947990,5th,George Reynolds,Cambridge,Bsc.Csit,5,artificial_intelligence.jpg,Artificial Intelligence by George Reynolds for semester 5 of Bsc.Csit faculty.
+121,Project Management,9,8,9788244642436,5th,Robert Lafore,Pearson,BIM,6,project_management.jpg,Project Management by Robert Lafore for semester 6 of BIM faculty.
+122,Software Engineering,15,15,9786482020431,2th,Stephen P. Robbins,Schaum's Outlines,BIM,6,software_engineering.jpg,Software Engineering by Stephen P. Robbins for semester 6 of BIM faculty.
+123,Financial Accounting,13,0,9789028361100,2th,Kenneth Laudon,Oxford,BIM,1,financial_accounting.jpg,Financial Accounting by Kenneth Laudon for semester 1 of BIM faculty.
+124,Organizational Behavior,6,6,9787859725875,2th,Abraham Silberschatz,Cambridge,BCA,2,organizational_behavior.jpg,Organizational Behavior by Abraham Silberschatz for semester 2 of BCA faculty.
+125,Computer Networks,12,2,9787107957060,2th,Rajiv Sabherwal,Pearson,Bsc.Csit,4,computer_networks.jpg,Computer Networks by Rajiv Sabherwal for semester 4 of Bsc.Csit faculty.
+126,E-Commerce Essentials,8,2,9789632904043,1th,Abraham Silberschatz,Pearson,Bsc.Csit,5,e-commerce_essentials.jpg,E-Commerce Essentials by Abraham Silberschatz for semester 5 of Bsc.Csit faculty.
+127,Financial Accounting,13,5,9787663012905,3th,Ian Sommerville,Schaum's Outlines,BIM,3,financial_accounting.jpg,Financial Accounting by Ian Sommerville for semester 3 of BIM faculty.
+128,Business Communication,7,3,9785860982679,2th,Ian Sommerville,Oxford,Bsc.Csit,7,business_communication.jpg,Business Communication by Ian Sommerville for semester 7 of Bsc.Csit faculty.
+129,Financial Accounting,5,3,9789453164564,2th,Ian Sommerville,Oxford,Bsc.Csit,7,financial_accounting.jpg,Financial Accounting by Ian Sommerville for semester 7 of Bsc.Csit faculty.
+130,Computer Architecture,7,1,9787718761378,1th,Stephen P. Robbins,McGraw-Hill,BIM,3,computer_architecture.jpg,Computer Architecture by Stephen P. Robbins for semester 3 of BIM faculty.
+131,Business Communication,15,12,9784053083842,1th,Philip Kotler,Schaum's Outlines,BIM,6,business_communication.jpg,Business Communication by Philip Kotler for semester 6 of BIM faculty.
+132,Distributed Systems,16,4,9789825161508,4th,Andrew S. Tanenbaum,McGraw-Hill,BIM,1,distributed_systems.jpg,Distributed Systems by Andrew S. Tanenbaum for semester 1 of BIM faculty.
+133,Introduction to C Programming,15,9,9783332758202,3th,Ian Sommerville,Tata McGraw-Hill,BIM,2,introduction_to_c_programming.jpg,Introduction to C Programming by Ian Sommerville for semester 2 of BIM faculty.
+134,Organizational Behavior,17,14,9783433166202,1th,Philip Kotler,Wiley,BIM,6,organizational_behavior.jpg,Organizational Behavior by Philip Kotler for semester 6 of BIM faculty.
+135,Artificial Intelligence,12,2,9785116283703,4th,Ralph M. Stair,Wiley,BCA,7,artificial_intelligence.jpg,Artificial Intelligence by Ralph M. Stair for semester 7 of BCA faculty.
+136,Object Oriented Programming,9,1,9783045288503,5th,Kenneth Laudon,Wiley,BIM,7,object_oriented_programming.jpg,Object Oriented Programming by Kenneth Laudon for semester 7 of BIM faculty.
+137,Human Computer Interaction,7,3,9785865479685,2th,Ralph M. Stair,Tata McGraw-Hill,BCA,4,human_computer_interaction.jpg,Human Computer Interaction by Ralph M. Stair for semester 4 of BCA faculty.
+138,Data Structures & Algorithms,17,8,9786411971407,3th,Ralph M. Stair,Wiley,BIM,7,data_structures_&_algorithms.jpg,Data Structures & Algorithms by Ralph M. Stair for semester 7 of BIM faculty.
+139,Digital Logic,8,5,9786648231838,1th,Ian Sommerville,Cambridge,BCA,2,digital_logic.jpg,Digital Logic by Ian Sommerville for semester 2 of BCA faculty.
+140,Project Management,11,6,9789810260119,5th,E. Balagurusamy,Oxford,BIM,1,project_management.jpg,Project Management by E. Balagurusamy for semester 1 of BIM faculty.
+141,Digital Logic,12,2,9782069254659,5th,Andrew S. Tanenbaum,McGraw-Hill,BIM,5,digital_logic.jpg,Digital Logic by Andrew S. Tanenbaum for semester 5 of BIM faculty.
+142,Artificial Intelligence,11,0,9788621176198,5th,David A. Patterson,Wiley,Bsc.Csit,6,artificial_intelligence.jpg,Artificial Intelligence by David A. Patterson for semester 6 of Bsc.Csit faculty.
+143,Computer Architecture,6,1,9783925863625,5th,Stuart Russell,Pearson,BIM,3,computer_architecture.jpg,Computer Architecture by Stuart Russell for semester 3 of BIM faculty.
+144,System Analysis and Design,7,4,9787865396460,5th,Robert Lafore,McGraw-Hill,BCA,4,system_analysis_and_design.jpg,System Analysis and Design by Robert Lafore for semester 4 of BCA faculty.
+145,Cloud Computing,8,7,9788147580773,3th,Robert Lafore,Cambridge,BCA,7,cloud_computing.jpg,Cloud Computing by Robert Lafore for semester 7 of BCA faculty.
+146,Computer Networks,17,9,9784579352106,4th,E. Balagurusamy,Pearson,Bsc.Csit,8,computer_networks.jpg,Computer Networks by E. Balagurusamy for semester 8 of Bsc.Csit faculty.
+147,Software Engineering,14,10,9781005420021,3th,Ian Sommerville,Oxford,BIM,6,software_engineering.jpg,Software Engineering by Ian Sommerville for semester 6 of BIM faculty.
+148,Distributed Systems,15,15,9784312319031,1th,Abraham Silberschatz,Pearson,BIM,6,distributed_systems.jpg,Distributed Systems by Abraham Silberschatz for semester 6 of BIM faculty.
+149,Artificial Intelligence,8,4,9788765170161,2th,Philip Kotler,Schaum's Outlines,BIM,8,artificial_intelligence.jpg,Artificial Intelligence by Philip Kotler for semester 8 of BIM faculty.
+150,Marketing Management,9,1,9788086344523,3th,Seymour Lipschutz,McGraw-Hill,BBM,8,marketing_management.jpg,Marketing Management by Seymour Lipschutz for semester 8 of BIM faculty.
+151,Computer Architecture,17,14,9786789903463,2th,Abraham Silberschatz,Wiley,Bsc.Csit,2,computer_architecture.jpg,Computer Architecture by Abraham Silberschatz for semester 2 of Bsc.Csit faculty.
+152,Web Technologies,16,2,9789527165070,3th,Korth & Sudarshan,Oxford,Bsc.Csit,5,web_technologies.jpg,Web Technologies by Korth & Sudarshan for semester 5 of Bsc.Csit faculty.
+153,System Analysis and Design,18,18,9785630346594,2th,Andrew S. Tanenbaum,Schaum's Outlines,BIM,4,system_analysis_and_design.jpg,System Analysis and Design by Andrew S. Tanenbaum for semester 4 of BIM faculty.
+154,Data Structures & Algorithms,16,16,9783793656419,5th,Stephen P. Robbins,Oxford,BCA,3,data_structures_&_algorithms.jpg,Data Structures & Algorithms by Stephen P. Robbins for semester 3 of BCA faculty.
+155,Computer Architecture,20,18,9788684701210,3th,Ralph M. Stair,McGraw-Hill,BIM,4,computer_architecture.jpg,Computer Architecture by Ralph M. Stair for semester 4 of BIM faculty.
+156,Introduction to C Programming,9,3,9784061322224,5th,Stuart Russell,Pearson,BIM,5,introduction_to_c_programming.jpg,Introduction to C Programming by Stuart Russell for semester 5 of BIM faculty.
+157,Human Computer Interaction,5,5,9783482974688,1th,Robert Lafore,Wiley,Bsc.Csit,5,human_computer_interaction.jpg,Human Computer Interaction by Robert Lafore for semester 5 of Bsc.Csit faculty.
+158,Computer Networks,14,11,9787859876214,1th,Ralph M. Stair,Oxford,BIM,8,computer_networks.jpg,Computer Networks by Ralph M. Stair for semester 8 of BIM faculty.
+159,Introduction to C Programming,7,3,9785224357734,4th,E. Balagurusamy,Tata McGraw-Hill,BIM,8,introduction_to_c_programming.jpg,Introduction to C Programming by E. Balagurusamy for semester 8 of BIM faculty.
+160,Data Mining,18,12,9783317363977,1th,Korth & Sudarshan,Schaum's Outlines,BIM,1,data_mining.jpg,Data Mining by Korth & Sudarshan for semester 1 of BIM faculty.
+161,Project Management,13,12,9789321076163,3th,Kenneth Laudon,McGraw-Hill,BCA,3,project_management.jpg,Project Management by Kenneth Laudon for semester 3 of BCA faculty.
+162,Data Structures & Algorithms,15,0,9786876656365,4th,Ralph M. Stair,Cambridge,BCA,7,data_structures_&_algorithms.jpg,Data Structures & Algorithms by Ralph M. Stair for semester 7 of BCA faculty.
+163,Operating System Concepts,16,0,9787794054749,1th,Philip Kotler,Oxford,BIM,3,operating_system_concepts.jpg,Operating System Concepts by Philip Kotler for semester 3 of BIM faculty.
+164,Mobile Application Development,6,0,9787649481626,2th,Andrew S. Tanenbaum,Tata McGraw-Hill,Bsc.Csit,2,mobile_application_development.jpg,Mobile Application Development by Andrew S. Tanenbaum for semester 2 of Bsc.Csit faculty.
+165,Distributed Systems,13,9,9784208991256,2th,Rajiv Sabherwal,Oxford,BCA,3,distributed_systems.jpg,Distributed Systems by Rajiv Sabherwal for semester 3 of BCA faculty.
+166,Operating System Concepts,10,9,9783670073069,4th,Ian Sommerville,Wiley,Bsc.Csit,2,operating_system_concepts.jpg,Operating System Concepts by Ian Sommerville for semester 2 of Bsc.Csit faculty.
+167,Human Computer Interaction,10,6,9788292602287,2th,Robert Lafore,McGraw-Hill,BCA,5,human_computer_interaction.jpg,Human Computer Interaction by Robert Lafore for semester 5 of BCA faculty.
+168,Operating System Concepts,10,7,9787138177938,5th,Stuart Russell,Wiley,BCA,8,operating_system_concepts.jpg,Operating System Concepts by Stuart Russell for semester 8 of BCA faculty.
+169,Computer Architecture,6,3,9785402788049,2th,Abraham Silberschatz,Cambridge,BCA,1,computer_architecture.jpg,Computer Architecture by Abraham Silberschatz for semester 1 of BCA faculty.
+170,Web Technologies,7,4,9788455581096,5th,Korth & Sudarshan,Wiley,BIM,5,web_technologies.jpg,Web Technologies by Korth & Sudarshan for semester 5 of BIM faculty.
+171,Operating System Concepts,12,9,9789480137404,1th,E. Balagurusamy,Schaum's Outlines,BCA,4,operating_system_concepts.jpg,Operating System Concepts by E. Balagurusamy for semester 4 of BCA faculty.
+172,Computer Networks,9,6,9784732202443,2th,Robert Lafore,Oxford,BCA,4,computer_networks.jpg,Computer Networks by Robert Lafore for semester 4 of BCA faculty.
+173,Data Mining,14,8,9782214796536,3th,George Reynolds,Tata McGraw-Hill,BCA,3,data_mining.jpg,Data Mining by George Reynolds for semester 3 of BCA faculty.
+174,Software Engineering,15,4,9789866993099,3th,Philip Kotler,Oxford,BIM,4,software_engineering.jpg,Software Engineering by Philip Kotler for semester 4 of BIM faculty.
+175,E-Governance,9,5,9781832014347,4th,Ian Sommerville,Pearson,Bsc.Csit,1,e-governance.jpg,E-Governance by Ian Sommerville for semester 1 of Bsc.Csit faculty.
+176,Distributed Systems,6,0,9786297564481,3th,Ian Sommerville,Cambridge,BCA,8,distributed_systems.jpg,Distributed Systems by Ian Sommerville for semester 8 of BCA faculty.
+177,Organizational Behavior,6,0,9789812728084,1th,Ralph M. Stair,Cambridge,BIM,4,organizational_behavior.jpg,Organizational Behavior by Ralph M. Stair for semester 4 of BIM faculty.
+178,Data Structures & Algorithms,19,18,9789600496275,5th,Seymour Lipschutz,Schaum's Outlines,BIM,3,data_structures_&_algorithms.jpg,Data Structures & Algorithms by Seymour Lipschutz for semester 3 of BIM faculty.
+179,Database Management Systems,7,6,9782749478969,4th,Kenneth Laudon,Pearson,BCA,6,database_management_systems.jpg,Database Management Systems by Kenneth Laudon for semester 6 of BCA faculty.
+180,Operating System Concepts,10,9,9783034067729,4th,E. Balagurusamy,McGraw-Hill,BIM,8,operating_system_concepts.jpg,Operating System Concepts by E. Balagurusamy for semester 8 of BIM faculty.
+181,Computer Networks,15,3,9781292896548,2th,Philip Kotler,Tata McGraw-Hill,Bsc.Csit,3,computer_networks.jpg,Computer Networks by Philip Kotler for semester 3 of Bsc.Csit faculty.
+182,Web Technologies,13,11,9784199822119,2th,Korth & Sudarshan,Pearson,BCA,2,web_technologies.jpg,Web Technologies by Korth & Sudarshan for semester 2 of BCA faculty.
+183,Introduction to C Programming,8,0,9785184959117,3th,Stuart Russell,Oxford,Bsc.Csit,1,introduction_to_c_programming.jpg,Introduction to C Programming by Stuart Russell for semester 1 of Bsc.Csit faculty.
+184,E-Governance,18,9,9788452197935,1th,Stuart Russell,Pearson,Bsc.Csit,4,e-governance.jpg,E-Governance by Stuart Russell for semester 4 of Bsc.Csit faculty.
+185,Financial Accounting,8,0,9784734305062,3th,Korth & Sudarshan,Pearson,BIM,6,financial_accounting.jpg,Financial Accounting by Korth & Sudarshan for semester 6 of BIM faculty.
+186,Mobile Application Development,13,5,9783900504696,1th,Korth & Sudarshan,Wiley,BCA,2,mobile_application_development.jpg,Mobile Application Development by Korth & Sudarshan for semester 2 of BCA faculty.
+187,Organizational Behavior,7,2,9783636440432,1th,Ralph M. Stair,McGraw-Hill,BCA,1,organizational_behavior.jpg,Organizational Behavior by Ralph M. Stair for semester 1 of BCA faculty.
+188,Organizational Behavior,11,6,9782336463558,2th,Stephen P. Robbins,Oxford,BIM,3,organizational_behavior.jpg,Organizational Behavior by Stephen P. Robbins for semester 3 of BIM faculty.
+189,Computer Architecture,18,6,9783861135540,4th,Stuart Russell,Schaum's Outlines,BIM,5,computer_architecture.jpg,Computer Architecture by Stuart Russell for semester 5 of BIM faculty.
+190,Organizational Behavior,14,12,9787728157192,5th,Robert Lafore,McGraw-Hill,Bsc.Csit,3,organizational_behavior.jpg,Organizational Behavior by Robert Lafore for semester 3 of Bsc.Csit faculty.
+191,Financial Accounting,6,0,9788479949182,1th,Stuart Russell,Pearson,BIM,3,financial_accounting.jpg,Financial Accounting by Stuart Russell for semester 3 of BIM faculty.
+192,Mobile Application Development,20,1,9788745211666,1th,Andrew S. Tanenbaum,Cambridge,Bsc.Csit,5,mobile_application_development.jpg,Mobile Application Development by Andrew S. Tanenbaum for semester 5 of Bsc.Csit faculty.
+193,Marketing Management,17,4,9784691013769,5th,Robert Lafore,Tata McGraw-Hill,Bsc.Csit,3,marketing_management.jpg,Marketing Management by Robert Lafore for semester 3 of Bsc.Csit faculty.
+194,Artificial Intelligence,20,12,9782565802121,1th,Stuart Russell,Oxford,BIM,5,artificial_intelligence.jpg,Artificial Intelligence by Stuart Russell for semester 5 of BIM faculty.
+195,Database Management Systems,14,7,9789379714178,5th,Ralph M. Stair,Pearson,BIM,2,database_management_systems.jpg,Database Management Systems by Ralph M. Stair for semester 2 of BIM faculty.
+196,Introduction to C Programming,7,0,9788447370545,5th,Andrew S. Tanenbaum,Wiley,BCA,8,introduction_to_c_programming.jpg,Introduction to C Programming by Andrew S. Tanenbaum for semester 8 of BCA faculty.
+197,Data Mining,18,3,9787237638450,5th,Seymour Lipschutz,Schaum's Outlines,BCA,5,data_mining.jpg,Data Mining by Seymour Lipschutz for semester 5 of BCA faculty.
+198,Business Communication,13,1,9789321104179,3th,Andrew S. Tanenbaum,McGraw-Hill,BCA,5,business_communication.jpg,Business Communication by Andrew S. Tanenbaum for semester 5 of BCA faculty.
+199,Mobile Application Development,8,0,9787726623077,3th,Abraham Silberschatz,Schaum's Outlines,BIM,2,mobile_application_development.jpg,Mobile Application Development by Abraham Silberschatz for semester 2 of BIM faculty.
+200,Data Structures & Algorithms,9,7,9789951147840,1th,Philip Kotler,Schaum's Outlines,BIM,4,data_structures_&_algorithms.jpg,Data Structures & Algorithms by Philip Kotler for semester 4 of BIM faculty.
+201,Information Security,8,3,9781458780508,3th,Ralph M. Stair,Tata McGraw-Hill,BCA,6,information_security.jpg,Information Security by Ralph M. Stair for semester 6 of BCA faculty.
+202,Object Oriented Programming,16,1,9784724278740,3th,Seymour Lipschutz,Pearson,BIM,7,object_oriented_programming.jpg,Object Oriented Programming by Seymour Lipschutz for semester 7 of BIM faculty.
+203,Object Oriented Programming,5,4,9785544581591,2th,Philip Kotler,Cambridge,BIM,4,object_oriented_programming.jpg,Object Oriented Programming by Philip Kotler for semester 4 of BIM faculty.
+204,Project Management,16,13,9781480879117,5th,Robert Lafore,Schaum's Outlines,BCA,3,project_management.jpg,Project Management by Robert Lafore for semester 3 of BCA faculty.
+205,Software Engineering,14,14,9782693968157,3th,Philip Kotler,Schaum's Outlines,Bsc.Csit,8,software_engineering.jpg,Software Engineering by Philip Kotler for semester 8 of Bsc.Csit faculty.
+206,Business Communication,10,3,9786629185785,4th,Ralph M. Stair,Cambridge,BIM,8,business_communication.jpg,Business Communication by Ralph M. Stair for semester 8 of BIM faculty.
+207,Information Security,10,8,9789295424599,2th,Philip Kotler,McGraw-Hill,BCA,2,information_security.jpg,Information Security by Philip Kotler for semester 2 of BCA faculty.
+208,Computer Networks,10,7,9786573795168,2th,Abraham Silberschatz,Tata McGraw-Hill,BCA,8,computer_networks.jpg,Computer Networks by Abraham Silberschatz for semester 8 of BCA faculty.
+209,Mobile Application Development,10,7,9787576016076,3th,Seymour Lipschutz,Wiley,BIM,2,mobile_application_development.jpg,Mobile Application Development by Seymour Lipschutz for semester 2 of BIM faculty.
+210,Information Security,10,8,9788162589595,4th,George Reynolds,Wiley,BCA,5,information_security.jpg,Information Security by George Reynolds for semester 5 of BCA faculty.
+211,Project Management,8,0,9785127462504,5th,Ian Sommerville,Pearson,BCA,4,project_management.jpg,Project Management by Ian Sommerville for semester 4 of BCA faculty.
+212,Database Management Systems,20,20,9787580256840,3th,Stuart Russell,Schaum's Outlines,BCA,3,database_management_systems.jpg,Database Management Systems by Stuart Russell for semester 3 of BCA faculty.
+213,Computer Architecture,9,5,9785095506956,4th,Rajiv Sabherwal,Tata McGraw-Hill,BIM,7,computer_architecture.jpg,Computer Architecture by Rajiv Sabherwal for semester 7 of BIM faculty.
+214,Marketing Management,11,7,9788822108276,4th,Rajiv Sabherwal,Pearson,BIM,4,marketing_management.jpg,Marketing Management by Rajiv Sabherwal for semester 4 of BIM faculty.
+215,Organizational Behavior,16,15,9783200374570,1th,David A. Patterson,Wiley,BCA,5,organizational_behavior.jpg,Organizational Behavior by David A. Patterson for semester 5 of BCA faculty.
+216,Project Management,20,2,9789423477114,4th,Stephen P. Robbins,Oxford,BIM,3,project_management.jpg,Project Management by Stephen P. Robbins for semester 3 of BIM faculty.
+217,Database Management Systems,12,7,9789346369836,1th,Andrew S. Tanenbaum,Pearson,Bsc.Csit,8,database_management_systems.jpg,Database Management Systems by Andrew S. Tanenbaum for semester 8 of Bsc.Csit faculty.
+218,Operating System Concepts,18,7,9789993134045,1th,Seymour Lipschutz,Oxford,BCA,2,operating_system_concepts.jpg,Operating System Concepts by Seymour Lipschutz for semester 2 of BCA faculty.
+219,Computer Networks,17,17,9784279262417,1th,Kenneth Laudon,Cambridge,BIM,2,computer_networks.jpg,Computer Networks by Kenneth Laudon for semester 2 of BIM faculty.
+220,Project Management,7,6,9782882050631,5th,Stephen P. Robbins,Cambridge,BCA,1,project_management.jpg,Project Management by Stephen P. Robbins for semester 1 of BCA faculty.
+221,E-Commerce Essentials,5,2,9787758825354,2th,Stephen P. Robbins,McGraw-Hill,BIM,5,e-commerce_essentials.jpg,E-Commerce Essentials by Stephen P. Robbins for semester 5 of BIM faculty.
+222,Business Communication,11,8,9782194549399,4th,Stuart Russell,Tata McGraw-Hill,BIM,4,business_communication.jpg,Business Communication by Stuart Russell for semester 4 of BIM faculty.
+223,Cloud Computing,11,9,9786416283503,1th,Abraham Silberschatz,Tata McGraw-Hill,BCA,4,cloud_computing.jpg,Cloud Computing by Abraham Silberschatz for semester 4 of BCA faculty.
+224,Human Computer Interaction,7,6,9782969126651,2th,Kenneth Laudon,Oxford,BIM,7,human_computer_interaction.jpg,Human Computer Interaction by Kenneth Laudon for semester 7 of BIM faculty.
+225,E-Commerce Essentials,9,8,9785944683803,5th,David A. Patterson,Pearson,BCA,5,e-commerce_essentials.jpg,E-Commerce Essentials by David A. Patterson for semester 5 of BCA faculty.
+226,Marketing Management,20,2,9783314916785,2th,Korth & Sudarshan,Wiley,BIM,6,marketing_management.jpg,Marketing Management by Korth & Sudarshan for semester 6 of BIM faculty.
+227,Computer Architecture,12,3,9789214453197,4th,Stuart Russell,Cambridge,Bsc.Csit,3,computer_architecture.jpg,Computer Architecture by Stuart Russell for semester 3 of Bsc.Csit faculty.
+228,E-Governance,19,9,9781339986245,3th,Ralph M. Stair,Schaum's Outlines,Bsc.Csit,6,e-governance.jpg,E-Governance by Ralph M. Stair for semester 6 of Bsc.Csit faculty.
+229,Software Engineering,5,1,9789811186162,2th,Robert Lafore,Pearson,BCA,8,software_engineering.jpg,Software Engineering by Robert Lafore for semester 8 of BCA faculty.
+230,Artificial Intelligence,18,13,9783612719633,2th,Kenneth Laudon,Pearson,BIM,6,artificial_intelligence.jpg,Artificial Intelligence by Kenneth Laudon for semester 6 of BIM faculty.
+231,Digital Logic,9,4,9783246839040,5th,Stuart Russell,McGraw-Hill,BCA,7,digital_logic.jpg,Digital Logic by Stuart Russell for semester 7 of BCA faculty.
+232,Computer Networks,19,19,9781444603193,5th,David A. Patterson,McGraw-Hill,Bsc.Csit,8,computer_networks.jpg,Computer Networks by David A. Patterson for semester 8 of Bsc.Csit faculty.
+233,Distributed Systems,16,3,9789110950240,3th,Seymour Lipschutz,Wiley,BCA,4,distributed_systems.jpg,Distributed Systems by Seymour Lipschutz for semester 4 of BCA faculty.
+234,Operating System Concepts,14,8,9786764270169,4th,Philip Kotler,Pearson,Bsc.Csit,8,operating_system_concepts.jpg,Operating System Concepts by Philip Kotler for semester 8 of Bsc.Csit faculty.
+235,E-Governance,12,8,9786817601062,3th,George Reynolds,Wiley,BCA,8,e-governance.jpg,E-Governance by George Reynolds for semester 8 of BCA faculty.
+236,Business Communication,17,3,9785398583024,1th,Stephen P. Robbins,Cambridge,BCA,4,business_communication.jpg,Business Communication by Stephen P. Robbins for semester 4 of BCA faculty.
+237,Object Oriented Programming,6,2,9784813765475,5th,Kenneth Laudon,Schaum's Outlines,Bsc.Csit,1,object_oriented_programming.jpg,Object Oriented Programming by Kenneth Laudon for semester 1 of Bsc.Csit faculty.
+238,Human Computer Interaction,20,9,9788067826022,3th,George Reynolds,Oxford,BCA,6,human_computer_interaction.jpg,Human Computer Interaction by George Reynolds for semester 6 of BCA faculty.
+239,Organizational Behavior,12,10,9781530000625,4th,Robert Lafore,Pearson,BIM,7,organizational_behavior.jpg,Organizational Behavior by Robert Lafore for semester 7 of BIM faculty.
+240,Database Management Systems,17,4,9784730041795,2th,Andrew S. Tanenbaum,Pearson,BIM,6,database_management_systems.jpg,Database Management Systems by Andrew S. Tanenbaum for semester 6 of BIM faculty.
+241,Mobile Application Development,14,10,9781887262173,5th,Stephen P. Robbins,Cambridge,Bsc.Csit,5,mobile_application_development.jpg,Mobile Application Development by Stephen P. Robbins for semester 5 of Bsc.Csit faculty.
+242,Operating System Concepts,7,4,9783516556764,4th,Korth & Sudarshan,Cambridge,BIM,8,operating_system_concepts.jpg,Operating System Concepts by Korth & Sudarshan for semester 8 of BIM faculty.
+243,E-Governance,7,2,9783841429173,2th,Philip Kotler,Schaum's Outlines,BCA,1,e-governance.jpg,E-Governance by Philip Kotler for semester 1 of BCA faculty.
+244,Mobile Application Development,11,3,9789931388639,4th,Stephen P. Robbins,McGraw-Hill,BIM,5,mobile_application_development.jpg,Mobile Application Development by Stephen P. Robbins for semester 5 of BIM faculty.
+245,Database Management Systems,15,0,9781986907178,2th,George Reynolds,McGraw-Hill,Bsc.Csit,5,database_management_systems.jpg,Database Management Systems by George Reynolds for semester 5 of Bsc.Csit faculty.
+246,Artificial Intelligence,9,8,9784631640863,2th,Rajiv Sabherwal,Wiley,BCA,2,artificial_intelligence.jpg,Artificial Intelligence by Rajiv Sabherwal for semester 2 of BCA faculty.
+247,Data Structures & Algorithms,12,3,9784087464594,2th,E. Balagurusamy,Oxford,Bsc.Csit,2,data_structures_&_algorithms.jpg,Data Structures & Algorithms by E. Balagurusamy for semester 2 of Bsc.Csit faculty.
+248,Human Computer Interaction,16,3,9782586809336,4th,Andrew S. Tanenbaum,Tata McGraw-Hill,BCA,6,human_computer_interaction.jpg,Human Computer Interaction by Andrew S. Tanenbaum for semester 6 of BCA faculty.
+249,Software Engineering,12,3,9782949274395,2th,Stuart Russell,Oxford,BIM,1,software_engineering.jpg,Software Engineering by Stuart Russell for semester 1 of BIM faculty.
+250,Distributed Systems,8,0,9783417996720,5th,Andrew S. Tanenbaum,Tata McGraw-Hill,BIM,5,distributed_systems.jpg,Distributed Systems by Andrew S. Tanenbaum for semester 5 of BIM faculty.
+251,Web Technologies,12,11,9788398451676,5th,Andrew S. Tanenbaum,Schaum's Outlines,BCA,5,web_technologies.jpg,Web Technologies by Andrew S. Tanenbaum for semester 5 of BCA faculty.
+252,E-Commerce Essentials,10,1,9783326752770,2th,Ralph M. Stair,Oxford,Bsc.Csit,7,e-commerce_essentials.jpg,E-Commerce Essentials by Ralph M. Stair for semester 7 of Bsc.Csit faculty.
+253,Artificial Intelligence,12,2,9783433253557,4th,E. Balagurusamy,Oxford,BCA,5,artificial_intelligence.jpg,Artificial Intelligence by E. Balagurusamy for semester 5 of BCA faculty.
+254,Data Mining,12,5,9786461247093,5th,Seymour Lipschutz,Schaum's Outlines,Bsc.Csit,6,data_mining.jpg,Data Mining by Seymour Lipschutz for semester 6 of Bsc.Csit faculty.
+255,Human Computer Interaction,11,8,9787575707314,4th,Seymour Lipschutz,Cambridge,Bsc.Csit,8,human_computer_interaction.jpg,Human Computer Interaction by Seymour Lipschutz for semester 8 of Bsc.Csit faculty.
+256,Mobile Application Development,12,10,9784312270679,4th,David A. Patterson,Pearson,BCA,8,mobile_application_development.jpg,Mobile Application Development by David A. Patterson for semester 8 of BCA faculty.
+257,Digital Logic,18,14,9785885450150,2th,Kenneth Laudon,McGraw-Hill,BIM,8,digital_logic.jpg,Digital Logic by Kenneth Laudon for semester 8 of BIM faculty.
+258,Organizational Behavior,5,5,9784691538645,5th,Kenneth Laudon,McGraw-Hill,Bsc.Csit,3,organizational_behavior.jpg,Organizational Behavior by Kenneth Laudon for semester 3 of Bsc.Csit faculty.
+259,Object Oriented Programming,13,11,9782684207460,3th,Abraham Silberschatz,Oxford,BIM,1,object_oriented_programming.jpg,Object Oriented Programming by Abraham Silberschatz for semester 1 of BIM faculty.
+260,Marketing Management,7,4,9785030172262,5th,Seymour Lipschutz,Cambridge,BIM,8,marketing_management.jpg,Marketing Management by Seymour Lipschutz for semester 8 of BIM faculty.
+261,Computer Architecture,11,4,9787094993240,4th,George Reynolds,McGraw-Hill,Bsc.Csit,5,computer_architecture.jpg,Computer Architecture by George Reynolds for semester 5 of Bsc.Csit faculty.
+262,Project Management,6,3,9788102936697,5th,George Reynolds,Wiley,BCA,5,project_management.jpg,Project Management by George Reynolds for semester 5 of BCA faculty.
+263,Human Computer Interaction,17,17,9786883214391,4th,Stephen P. Robbins,Cambridge,Bsc.Csit,4,human_computer_interaction.jpg,Human Computer Interaction by Stephen P. Robbins for semester 4 of Bsc.Csit faculty.
+264,Data Mining,5,1,9783860044625,1th,Korth & Sudarshan,Oxford,BIM,7,data_mining.jpg,Data Mining by Korth & Sudarshan for semester 7 of BIM faculty.
+265,Information Security,12,3,9782407789062,5th,E. Balagurusamy,Wiley,BIM,8,information_security.jpg,Information Security by E. Balagurusamy for semester 8 of BIM faculty.
+266,Web Technologies,20,17,9787233602160,3th,Kenneth Laudon,Wiley,BCA,5,web_technologies.jpg,Web Technologies by Kenneth Laudon for semester 5 of BCA faculty.
+267,Digital Logic,8,2,9782499446815,2th,Seymour Lipschutz,McGraw-Hill,Bsc.Csit,6,digital_logic.jpg,Digital Logic by Seymour Lipschutz for semester 6 of Bsc.Csit faculty.
+268,Business Communication,20,10,9785438847208,2th,George Reynolds,Wiley,BIM,1,business_communication.jpg,Business Communication by George Reynolds for semester 1 of BIM faculty.
+269,Organizational Behavior,17,10,9782717672131,4th,David A. Patterson,Schaum's Outlines,Bsc.Csit,4,organizational_behavior.jpg,Organizational Behavior by David A. Patterson for semester 4 of Bsc.Csit faculty.
+270,Data Mining,18,0,9781311144894,2th,Kenneth Laudon,Schaum's Outlines,BIM,5,data_mining.jpg,Data Mining by Kenneth Laudon for semester 5 of BIM faculty.
+271,Web Technologies,17,1,9787665429133,1th,Seymour Lipschutz,Wiley,Bsc.Csit,2,web_technologies.jpg,Web Technologies by Seymour Lipschutz for semester 2 of Bsc.Csit faculty.
+272,E-Commerce Essentials,5,1,9787240078382,2th,Kenneth Laudon,Oxford,Bsc.Csit,6,e-commerce_essentials.jpg,E-Commerce Essentials by Kenneth Laudon for semester 6 of Bsc.Csit faculty.
+273,Introduction to C Programming,15,3,9785677174154,5th,Stuart Russell,Tata McGraw-Hill,BIM,6,introduction_to_c_programming.jpg,Introduction to C Programming by Stuart Russell for semester 6 of BIM faculty.
+274,E-Governance,13,12,9787259816489,1th,Philip Kotler,McGraw-Hill,BCA,2,e-governance.jpg,E-Governance by Philip Kotler for semester 2 of BCA faculty.
+275,Marketing Management,12,4,9784627544027,1th,Robert Lafore,Pearson,BCA,1,marketing_management.jpg,Marketing Management by Robert Lafore for semester 1 of BCA faculty.
+276,Cloud Computing,19,7,9785199199210,5th,Seymour Lipschutz,Tata McGraw-Hill,Bsc.Csit,6,cloud_computing.jpg,Cloud Computing by Seymour Lipschutz for semester 6 of Bsc.Csit faculty.
+277,Introduction to C Programming,13,1,9786610169073,5th,Rajiv Sabherwal,Pearson,Bsc.Csit,3,introduction_to_c_programming.jpg,Introduction to C Programming by Rajiv Sabherwal for semester 3 of Bsc.Csit faculty.
+278,Distributed Systems,10,10,9789877970809,1th,David A. Patterson,McGraw-Hill,BCA,4,distributed_systems.jpg,Distributed Systems by David A. Patterson for semester 4 of BCA faculty.
+279,Object Oriented Programming,13,13,9787395956367,3th,Seymour Lipschutz,Schaum's Outlines,BIM,3,object_oriented_programming.jpg,Object Oriented Programming by Seymour Lipschutz for semester 3 of BIM faculty.
+280,Computer Networks,8,7,9785129588574,2th,Philip Kotler,Pearson,Bsc.Csit,5,computer_networks.jpg,Computer Networks by Philip Kotler for semester 5 of Bsc.Csit faculty.
+281,E-Commerce Essentials,7,6,9788933444710,4th,Rajiv Sabherwal,Wiley,BCA,1,e-commerce_essentials.jpg,E-Commerce Essentials by Rajiv Sabherwal for semester 1 of BCA faculty.
+282,Financial Accounting,16,0,9786669286046,5th,Stephen P. Robbins,Oxford,Bsc.Csit,7,financial_accounting.jpg,Financial Accounting by Stephen P. Robbins for semester 7 of Bsc.Csit faculty.
+283,Web Technologies,15,7,9785480387639,4th,Korth & Sudarshan,Wiley,BCA,4,web_technologies.jpg,Web Technologies by Korth & Sudarshan for semester 4 of BCA faculty.
+284,Introduction to C Programming,14,5,9785657920667,3th,Stephen P. Robbins,Tata McGraw-Hill,Bsc.Csit,5,introduction_to_c_programming.jpg,Introduction to C Programming by Stephen P. Robbins for semester 5 of Bsc.Csit faculty.
+285,Computer Networks,12,2,9781251605725,5th,Andrew S. Tanenbaum,McGraw-Hill,Bsc.Csit,2,computer_networks.jpg,Computer Networks by Andrew S. Tanenbaum for semester 2 of Bsc.Csit faculty.
+286,Financial Accounting,12,5,9781876269671,3th,George Reynolds,Schaum's Outlines,Bsc.Csit,5,financial_accounting.jpg,Financial Accounting by George Reynolds for semester 5 of Bsc.Csit faculty.
+287,Software Engineering,17,7,9788467730869,3th,E. Balagurusamy,Cambridge,Bsc.Csit,7,software_engineering.jpg,Software Engineering by E. Balagurusamy for semester 7 of Bsc.Csit faculty.
+288,Computer Architecture,11,0,9782274817074,1th,Ian Sommerville,Schaum's Outlines,Bsc.Csit,4,computer_architecture.jpg,Computer Architecture by Ian Sommerville for semester 4 of Bsc.Csit faculty.
+289,Information Security,16,7,9787664189336,5th,Stephen P. Robbins,Cambridge,BCA,6,information_security.jpg,Information Security by Stephen P. Robbins for semester 6 of BCA faculty.
+290,E-Commerce Essentials,8,4,9782722228293,3th,Ian Sommerville,Cambridge,Bsc.Csit,5,e-commerce_essentials.jpg,E-Commerce Essentials by Ian Sommerville for semester 5 of Bsc.Csit faculty.
+291,Mobile Application Development,8,7,9787994500730,4th,George Reynolds,Pearson,BIM,8,mobile_application_development.jpg,Mobile Application Development by George Reynolds for semester 8 of BIM faculty.
+292,Human Computer Interaction,18,17,9788091951915,4th,Abraham Silberschatz,McGraw-Hill,BCA,4,human_computer_interaction.jpg,Human Computer Interaction by Abraham Silberschatz for semester 4 of BCA faculty.
+293,Digital Logic,14,6,9786567595263,1th,Seymour Lipschutz,McGraw-Hill,BIM,7,digital_logic.jpg,Digital Logic by Seymour Lipschutz for semester 7 of BIM faculty.
+294,E-Commerce Essentials,19,8,9781606694954,3th,Andrew S. Tanenbaum,McGraw-Hill,BIM,7,e-commerce_essentials.jpg,E-Commerce Essentials by Andrew S. Tanenbaum for semester 7 of BIM faculty.
+295,Digital Logic,17,6,9783173771063,1th,Ralph M. Stair,Tata McGraw-Hill,BBM,3,digital_logic.jpg,Digital Logic by Ralph M. Stair for semester 3 of BIM faculty.
+296,Project Management,11,6,9784693467653,4th,Korth & Sudarshan,Cambridge,Bsc.Csit,3,project_management.jpg,Project Management by Korth & Sudarshan for semester 3 of Bsc.Csit faculty.
+297,Database Management Systems,7,7,9785092468533,5th,Korth & Sudarshan,Wiley,Bsc.Csit,7,database_management_systems.jpg,Database Management Systems by Korth & Sudarshan for semester 7 of Bsc.Csit faculty.
+298,E-Governance,9,4,9781254863050,2th,Ian Sommerville,Pearson,BBM,8,e-governance.jpg,E-Governance by Ian Sommerville for semester 8 of BIM faculty.
+299,Computer Architecture,20,19,9781425388925,5th,Abraham Silberschatz,Schaum's Outlines,Bsc.Csit,1,computer_architecture.jpg,Computer Architecture by Abraham Silberschatz for semester 1 of Bsc.Csit faculty.
+300,Software Engineering,8,7,9785430557712,2th,Seymour Lipschutz,Schaum's Outlines,Bsc.Csit,4,software_engineering.jpg,Software Engineering by Seymour Lipschutz for semester 4 of Bsc.Csit faculty.
