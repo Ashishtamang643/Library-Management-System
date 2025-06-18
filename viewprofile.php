@@ -3,7 +3,7 @@ session_start();
 $connection = mysqli_connect("localhost", "root", "");
 $db = mysqli_select_db($connection, "library");
 if (!isset($_SESSION['Email']) || !isset($_SESSION['ID'])) {
-    echo "<script>alert('Please login to continue.'); window.location.href='index.php';</script>";
+    header("Location: index.php");
     exit();
 }
 

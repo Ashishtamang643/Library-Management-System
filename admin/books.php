@@ -388,7 +388,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="form-group">
                     <label for="bnum">Book Number</label>
-                    <input type="text" name="bnum" id="bnum" placeholder="Enter unique book ID" required>
+                    <input type="text" name="bnum" id="bnum" pattern="\d{13}" placeholder="Enter unique book ID" required>
                 </div>
 
                 <div class="form-group">

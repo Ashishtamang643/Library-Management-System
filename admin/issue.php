@@ -202,11 +202,11 @@ hr {
         <form method="POST">
             <div class="form-group">
                 <label for="studentID">Student ID</label>
-                <input type="text" id="studentID" name="studentID" required>
+                <input type="text" id="studentID" name="studentID" pattern="\d{2,5}" required>
             </div>
             <div class="form-group">
                 <label for="bnum">Book Number</label>
-                <input type="text" id="bnum" name="bnum" required>
+                <input type="text" id="bnum" name="bnum" pattern="\d{13}"required>
             </div>
             <div class="form-group">
                 <button type="submit" name="issue-book-btn">Issue Book</button>
@@ -219,11 +219,11 @@ hr {
         <form method="POST">
             <div class="form-group">
                 <label for="r_studentID">Student ID</label>
-                <input type="text" id="r_studentID" name="studentID" required>
+                <input type="text" id="r_studentID" name="studentID" pattern="\d{2,5}" required>
             </div>
             <div class="form-group">
                 <label for="r_bnum">Book Number</label>
-                <input type="text" id="r_bnum" name="bnum" required>
+                <input type="text" id="r_bnum" name="bnum" pattern="\d{13}" required>
             </div>
             <div class="form-group">
                 <button type="submit" name="return-book-btn">Return Book</button>

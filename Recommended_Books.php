@@ -46,7 +46,7 @@ $stmt->execute([$userId]);
 $borrowingHistory = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if (empty($borrowingHistory)) {
-    echo "<div class='recommendation-box'><p>No borrowing history to generate recommendations.</p></div>";
+    echo "<div class='recommendation-container'><div class='no-history'><p>No borrowing history to generate recommendations.</p></div></div>";
     return;
 }
 
@@ -207,212 +207,338 @@ $diverseRecommendations = array_slice($newAuthorBooks, 0, 3);
 
 ?>
 
-<div class="recommendation-box">
-    <h3>📚 Personalized Recommendations</h3>
+<div class="recommendation-container">
+    <div class="recommendation-header">
+        <h2>📚 Personalized Book Recommendations</h2>
+    </div>
     
     <?php if (!empty($topRecommendations)): ?>
         <div class="recommendation-section">
-            <h4>🎯 Based on Your Reading History</h4>
-            <ul class="recommendation-list">
-                <?php foreach ($topRecommendations as $book): ?>
-                    <li class="recommendation-item">
-                        <div class="book-info">
-                            <strong><?= htmlspecialchars($book['book_name']) ?></strong>
-                            <br>
-                            <span class="author">by <?= htmlspecialchars($book['author_name']) ?></span>
-                            <?php if (!empty($book['publication'])): ?>
-                                <span class="publication"> • <?= htmlspecialchars($book['publication']) ?></span>
-                            <?php endif; ?>
-                        </div>
-                        <div class="recommendation-score">
-                            <span class="score-badge">Match: <?= $book['score'] ?>pts</span>
-                            <span class="availability"><?= $book['available_quantity'] ?> available</span>
-                        </div>
-                        <?php if (!empty($book['reasons'])): ?>
-                            <div class="reasons">
-                                <small><?= implode(' • ', $book['reasons']) ?></small>
-                            </div>
-                        <?php endif; ?>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
+            <h3>🎯 Based on Your Reading History</h3>
+            <div class="table-container">
+                <table class="recommendation-table">
+                    <thead>
+                        <tr>
+                            <th>Book Title</th>
+                            <th>Author</th>
+                            <th>Publication</th>
+                            <th>Match Score</th>
+                            <th>Available</th>
+                            <th>Why Recommended</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($topRecommendations as $book): ?>
+                            <tr>
+                                <td class="book-title"><?= htmlspecialchars($book['book_name']) ?></td>
+                                <td class="author-name"><?= htmlspecialchars($book['author_name']) ?></td>
+                                <td class="publication"><?= htmlspecialchars($book['publication'] ?? 'N/A') ?></td>
+                                <td class="match-score">
+                                    <span class="score-badge"><?= $book['score'] ?>pts</span>
+                                </td>
+                                <td class="availability">
+                                    <span class="qty-badge"><?= $book['available_quantity'] ?></span>
+                                </td>
+                                <td class="reasons">
+                                    <?= !empty($book['reasons']) ? htmlspecialchars(implode(' • ', $book['reasons'])) : 'General match' ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     <?php endif; ?>
     
     <?php if (!empty($diverseRecommendations)): ?>
         <div class="recommendation-section">
-            <h4>🌟 Discover New Authors</h4>
-            <ul class="recommendation-list diverse">
-                <?php foreach ($diverseRecommendations as $book): ?>
-                    <li class="recommendation-item">
-                        <div class="book-info">
-                            <strong><?= htmlspecialchars($book['book_name']) ?></strong>
-                            <br>
-                            <span class="author">by <?= htmlspecialchars($book['author_name']) ?></span>
-                            <?php if (!empty($book['faculty'])): ?>
-                                <span class="faculty"> • <?= htmlspecialchars($book['faculty']) ?></span>
-                            <?php endif; ?>
-                        </div>
-                        <div class="recommendation-score">
-                            <span class="availability"><?= $book['available_quantity'] ?> available</span>
-                        </div>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
+            <h3>🌟 Discover New Authors</h3>
+            <div class="table-container">
+                <table class="recommendation-table diverse-table">
+                    <thead>
+                        <tr>
+                            <th>Book Title</th>
+                            <th>Author</th>
+                            <th>Faculty</th>
+                            <th>Available</th>
+                            <th>Why Try This</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($diverseRecommendations as $book): ?>
+                            <tr>
+                                <td class="book-title"><?= htmlspecialchars($book['book_name']) ?></td>
+                                <td class="author-name"><?= htmlspecialchars($book['author_name']) ?></td>
+                                <td class="faculty"><?= htmlspecialchars($book['faculty'] ?? 'N/A') ?></td>
+                                <td class="availability">
+                                    <span class="qty-badge"><?= $book['available_quantity'] ?></span>
+                                </td>
+                                <td class="reasons">New author in your preferred subjects</td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     <?php endif; ?>
     
     <?php if (empty($topRecommendations) && empty($diverseRecommendations)): ?>
         <div class="no-recommendations">
-            <p>🔍 We're analyzing your reading patterns...</p>
-            <p>Try borrowing a few more books to get personalized recommendations!</p>
-        </div>
-    <?php endif; ?>
-    
-    <!-- User Preferences Summary -->
-    <div class="preferences-summary">
-        <h4>📊 Your Reading Profile</h4>
-        <div class="preference-stats">
-            <?php if (!empty($authorPrefs)): ?>
-                <div class="stat-item">
-                    <strong>Favorite Authors:</strong>
-                    <?php 
-                    arsort($authorPrefs);
-                    $topAuthors = array_slice(array_keys($authorPrefs), 0, 3);
-                    echo htmlspecialchars(implode(', ', $topAuthors));
-                    ?>
-                </div>
-            <?php endif; ?>
-            
-            <?php if (!empty($facultyPrefs)): ?>
-                <div class="stat-item">
-                    <strong>Preferred Subjects:</strong>
-                    <?php 
-                    arsort($facultyPrefs);
-                    $topFaculties = array_slice(array_keys($facultyPrefs), 0, 3);
-                    echo htmlspecialchars(implode(', ', $topFaculties));
-                    ?>
-                </div>
-            <?php endif; ?>
-            
-            <div class="stat-item">
-                <strong>Books Read:</strong> <?= count($borrowingHistory) ?>
+            <div class="no-rec-content">
+                <h3>🔍 Building Your Recommendations</h3>
+                <p>We need more data to create personalized suggestions.</p>
+                <p>Try borrowing a few more books to unlock custom recommendations!</p>
             </div>
         </div>
-    </div>
+    <?php endif; ?>
 </div>
+
 <style>
-.recommendation-box {
-    background: #ffffff;
-    color: #333333;
+.recommendation-container {
+    max-width: 1800px;
+    margin: 0 auto;
     padding: 20px;
-    border-radius: 8px;
-    margin: 20px 0;
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #333;
+}
+
+.recommendation-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.recommendation-header h2 {
+    font-size: 2em;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
 }
 
 .recommendation-section {
-    margin-bottom: 25px;
+    margin-bottom: 40px;
 }
 
-.recommendation-section h4 {
-    margin-bottom: 15px;
-    color: #555555;
-    font-size: 1.1em;
+.recommendation-section h3 {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 20px;
+    padding-left: 10px;
+    border-left: 4px solid #3498db;
 }
 
-.recommendation-list {
-    list-style: none;
-    padding: 0;
+.table-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    overflow: hidden;
+    border: 1px solid #e9ecef;
 }
 
-.recommendation-item {
+.recommendation-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+}
+
+.recommendation-table thead {
     background: #f8f9fa;
-    margin-bottom: 12px;
-    padding: 15px;
-    border-radius: 6px;
-    border-left: 3px solid #cccccc;
 }
 
-.recommendation-list.diverse .recommendation-item {
-    border-left-color: #999999;
+.recommendation-table th {
+    padding: 16px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #dee2e6;
+    border-bottom: 2px solid #dee2e6;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.book-info {
-    margin-bottom: 8px;
+.recommendation-table td {
+    padding: 16px 12px;
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: top;
 }
 
-.book-info strong {
-    font-size: 1.05em;
-    display: block;
-    margin-bottom: 5px;
-    color: #333333;
+.recommendation-table tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease;
 }
 
-.author, .publication, .faculty {
-    color: #666666;
+.recommendation-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.book-title {
+    font-weight: 600;
+    color: #2c3e50;
+    min-width: 200px;
+}
+
+.author-name {
+    color: #5a6c7d;
+    font-weight: 500;
+}
+
+.publication, .faculty {
+    color: #6c757d;
     font-size: 0.9em;
 }
 
-.recommendation-score {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
+.match-score {
+    text-align: center;
 }
 
 .score-badge {
-    background: #e9ecef;
-    color: #495057;
-    padding: 3px 8px;
-    border-radius: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
     font-size: 0.8em;
-    font-weight: bold;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .availability {
-    color: #666666;
+    text-align: center;
+}
+
+.qty-badge {
+    background: #28a745;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
     font-size: 0.85em;
+    font-weight: 600;
 }
 
 .reasons {
-    color: #777777;
-    font-style: italic;
-    margin-top: 5px;
-}
-
-.preferences-summary {
-    background: #f1f3f4;
-    padding: 15px;
-    border-radius: 6px;
-    margin-top: 20px;
-}
-
-.preference-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.stat-item {
+    color: #6c757d;
     font-size: 0.9em;
-    color: #555555;
+    line-height: 1.4;
+    max-width: 300px;
+}
+
+.diverse-table thead {
+    background: #f1f3f4;
+}
+
+.diverse-table .score-badge {
+    background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
 }
 
 .no-recommendations {
     text-align: center;
-    padding: 30px;
+    padding: 60px 20px;
     background: #f8f9fa;
-    border-radius: 6px;
-    color: #666666;
+    border-radius: 12px;
+    margin: 40px 0;
+}
+
+.no-rec-content h3 {
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.no-rec-content p {
+    color: #6c757d;
+    margin: 8px 0;
+}
+
+.no-history {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    color: #6c757d;
+}
+
+.profile-summary {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+    margin-top: 40px;
+}
+
+.profile-summary h3 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    font-size: 1.3em;
+    font-weight: 600;
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+}
+
+.stat-card h4 {
+    color: #495057;
+    margin: 0 0 10px 0;
+    font-size: 0.9em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-card p {
+    color: #2c3e50;
+    margin: 0;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.stat-number {
+    font-size: 1.8em !important;
+    font-weight: 700 !important;
+    color: #3498db !important;
+}
+
+@media (max-width: 1200px) {
+    .recommendation-container {
+        padding: 15px;
+    }
+    
+    .recommendation-table {
+        font-size: 0.9em;
+    }
+    
+    .recommendation-table th,
+    .recommendation-table td {
+        padding: 12px 8px;
+    }
 }
 
 @media (max-width: 768px) {
-    .recommendation-score {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
+    .recommendation-header h2 {
+        font-size: 1.8em;
+    }
+    
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    .recommendation-table {
+        min-width: 800px;
+    }
+    
+    .stat-grid {
+        grid-template-columns: 1fr;
     }
 }
 </style>

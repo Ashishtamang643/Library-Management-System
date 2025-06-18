@@ -41,6 +41,11 @@ $faculty_filter = isset($_GET['faculty']) ? $_GET['faculty'] : '';
 $semester_filter = isset($_GET['semester']) ? $_GET['semester'] : '';
 $book_num_filter = isset($_GET['book_num']) ? $_GET['book_num'] : '';
 
+// Pagination variables
+$books_per_page = 20;
+$current_page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($current_page - 1) * $books_per_page;
+
 // Base query
 $query = "SELECT * FROM books WHERE 1=1";
 
@@ -71,6 +76,19 @@ $count_query = str_replace("SELECT *", "SELECT COUNT(*) as total_books", $query)
 $count_result = mysqli_query($connection, $count_query);
 $total_books_row = mysqli_fetch_assoc($count_result);
 $total_books = $total_books_row['total_books'];
+
+// Calculate total pages
+$total_pages = ceil($total_books / $books_per_page);
+
+// Add pagination to the main query
+$query .= " LIMIT $books_per_page OFFSET $offset";
+
+// Function to build URL with current filters
+function buildURL($page) {
+    $params = $_GET;
+    $params['page'] = $page;
+    return '?' . http_build_query($params);
+}
 ?>
 
 <!DOCTYPE html>
@@ -314,6 +332,65 @@ $total_books = $total_books_row['total_books'];
             opacity: 0.7;
         }
 
+        /* Pagination Styles */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-info {
+            color: #666;
+            font-size: 14px;
+            margin: 0 15px;
+        }
+
+        .pagination-btn {
+            padding: 8px 12px;
+            background-color: #f8f9fa;
+            color: #333;
+            text-decoration: none;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .pagination-btn:hover {
+            background-color: #e9ecef;
+            border-color: #adb5bd;
+            transform: translateY(-1px);
+        }
+
+        .pagination-btn.active {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .pagination-btn.disabled {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .pagination-btn.disabled:hover {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            transform: none;
+        }
+
+        .pagination-dots {
+            color: #6c757d;
+            padding: 0 5px;
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
             .filter-container form {
@@ -336,6 +413,21 @@ $total_books = $total_books_row['total_books'];
                 flex-direction: row;
                 justify-content: center;
             }
+
+            .pagination-container {
+                gap: 5px;
+            }
+
+            .pagination-btn {
+                padding: 6px 8px;
+                font-size: 12px;
+                min-width: 32px;
+            }
+
+            .pagination-info {
+                font-size: 12px;
+                margin: 0 10px;
+            }
         }
     </style>
 </head>
@@ -352,16 +444,16 @@ $total_books = $total_books_row['total_books'];
             <div class="filter-container">
                 <form method="GET" action="">
                     <label for="book_name">Book Name:</label>
-                    <input type="text" id="book_name" name="book_name" value="<?php echo htmlspecialchars($book_name_filter); ?>" placeholder="Search book name">
+                    <input type="text" id="book_name" name="book_name" pattern="[A-Za-z\s.]+" value="<?php echo htmlspecialchars($book_name_filter); ?>" placeholder="Search book name">
 
                     <label for="book_num">Book Number:</label>
-                    <input type="text" id="book_num" name="book_num" value="<?php echo htmlspecialchars($book_num_filter); ?>" placeholder="Search book number">
+                    <input type="text" id="book_num" name="book_num" pattern="\d{13}" value="<?php echo htmlspecialchars($book_num_filter); ?>" placeholder="Search book number">
 
                     <label for="author">Author:</label>
-                    <input type="text" id="author" name="author" value="<?php echo htmlspecialchars($author_filter); ?>" placeholder="Search author">
+                    <input type="text" id="author" name="author" pattern="[A-Za-z\s.]+" value="<?php echo htmlspecialchars($author_filter); ?>" placeholder="Search author">
 
                     <label for="publication">Publication:</label>
-                    <input type="text" id="publication" name="publication" value="<?php echo htmlspecialchars($publication_filter); ?>" placeholder="Search publication">
+                    <input type="text" id="publication" name="publication" pattern="[A-Za-z\s.]+" value="<?php echo htmlspecialchars($publication_filter); ?>" placeholder="Search publication">
 
                     <label for="faculty">Faculty:</label>
                     <select name="faculty" id="faculty">
@@ -389,6 +481,13 @@ $total_books = $total_books_row['total_books'];
             <div class="total-books-container">
                 Total Books: <?php echo $total_books; ?>
             </div>
+
+            <!-- Pagination Info -->
+            <?php if ($total_books > 0): ?>
+            <div class="pagination-info" style="text-align: center; margin: 20px 0; color: #666;">
+                Showing <?php echo min(($current_page - 1) * $books_per_page + 1, $total_books); ?> to <?php echo min($current_page * $books_per_page, $total_books); ?> of <?php echo $total_books; ?> books
+            </div>
+            <?php endif; ?>
 
             <table>
                 <thead>
@@ -464,6 +563,58 @@ $total_books = $total_books_row['total_books'];
                 ?>
                 </tbody>
             </table>
+
+            <!-- Pagination -->
+            <?php if ($total_pages > 1): ?>
+            <div class="pagination-container">
+                <!-- First Page -->
+                <?php if ($current_page > 1): ?>
+                    <a href="<?php echo buildURL(1); ?>" class="pagination-btn">First</a>
+                    <a href="<?php echo buildURL($current_page - 1); ?>" class="pagination-btn">Previous</a>
+                <?php else: ?>
+                    <span class="pagination-btn disabled">First</span>
+                    <span class="pagination-btn disabled">Previous</span>
+                <?php endif; ?>
+
+                <!-- Page Numbers -->
+                <?php
+                $start_page = max(1, $current_page - 2);
+                $end_page = min($total_pages, $current_page + 2);
+
+                // Show dots if there are pages before start_page
+                if ($start_page > 1): ?>
+                    <a href="<?php echo buildURL(1); ?>" class="pagination-btn">1</a>
+                    <?php if ($start_page > 2): ?>
+                        <span class="pagination-dots">...</span>
+                    <?php endif; ?>
+                <?php endif;
+
+                // Show page numbers
+                for ($i = $start_page; $i <= $end_page; $i++): ?>
+                    <a href="<?php echo buildURL($i); ?>" 
+                       class="pagination-btn <?php echo ($i == $current_page) ? 'active' : ''; ?>">
+                        <?php echo $i; ?>
+                    </a>
+                <?php endfor;
+
+                // Show dots if there are pages after end_page
+                if ($end_page < $total_pages): ?>
+                    <?php if ($end_page < $total_pages - 1): ?>
+                        <span class="pagination-dots">...</span>
+                    <?php endif; ?>
+                    <a href="<?php echo buildURL($total_pages); ?>" class="pagination-btn"><?php echo $total_pages; ?></a>
+                <?php endif; ?>
+
+                <!-- Next and Last Page -->
+                <?php if ($current_page < $total_pages): ?>
+                    <a href="<?php echo buildURL($current_page + 1); ?>" class="pagination-btn">Next</a>
+                    <a href="<?php echo buildURL($total_pages); ?>" class="pagination-btn">Last</a>
+                <?php else: ?>
+                    <span class="pagination-btn disabled">Next</span>
+                    <span class="pagination-btn disabled">Last</span>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 

@@ -210,15 +210,15 @@ $query_run = mysqli_query($connection, $query);
     <form method="GET" action="" style="display: flex; gap: 10px; flex-wrap: wrap;">
         <div class="filter-group">
             <label>Student ID</label>
-            <input type="text" name="student_id" class="filter-input" placeholder="Search Student ID" value="<?php echo htmlspecialchars($filter_student_id); ?>">
+            <input type="text" name="student_id" class="filter-input" pattern="\d{2,5}" placeholder="Search Student ID" value="<?php echo htmlspecialchars($filter_student_id); ?>">
         </div>
         <div class="filter-group">
             <label>Book Name</label>
-            <input type="text" name="book_name" class="filter-input" placeholder="Search Book Name" value="<?php echo htmlspecialchars($filter_book_name); ?>">
+            <input type="text" name="book_name" class="filter-input" pattern="[A-Za-z\s]+" placeholder="Search Book Name" value="<?php echo htmlspecialchars($filter_book_name); ?>">
         </div>
         <div class="filter-group">
             <label>Book Number</label>
-            <input type="text" name="book_num" class="filter-input" placeholder="Search Book Number" value="<?php echo htmlspecialchars($filter_book_num); ?>">
+            <input type="text" name="book_num" class="filter-input" pattern="\d{13}" placeholder="Search Book Number" value="<?php echo htmlspecialchars($filter_book_num); ?>">
         </div>
         <div class="filter-group" style="align-self: flex-end;">
             <button type="submit" class="filter-btn">Apply Filter</button>

@@ -11,6 +11,11 @@ $bookNumFilter = isset($_GET['book_num']) ? $_GET['book_num'] : ''; // Book Numb
 $semesterFilter = isset($_GET['semester']) ? $_GET['semester'] : ''; // Semester filter
 $facultyFilter = isset($_GET['faculty']) ? $_GET['faculty'] : ''; // Faculty filter
 
+// Check if the user is logged in
+if (!isset($_SESSION['Name'])) {
+    header("Location: index.php");
+    exit();
+}
 // SQL query to get currently issued books for the logged-in student - INCLUDING PICTURE COLUMN
 $query = "SELECT book_name, book_num, book_author, issue_date, returned_date, publication, faculty, semester, returned, picture FROM issued WHERE student_id = $_SESSION[ID]";
 
@@ -72,11 +77,28 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
     <link rel="stylesheet" href="style2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+
+        .container{
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
         /* Add your existing styles here */
         .cards-container {
             display: flex;
             gap: 20px;
             margin-bottom: 30px;
+            /* Add responsive flex direction for mobile */
+            flex-direction: column;
+        }
+
+        @media (min-width: 768px) {
+            .cards-container {
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            }
         }
 
         .card {
@@ -117,6 +139,41 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
             border-radius: 5px;
             border: 1px solid #ccc;
             margin-right: 10px;
+        }
+
+        .filter-buttons {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .filter-btn-primary {
+            background-color: #4361ee;
+            color: white;
+        }
+
+        .filter-btn-primary:hover {
+            background-color: #3651db;
+        }
+
+        .filter-btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .filter-btn-secondary:hover {
+            background-color: #5a6268;
         }
 
         .table-container {
@@ -344,15 +401,19 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
         <div class="filter-container">
             <form method="GET" action="">
                 <label for="returned">Filter by Return Status:</label>
-                <select name="returned" id="returned" onchange="this.form.submit()">
+                <select name="returned" id="returned">
                     <option value="all" <?php echo $returnedFilter === 'all' ? 'selected' : ''; ?>>All</option>
                     <option value="returned" <?php echo $returnedFilter === 'returned' ? 'selected' : ''; ?>>Returned</option>
                     <option value="not_returned" <?php echo $returnedFilter === 'not_returned' ? 'selected' : ''; ?>>Not Returned</option>
                 </select>
-                <input type="text" name="book_name" value="<?php echo $bookNameFilter; ?>" placeholder="Filter by Book Name" onchange="this.form.submit()">
-                <input type="text" name="book_num" value="<?php echo $bookNumFilter; ?>" placeholder="Filter by Book Number" onchange="this.form.submit()">
-                <input type="text" name="semester" value="<?php echo $semesterFilter; ?>" placeholder="Filter by Semester" onchange="this.form.submit()">
-                <input type="text" name="faculty" value="<?php echo $facultyFilter; ?>" placeholder="Filter by Faculty" onchange="this.form.submit()">
+                <input type="text" name="book_name" pattern="[A-Za-z\s.]+" value="<?php echo $bookNameFilter; ?>" placeholder="Filter by Book Name">
+                <input type="text" name="book_num" pattern="\d{13}" value="<?php echo $bookNumFilter; ?>" placeholder="Filter by Book Number">
+                <input type="text" name="semester" pattern="\d{1}" value="<?php echo $semesterFilter; ?>" placeholder="Filter by Semester">
+                <input type="text" name="faculty" pattern="[A-Za-z\s.]+" value="<?php echo $facultyFilter; ?>" placeholder="Filter by Faculty">
+                <div class="filter-buttons">
+                    <button type="submit" class="filter-btn filter-btn-primary">Apply Filters</button>
+                    <a href="<?php echo $_SERVER['PHP_SELF']; ?>" class="filter-btn filter-btn-secondary">Reset Filters</a>
+                </div>
             </form>
         </div>
 
@@ -432,12 +493,12 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
 
         <!-- Button to Show Requested Books -->
         <div class="requested-books-section">
-            <button onclick="window.location.href='?show_requested=true'" style="padding: 10px 20px; background-color: #4361ee; color: white; border-radius: 5px; border: none; cursor: pointer;">Show Requested Books</button>
+            <button onclick="window.location.href='?show_requested=true'" style="padding: 10px 20px; margin-bottom:20px; background-color: #4361ee; color: white; border-radius: 5px; border: none; cursor: pointer;">Show Requested Books</button>
 
             <?php
             if (isset($_GET['show_requested']) && $_GET['show_requested'] == 'true') {
             ?>
-                <h3>Requested Books</h3>
+                <!-- <h3>Requested Books</h3> -->
                 <div class="table-container">
                 <table>
                     <thead>
@@ -460,7 +521,13 @@ $requestedBooksResult = mysqli_query($connection, $requestedBooksQuery);
                                 $requestDate = $row['request_date'];
                                 $status = $row['status'];
                         ?>
-                                <tr>
+                                <tr style="<?php 
+                                    if ($status == 'rejected') {
+                                        echo 'background-color: #ffebee;';
+                                    } elseif ($status == 'approved') {
+                                        echo 'background-color: #e8f5e9;';
+                                    }
+                                ?>">
                                     <td><?php echo $requestedBookName; ?></td>
                                     <td><?php echo $requestedBookNum; ?></td>
                                     <td><?php echo $requestedAuthor; ?></td>

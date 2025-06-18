@@ -6,9 +6,10 @@ $db = mysqli_select_db($connection, "library");
 
 // Check if user is logged in
 if (!isset($_SESSION['Email']) || !isset($_SESSION['ID'])) {
-    echo "<script>alert('Please login to continue.'); window.location.href='index.php';</script>";
+    header("Location: index.php");
     exit();
 }
+
 
 if (isset($_POST['request_book'])) {
     $user_email = $_SESSION['Email']; // Get the user's email from the session
@@ -78,6 +79,13 @@ $selected_book_num = isset($_GET['book_num']) ? $_GET['book_num'] : '';
 $selected_author = isset($_GET['author']) ? $_GET['author'] : '';
 $selected_publication = isset($_GET['publication']) ? $_GET['publication'] : '';
 
+// Pagination settings
+$books_per_page = 20;
+$current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($current_page - 1) * $books_per_page;
+
+// Build the base query for counting total records
+$count_query = "SELECT COUNT(DISTINCT book_num) as total FROM books WHERE 1=1";
 $query = "SELECT DISTINCT book_num, available_quantity, book_name, book_edition, author_name, faculty, semester, publication, description, picture FROM books WHERE 1=1";
 
 // Build parameter arrays first
@@ -85,40 +93,76 @@ $types = '';
 $params = [];
 
 if (!empty($selected_faculty)) {
-    $query .= " AND REPLACE(CONCAT(',', REPLACE(faculty, ' ', ''), ','), ' ', '') LIKE CONCAT('%,', ?, ',%')";
+    $faculty_condition = " AND REPLACE(CONCAT(',', REPLACE(faculty, ' ', ''), ','), ' ', '') LIKE CONCAT('%,', ?, ',%')";
+    $query .= $faculty_condition;
+    $count_query .= $faculty_condition;
     $types .= 's';
     $params[] = str_replace(' ', '', $selected_faculty);
 }
 
 if (!empty($selected_semester)) {
-    $query .= " AND REPLACE(CONCAT(',', REPLACE(semester, ' ', ''), ','), ' ', '') LIKE CONCAT('%,', ?, ',%')";
+    $semester_condition = " AND REPLACE(CONCAT(',', REPLACE(semester, ' ', ''), ','), ' ', '') LIKE CONCAT('%,', ?, ',%')";
+    $query .= $semester_condition;
+    $count_query .= $semester_condition;
     $types .= 's';
     $params[] = str_replace(' ', '', $selected_semester);
 }
 
 if (!empty($selected_book_name)) {
-    $query .= " AND book_name LIKE ?";
+    $book_name_condition = " AND book_name LIKE ?";
+    $query .= $book_name_condition;
+    $count_query .= $book_name_condition;
     $types .= 's';
     $params[] = "%$selected_book_name%";
 }
 
 if (!empty($selected_book_num)) {
-    $query .= " AND book_num LIKE ?";
+    $book_num_condition = " AND book_num LIKE ?";
+    $query .= $book_num_condition;
+    $count_query .= $book_num_condition;
     $types .= 's';
     $params[] = "%$selected_book_num%";
 }
 
 if (!empty($selected_author)) {
-    $query .= " AND author_name LIKE ?";
+    $author_condition = " AND author_name LIKE ?";
+    $query .= $author_condition;
+    $count_query .= $author_condition;
     $types .= 's';
     $params[] = "%$selected_author%";
 }
 
 if (!empty($selected_publication)) {
-    $query .= " AND publication LIKE ?";
+    $publication_condition = " AND publication LIKE ?";
+    $query .= $publication_condition;
+    $count_query .= $publication_condition;
     $types .= 's';
     $params[] = "%$selected_publication%";
 }
+
+// Get total count for pagination
+$count_stmt = mysqli_prepare($connection, $count_query);
+if (!empty($params)) {
+    if (version_compare(PHP_VERSION, '5.6.0', '>=')) {
+        mysqli_stmt_bind_param($count_stmt, $types, ...$params);
+    } else {
+        $bind_params = array($count_stmt, $types);
+        foreach ($params as $key => $value) {
+            $bind_params[] = &$params[$key];
+        }
+        call_user_func_array('mysqli_stmt_bind_param', $bind_params);
+    }
+}
+mysqli_stmt_execute($count_stmt);
+$count_result = mysqli_stmt_get_result($count_stmt);
+$total_books = mysqli_fetch_assoc($count_result)['total'];
+$total_pages = ceil($total_books / $books_per_page);
+
+// Add LIMIT clause to main query
+$query .= " LIMIT ? OFFSET ?";
+$types .= 'ii';
+$params[] = $books_per_page;
+$params[] = $offset;
 
 // Prepare the query with placeholders
 $stmt = mysqli_prepare($connection, $query);
@@ -341,6 +385,62 @@ $query_result = mysqli_stmt_get_result($stmt);
             color: white;
         }
         
+        /* Pagination Styles */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .pagination-info {
+            margin: 0 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 5px;
+        }
+        
+        .pagination li {
+            display: inline-block;
+        }
+        
+        .pagination a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #007bff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination a:hover {
+            background-color: #e9ecef;
+            border-color: #adb5bd;
+        }
+        
+        .pagination .active a {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        
+        .pagination .disabled a {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }
+        
         /* Modal Styles */
         .modal {
             display: none;
@@ -439,6 +539,10 @@ $query_result = mysqli_stmt_get_result($stmt);
             text-align: center;
         }
         
+        .req-form {
+            display: none;
+        }
+        
         .request-btn {
             background-color: #28a745;
             color: white;
@@ -490,6 +594,16 @@ $query_result = mysqli_stmt_get_result($stmt);
                 display: block;
                 margin: 0 auto 15px;
             }
+            
+            .pagination-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .pagination a {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -503,6 +617,7 @@ $query_result = mysqli_stmt_get_result($stmt);
     <!-- Filter Form -->
     <div class="filter-container">
         <form method="GET" action="" id="filterForm">
+            <input type="hidden" name="page" value="1">
             <label for="faculty">Faculty:</label>
             <select name="faculty" id="faculty">
                 <option value="">All</option>
@@ -541,48 +656,60 @@ $query_result = mysqli_stmt_get_result($stmt);
         </form>
     </div>
 
+    <!-- Pagination Info -->
+    <?php if ($total_books > 0) { ?>
+        <div class="pagination-container">
+            <div class="pagination-info">
+                Showing <?php echo (($current_page - 1) * $books_per_page + 1); ?> to 
+                <?php echo min($current_page * $books_per_page, $total_books); ?> of 
+                <?php echo $total_books; ?> books
+            </div>
+        </div>
+    <?php } ?>
+
     <!-- Books Cards Container -->
     <div class="books-container">
         <?php
-        while ($row = mysqli_fetch_assoc($query_result)) {
-            $bname = $row['book_name'];
-            $bedition = $row['book_edition'];
-            $author = $row['author_name'];
-            $faculty = $row['faculty'];
-            $semester = $row['semester'];
-            $book_num = $row['book_num'];
-            $available_quantity = $row['available_quantity'];
-            $publication = $row['publication'];
-            $description = isset($row['description']) ? $row['description'] : '';
-            $picture = isset($row['picture']) ? $row['picture'] : '';
+        if (mysqli_num_rows($query_result) > 0) {
+            while ($row = mysqli_fetch_assoc($query_result)) {
+                $bname = $row['book_name'];
+                $bedition = $row['book_edition'];
+                $author = $row['author_name'];
+                $faculty = $row['faculty'];
+                $semester = $row['semester'];
+                $book_num = $row['book_num'];
+                $available_quantity = $row['available_quantity'];
+                $publication = $row['publication'];
+                $description = isset($row['description']) ? $row['description'] : '';
+                $picture = isset($row['picture']) ? $row['picture'] : '';
 
-            // Check if the user has already requested this book
-            $student_id = $_SESSION['ID'];
-            $check_query = "SELECT status FROM book_request 
-                            WHERE student_id = ? 
-                            AND book_num = ?";
-            $stmt = mysqli_prepare($connection, $check_query);
-            mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
-            mysqli_stmt_execute($stmt);
-            $check_result = mysqli_stmt_get_result($stmt);
-            $status = "";
-            if (mysqli_num_rows($check_result) > 0) {
-                $status_row = mysqli_fetch_assoc($check_result);
-                $status = $status_row['status'];
-            }
+                // Check if the user has already requested this book
+                $student_id = $_SESSION['ID'];
+                $check_query = "SELECT status FROM book_request 
+                                WHERE student_id = ? 
+                                AND book_num = ?";
+                $stmt = mysqli_prepare($connection, $check_query);
+                mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
+                mysqli_stmt_execute($stmt);
+                $check_result = mysqli_stmt_get_result($stmt);
+                $status = "";
+                if (mysqli_num_rows($check_result) > 0) {
+                    $status_row = mysqli_fetch_assoc($check_result);
+                    $status = $status_row['status'];
+                }
 
-            // Check if the book is issued to the current user
-            $check_issued_query = "SELECT * FROM issued 
-                                   WHERE student_id = ? 
-                                   AND book_num = ?
-                                   AND returned = 0";
-            $stmt = mysqli_prepare($connection, $check_issued_query);
-            mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
-            mysqli_stmt_execute($stmt);
-            $check_issued_result = mysqli_stmt_get_result($stmt);
-            if (mysqli_num_rows($check_issued_result) > 0) {
-                $status = "issued";
-            }
+                // Check if the book is issued to the current user
+                $check_issued_query = "SELECT * FROM issued 
+                                       WHERE student_id = ? 
+                                       AND book_num = ?
+                                       AND returned = 0";
+                $stmt = mysqli_prepare($connection, $check_issued_query);
+                mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
+                mysqli_stmt_execute($stmt);
+                $check_issued_result = mysqli_stmt_get_result($stmt);
+                if (mysqli_num_rows($check_issued_result) > 0) {
+                    $status = "issued";
+                }
         ?>
             <div class="book-card" onclick="openModal('<?php echo htmlspecialchars($book_num); ?>')">
                 <?php if (!empty($status)) { ?>
@@ -654,14 +781,15 @@ $query_result = mysqli_stmt_get_result($stmt);
                     </div>
                     <div class="modal-footer">
                         <?php if (empty($status)) { ?>
-                            <form method="POST" action="" style="display:inline;" id="request_form_<?php echo htmlspecialchars($book_num); ?>">
-                                <input type="hidden" name="book_name" value="<?php echo htmlspecialchars($bname); ?>">
-                                <input type="hidden" name="book_edition" value="<?php echo htmlspecialchars($bedition); ?>">
-                                <input type="hidden" name="author_name" value="<?php echo htmlspecialchars($author); ?>">
-                                <input type="hidden" name="book_num" value="<?php echo htmlspecialchars($book_num); ?>">
+                            <form method="POST" action="" class='req-form' style="display:none;" id="request_form_<?php echo htmlspecialchars($book_num); ?>">
+                                <input type="hidden" name="book_name" pattern="[A-Za-z\s.]+" value="<?php echo htmlspecialchars($bname); ?>">
+                                <input type="hidden" name="book_edition" pattern="[A-Za-z\s.]+" value="<?php echo htmlspecialchars($bedition); ?>">
+                                <input type="hidden" name="author_name" pattern="[A-Za-z\s.]+" value="<?php echo htmlspecialchars($author); ?>">
+                                <input type="hidden" name="book_num" pattern="\d{13}" value="<?php echo htmlspecialchars($book_num); ?>">
                                 <input type="hidden" name="request_book" value="1">
-                                <button type="button" class="request-btn" onclick="confirmRequest('<?php echo htmlspecialchars(addslashes($bname)); ?>', '<?php echo htmlspecialchars($book_num); ?>')">Request Book</button>
+                                <!-- The button is outside the form, so the form stays hidden -->
                             </form>
+                            <button type="button" class="request-btn" onclick="confirmRequest('<?php echo htmlspecialchars(addslashes($bname)); ?>', '<?php echo htmlspecialchars($book_num); ?>')">Request Book</button>
                         <?php } else { ?>
                             <span class="status-message">Status: <?php echo ucfirst(htmlspecialchars($status)); ?></span>
                         <?php } ?>
@@ -669,9 +797,65 @@ $query_result = mysqli_stmt_get_result($stmt);
                 </div>
             </div>
         <?php
+            }
+        } else {
+            echo "<div style='text-align: center; padding: 50px; color: #666;'>";
+            echo "<h3>No books found matching your criteria.</h3>";
+            echo "</div>";
         }
         ?>
     </div>
+
+    <!-- Pagination -->
+    <?php if ($total_pages > 1) { ?>
+        <div class="pagination-container">
+            <ul class="pagination">
+                <!-- Previous Page -->
+                <li class="<?php echo ($current_page <= 1) ? 'disabled' : ''; ?>">
+                    <a href="<?php echo ($current_page > 1) ? buildPaginationUrl($current_page - 1) : '#'; ?>">
+                        &laquo; Previous
+                    </a>
+                </li>
+
+                <?php
+                // Calculate pagination range
+                $start_page = max(1, $current_page - 2);
+                $end_page = min($total_pages, $current_page + 2);
+
+                // Show first page if not in range
+                if ($start_page > 1) {
+                    echo '<li><a href="' . buildPaginationUrl(1) . '">1</a></li>';
+                    if ($start_page > 2) {
+                        echo '<li class="disabled"><a href="#">...</a></li>';
+                    }
+                }
+
+                // Show page numbers in range
+                for ($i = $start_page; $i <= $end_page; $i++) {
+                    $active_class = ($i == $current_page) ? 'active' : '';
+                    echo '<li class="' . $active_class . '">';
+                    echo '<a href="' . buildPaginationUrl($i) . '">' . $i . '</a>';
+                    echo '</li>';
+                }
+
+                // Show last page if not in range
+                if ($end_page < $total_pages) {
+                    if ($end_page < $total_pages - 1) {
+                        echo '<li class="disabled"><a href="#">...</a></li>';
+                    }
+                    echo '<li><a href="' . buildPaginationUrl($total_pages) . '">' . $total_pages . '</a></li>';
+                }
+                ?>
+
+                <!-- Next Page -->
+                <li class="<?php echo ($current_page >= $total_pages) ? 'disabled' : ''; ?>">
+                    <a href="<?php echo ($current_page < $total_pages) ? buildPaginationUrl($current_page + 1) : '#'; ?>">
+                        Next &raquo;
+                    </a>
+                </li>
+            </ul>
+        </div>
+    <?php } ?>
 
     <script>
     function openModal(bookNum) {
@@ -725,3 +909,14 @@ $query_result = mysqli_stmt_get_result($stmt);
         window.location.href = window.location.pathname;
     }
     </script>
+
+<?php
+// Function to build pagination URLs with current filters
+function buildPaginationUrl($page) {
+    $params = $_GET;
+    $params['page'] = $page;
+    return '?' . http_build_query($params);
+}
+?>
+</body>
+</html>

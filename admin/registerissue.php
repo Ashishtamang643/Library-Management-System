@@ -122,6 +122,20 @@ if ($filter_returned !== '') {
             background-color: #45a049;
         }
 
+        .filter-container .reset-btn {
+            background-color: #6c757d;
+        }
+
+        .filter-container .reset-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
         /* table {
             width: 100%;
             border-collapse: collapse;
@@ -176,17 +190,17 @@ if ($filter_returned !== '') {
     <div class="filter-container">
         <form method="GET" action="">
             <label for="student_id">Student ID:</label>
-            <input type="text" name="student_id" id="student_id" 
+            <input type="text" name="student_id"  pattern="\d{2,5}" id="student_id" 
                    value="<?php echo htmlspecialchars($filter_student_id); ?>" 
                    placeholder="Search Student ID">
 
             <label for="book_name">Book Name:</label>
-            <input type="text" name="book_name" id="book_name" 
+            <input type="text" name="book_name" id="book_name" pattern="[A-Za-z\s.]+"
                    value="<?php echo htmlspecialchars($filter_book_name); ?>" 
                    placeholder="Search Book Name">
 
             <label for="book_num">Book Number:</label>
-            <input type="text" name="book_num" id="book_num" 
+            <input type="text" name="book_num" id="book_num" pattern="\d{13}"
                    value="<?php echo htmlspecialchars($filter_book_num); ?>" 
                    placeholder="Search Book Number">
 
@@ -197,7 +211,10 @@ if ($filter_returned !== '') {
                 <option value="1" <?php echo ($filter_returned === '1') ? 'selected' : ''; ?>>Returned</option>
             </select>
 
-            <button type="submit">Filter</button>
+            <div class="button-group">
+                <button type="submit">Filter</button>
+                <button type="button" class="reset-btn" onclick="window.location.href='<?php echo $_SERVER['PHP_SELF']; ?>'">Reset</button>
+            </div>
         </form>
     </div>
 
