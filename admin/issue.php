@@ -11,6 +11,7 @@
     if(isset($_POST['issue-book-btn'])) {
         $studentID = $_POST["studentID"];
         $bnum = $_POST["bnum"];
+        $due_date = $_POST["due_date"];
         $issuedate = date("Y-m-d"); // Current date
 
         // Check if the book is already issued to the same student
@@ -29,11 +30,10 @@
             $book = mysqli_fetch_assoc($check_book_result);
 
             if ($book && $book['available_quantity'] > 0) {
-                // Insert the issue record
-                      // Insert the issue record into the 'issued' table
-                      $issue_query = "INSERT INTO issued (student_id, book_num, issue_date, book_name, book_author, semester, faculty, publication, picture) 
-                      VALUES ('$studentID', '$bnum', '$issuedate', '" . $book['book_name'] . "', '" . $book['author_name'] . "', '" . $book['semester'] . "', '" . $book['faculty'] . "', '" . $book['publication'] . "', '" . $book['picture'] . "')";
-      $issue_query_run = mysqli_query($connection, $issue_query);
+                // Insert the issue record with due_date
+                $issue_query = "INSERT INTO issued (student_id, book_num, issue_date, due_date, book_name, book_author, semester, faculty, publication, picture) 
+                VALUES ('$studentID', '$bnum', '$issuedate', '$due_date', '" . $book['book_name'] . "', '" . $book['author_name'] . "', '" . $book['semester'] . "', '" . $book['faculty'] . "', '" . $book['publication'] . "', '" . $book['picture'] . "')";
+                $issue_query_run = mysqli_query($connection, $issue_query);
 
                 // Update available quantity in books table
                 $update_query = "UPDATE books SET available_quantity = available_quantity - 1 WHERE book_num = '$bnum'";
@@ -128,7 +128,6 @@ form {
 }
 
 .forms-container{
-
     display: flex;
     gap: 60px;
 }
@@ -156,18 +155,18 @@ form {
 }
 
 button{
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 18px 60px;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 18px 60px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
 }
 
 .form-group button:hover {
@@ -180,6 +179,40 @@ hr {
     border: none;
     height: 1px;
     background-color: #ddd;
+}
+
+.quick-date-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.quick-date-btn {
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    color: #333;
+}
+
+.quick-date-btn:hover {
+    background-color: #e0e0e0;
+    border-color: #bbb;
+}
+
+.due-date-section {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    border-left: 4px solid #4CAF50;
+}
+
+.due-date-section label {
+    color: #4CAF50 !important;
 }
 
     </style>
@@ -206,7 +239,18 @@ hr {
             </div>
             <div class="form-group">
                 <label for="bnum">Book Number</label>
-                <input type="text" id="bnum" name="bnum" pattern="\d{13}"required>
+                <input type="text" id="bnum" name="bnum" pattern="\d{13}" required>
+            </div>
+            <div class="form-group due-date-section">
+                <label for="due_date">Due Date</label>
+                <input type="date" id="due_date" name="due_date" 
+                       min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" required>
+                <div class="quick-date-buttons">
+                    <button type="button" class="quick-date-btn" onclick="setDueDate(7)">7 Days</button>
+                    <button type="button" class="quick-date-btn" onclick="setDueDate(14)">14 Days</button>
+                    <button type="button" class="quick-date-btn" onclick="setDueDate(30)">30 Days</button>
+                    <button type="button" class="quick-date-btn" onclick="setDueDate(60)">60 Days</button>
+                </div>
             </div>
             <div class="form-group">
                 <button type="submit" name="issue-book-btn">Issue Book</button>
@@ -234,6 +278,20 @@ hr {
     </div>
     </div>
     </div>
+
+<script>
+function setDueDate(days) {
+    const today = new Date();
+    const dueDate = new Date(today.getTime() + (days * 24 * 60 * 60 * 1000));
+    const dueDateString = dueDate.toISOString().split('T')[0];
+    document.getElementById('due_date').value = dueDateString;
+}
+
+// Set default due date to 14 days from today when page loads
+window.onload = function() {
+    setDueDate(14);
+}
+</script>
 
 </body>
 </html>

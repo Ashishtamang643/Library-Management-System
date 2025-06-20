@@ -3,7 +3,7 @@ session_start();
 
 // If user is already logged in, redirect to user profile
 if (isset($_SESSION['Email'])) {
-    header("Location: userprofile.php");
+    header("Location: viewbooks.php");
     exit();
 }
 
@@ -39,7 +39,7 @@ if (isset($_POST['submit-btn'])) {
                 $popupMessage = "Logging in...";
                 echo "<script>
                     setTimeout(function() {
-                        window.location.href = 'userprofile.php';
+                        window.location.href = 'viewbooks.php';
                     }, 1500);
                 </script>";
             } else {

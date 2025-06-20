@@ -28,6 +28,20 @@ if (isset($_POST['issue_book'])) {
     $request_id = $_POST['request_id'];
     $book_num = $_POST['book_num'];
     $student_id = $_POST['student_id'];
+    $due_date = $_POST['due_date'];
+
+    // Validate due date
+    if (empty($due_date)) {
+        echo "<script>alert('Please select a due date!'); window.location.href = window.location.href;</script>";
+        exit();
+    }
+
+    // Check if due date is in the future
+    $current_date = date('Y-m-d');
+    if ($due_date <= $current_date) {
+        echo "<script>alert('Due date must be in the future!'); window.location.href = window.location.href;</script>";
+        exit();
+    }
 
     $check_issued_query = "SELECT * FROM issued WHERE student_id = ? AND book_num = ? AND returned IS NULL";
     $stmt = mysqli_prepare($connection, $check_issued_query);
@@ -62,15 +76,16 @@ if (isset($_POST['issue_book'])) {
 
         $issue_date = date("Y-m-d");
 
-        $insert_issue_query = "INSERT INTO issued (student_id, book_num, book_name, book_author, issue_date, semester, faculty, publication, picture) 
-                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $insert_issue_query = "INSERT INTO issued (student_id, book_num, book_name, book_author, issue_date, due_date, semester, faculty, publication, picture) 
+                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($connection, $insert_issue_query);
-        mysqli_stmt_bind_param($stmt, "sssssssss",
+        mysqli_stmt_bind_param($stmt, "ssssssssss",
             $student_id,
             $book_num,
             $book['book_name'],
             $book['author_name'],
             $issue_date,
+            $due_date,
             $book['semester'],
             $book['faculty'],
             $book['publication'],
@@ -88,7 +103,7 @@ if (isset($_POST['issue_book'])) {
             mysqli_stmt_bind_param($stmt, "s", $request_id);
 
             if (mysqli_stmt_execute($stmt)) {
-                echo "<script>alert('Book issued successfully.'); window.location.href = window.location.href;</script>";
+                echo "<script>alert('Book issued successfully with due date: " . $due_date . "'); window.location.href = window.location.href;</script>";
             } else {
                 echo "<script>alert('Error updating request status: " . mysqli_error($connection) . "');</script>";
             }
@@ -104,7 +119,7 @@ $filter_student_id = isset($_GET['student_id']) ? $_GET['student_id'] : '';
 $filter_book_name = isset($_GET['book_name']) ? $_GET['book_name'] : '';
 $filter_book_num = isset($_GET['book_num']) ? $_GET['book_num'] : '';
 
-$query = "SELECT * FROM book_request WHERE 1=1";
+$query = "SELECT * FROM book_request WHERE status != ''";
 
 if (!empty($filter_student_id)) {
     $query .= " AND student_id LIKE '%" . mysqli_real_escape_string($connection, $filter_student_id) . "%'";
@@ -131,7 +146,7 @@ $query_run = mysqli_query($connection, $query);
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
         }
-        .status-dropdown, .filter-input {
+        .status-dropdown, .filter-input, .due-date-input {
             padding: 5px;
             border-radius: 4px;
             border: 1px solid #ccc;
@@ -194,6 +209,21 @@ $query_run = mysqli_query($connection, $query);
         }
         .reset-btn:hover {
             background-color: #d32f2f;
+        }
+        .issue-form {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: flex-start;
+        }
+        .due-date-input {
+            width: 140px;
+            font-size: 12px;
+        }
+        .issue-form label {
+            font-size: 11px;
+            color: #666;
+            margin: 0;
         }
     </style>
 </head>
@@ -305,11 +335,18 @@ $query_run = mysqli_query($connection, $query);
                 <?php } elseif ($status == 'rejected') { ?>
                     <button class="issue-btn" disabled>Issue Book</button>
                 <?php } else { ?>
-                    <form method="POST" action="" style="display:inline;">
+                    <form method="POST" action="" class="issue-form">
                         <input type="hidden" name="request_id" value="<?php echo htmlspecialchars($request_id); ?>">
                         <input type="hidden" name="student_id" value="<?php echo htmlspecialchars($student_id); ?>">
                         <input type="hidden" name="book_num" value="<?php echo htmlspecialchars($book_num); ?>">
-                        <button type="submit" name="issue_book" class="issue-btn" onclick="return confirm('Are you sure you want to issue this book to <?php echo htmlspecialchars(addslashes($student_name)); ?>?');">Issue Book</button>
+                        <label for="due_date_<?php echo $request_id; ?>">Due Date:</label>
+                        <input type="date" name="due_date" id="due_date_<?php echo $request_id; ?>" class="due-date-input" 
+       min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" 
+       value="<?php echo date('Y-m-d', strtotime('+180 days')); ?>" required>
+                        <button type="submit" name="issue_book" class="issue-btn" 
+                                onclick="return confirm('Are you sure you want to issue this book to <?php echo htmlspecialchars(addslashes($student_name)); ?>?');">
+                            Issue Book
+                        </button>
                     </form>
                 <?php } ?>
             </td>
@@ -325,5 +362,35 @@ $query_run = mysqli_query($connection, $query);
 
 </div>
 </div>
+
+<script>
+// Set minimum date to tomorrow for all due date inputs
+document.addEventListener('DOMContentLoaded', function() {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const minDate = tomorrow.toISOString().split('T')[0];
+    
+    const dueDateInputs = document.querySelectorAll('.due-date-input');
+    dueDateInputs.forEach(input => {
+        input.setAttribute('min', minDate);
+    });
+});
+
+ const today = new Date();
+
+  // Add 1 day to get tomorrow's date
+  today.setDate(today.getDate() + 1);
+
+  // Format to YYYY-MM-DD
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const dd = String(today.getDate()).padStart(2, '0');
+
+  const minDate = `${yyyy}-${mm}-${dd}`;
+
+  // Set the min attribute of the input
+  document.getElementById('futureDate').setAttribute('min', minDate);
+</script>
+
 </body>
 </html>

@@ -37,7 +37,7 @@ if(isset($_POST['return_book'])) {
 
 // Build query with filters
 $query = "SELECT issued.student_id, issued.book_name, issued.book_author, issued.book_num,
-          issued.issue_date, issued.returned, issued.returned_date, users.Name 
+          issued.issue_date, issued.due_date, issued.returned, issued.returned_date, users.Name 
           FROM issued LEFT JOIN users ON issued.student_id = users.ID
           WHERE 1=1";
 
@@ -53,6 +53,9 @@ if (!empty($filter_book_num)) {
 if ($filter_returned !== '') {
     $query .= " AND issued.returned = '$filter_returned'";
 }
+
+// Order by latest issued first
+$query .= " ORDER BY issued.createdAt DESC";
 ?>
 
 <!DOCTYPE html>
@@ -67,7 +70,6 @@ if ($filter_returned !== '') {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
-            /* padding: 20px; */
         }
 
         .filter-container {
@@ -136,24 +138,7 @@ if ($filter_returned !== '') {
             align-items: center;
         }
 
-        /* table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        table th, table td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-
-        table th {
-            background-color: #f8f8f8;
-            font-weight: bold;
-        } */
-
+       
         .return-btn {
             background-color: #4CAF50;
             color: white;
@@ -181,8 +166,6 @@ if ($filter_returned !== '') {
 <?php include('sidebar.php'); ?>
 
     <div class="container">
-
-
 
     <h2 class="h2-register-header">Issued Books</h2>
 
@@ -227,6 +210,7 @@ if ($filter_returned !== '') {
                 <th>Book Num</th>
                 <th>Author</th>
                 <th>Issue Date</th>
+                <th>Due Date</th>
                 <th>Return</th>
             </tr>
         </thead>
@@ -238,6 +222,7 @@ if ($filter_returned !== '') {
                 $bnum = $row['book_num'];
                 $author = $row['book_author'];
                 $date = $row['issue_date'];
+                $duedate = $row['due_date'];
                 $student = $row['Name'];
                 $student_id = $row['student_id'];
                 $returned = $row['returned'] ?? 0;
@@ -249,6 +234,7 @@ if ($filter_returned !== '') {
                 <td><?php echo htmlspecialchars($bnum);?></td>
                 <td><?php echo htmlspecialchars($author);?></td>
                 <td><?php echo htmlspecialchars($date);?></td>
+                <td><?php echo htmlspecialchars($duedate);?></td>
                 <td>
                     <?php if($returned == 1): ?>
                         <span class="returned-status">Returned</span>
@@ -266,6 +252,6 @@ if ($filter_returned !== '') {
     </table>
 
     </div>
-    </div>
+</div>
 </body>
 </html>

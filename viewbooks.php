@@ -5,13 +5,16 @@ $connection = mysqli_connect("localhost", "root", "");
 $db = mysqli_select_db($connection, "library");
 
 // Check if user is logged in
-if (!isset($_SESSION['Email']) || !isset($_SESSION['ID'])) {
-    header("Location: index.php");
-    exit();
-}
+$is_logged_in = isset($_SESSION['Email']) && isset($_SESSION['ID']);
 
-
+// Handle book request (only for logged-in users)
 if (isset($_POST['request_book'])) {
+    if (!$is_logged_in) {
+        // Redirect to login page if not logged in
+        header("Location: index.php");
+        exit();
+    }
+    
     $user_email = $_SESSION['Email']; // Get the user's email from the session
     $student_id = $_SESSION['ID']; // Get the student_id from the session
 
@@ -26,44 +29,88 @@ if (isset($_POST['request_book'])) {
         $student_row = mysqli_fetch_assoc($student_result);
         $student_name = $student_row['name'];
 
-        // Get book details from form
-        $book_name = $_POST['book_name'];
-        $book_edition = $_POST['book_edition'];
-        $author_name = $_POST['author_name'];
-        $book_num = $_POST['book_num'];
-
-        // Check if the book is already requested by this student
-        $check_request_query = "SELECT * FROM book_request WHERE student_id=? AND book_num=? AND status <> ''";
-         // Prepare the statement to prevent SQL injection
-        $stmt = mysqli_prepare($connection, $check_request_query);
-        mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
+        // Check current pending requests count
+        $request_count_query = "SELECT COUNT(*) as request_count FROM book_request WHERE student_id = ? AND status = 'pending'";
+        $stmt = mysqli_prepare($connection, $request_count_query);
+        mysqli_stmt_bind_param($stmt, "s", $student_id);
         mysqli_stmt_execute($stmt);
-        $check_request_result = mysqli_stmt_get_result($stmt);
+        $request_count_result = mysqli_stmt_get_result($stmt);
+        $request_count_row = mysqli_fetch_assoc($request_count_result);
+        $current_requests = $request_count_row['request_count'];
 
-        if (mysqli_num_rows($check_request_result) > 0) {
-            echo "<script>alert('You have already requested this book.');</script>";
+        // Check current issued books count - Handle both NULL and 0 for returned field
+        $issued_count_query = "SELECT COUNT(*) as issued_count FROM issued WHERE student_id = ? AND (returned IS NULL OR returned = 0)";
+        $stmt = mysqli_prepare($connection, $issued_count_query);
+        mysqli_stmt_bind_param($stmt, "s", $student_id);
+        mysqli_stmt_execute($stmt);
+        $issued_count_result = mysqli_stmt_get_result($stmt);
+        $issued_count_row = mysqli_fetch_assoc($issued_count_result);
+        $current_issued = $issued_count_row['issued_count'];
+
+        // Check if user has reached the maximum limits
+        if ($current_requests >= 5) {
+            echo "<script>alert('You have reached the maximum limit of 5 pending requests. Please wait for some requests to be processed.');</script>";
+        } elseif ($current_issued >= 7) {
+            echo "<script>alert('You have reached the maximum limit of 7 issued books. Please return some books before requesting new ones.');</script>";
         } else {
-            // Check if the book is already issued to this student
-            $check_issued_query = "SELECT * FROM issued WHERE student_id=? AND book_num=? AND returned = 0";
-            $stmt = mysqli_prepare($connection, $check_issued_query);
-            mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
+            // Get book details from form
+            $book_name = $_POST['book_name'];
+            $book_edition = $_POST['book_edition'];
+            $author_name = $_POST['author_name'];
+            $book_num = $_POST['book_num'];
+
+            // Check book availability
+            $availability_query = "SELECT available_quantity FROM books WHERE book_num = ?";
+            $stmt = mysqli_prepare($connection, $availability_query);
+            mysqli_stmt_bind_param($stmt, "s", $book_num);
             mysqli_stmt_execute($stmt);
-            $check_issued_result = mysqli_stmt_get_result($stmt);
-
-            if (mysqli_num_rows($check_issued_result) > 0) {
-                echo "<script>alert('This book is already issued to you.');</script>";
-            } else {
-                // Insert book request into database
-                $query = "INSERT INTO book_request (user_email, student_id, student_name, book_name, book_edition, author_name, book_num, status) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')";
-                $stmt = mysqli_prepare($connection, $query);
-                mysqli_stmt_bind_param($stmt, "sssssss", $user_email, $student_id, $student_name, $book_name, $book_edition, $author_name, $book_num);
-
-                if (mysqli_stmt_execute($stmt)) {
-                    echo "<script>alert('Book request submitted successfully!'); window.location.href=window.location.href;</script>";
+            $availability_result = mysqli_stmt_get_result($stmt);
+            
+            if (mysqli_num_rows($availability_result) > 0) {
+                $availability_row = mysqli_fetch_assoc($availability_result);
+                $available_quantity = $availability_row['available_quantity'];
+                
+                if ($available_quantity <= 0) {
+                    echo "<script>alert('Sorry, this book is currently out of stock.');</script>";
                 } else {
-                    echo "<script>alert('Error: " . mysqli_error($connection) . "');</script>";
+                    // Check if the book is already requested by this student (exclude rejected/cancelled requests)
+                    $check_request_query = "SELECT status FROM book_request WHERE student_id=? AND book_num=? AND status NOT IN ('rejected', 'cancelled')";
+                    $stmt = mysqli_prepare($connection, $check_request_query);
+                    mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
+                    mysqli_stmt_execute($stmt);
+                    $check_request_result = mysqli_stmt_get_result($stmt);
+
+                    if (mysqli_num_rows($check_request_result) > 0) {
+                        $request_row = mysqli_fetch_assoc($check_request_result);
+                        $request_status = $request_row['status'];
+                        echo "<script>alert('You have already requested this book. Current status: " . ucfirst($request_status) . "');</script>";
+                    } else {
+                        // Check if the book is already issued to this student
+                        $check_issued_query = "SELECT * FROM issued WHERE student_id=? AND book_num=? AND (returned IS NULL OR returned = 0)";
+                        $stmt = mysqli_prepare($connection, $check_issued_query);
+                        mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
+                        mysqli_stmt_execute($stmt);
+                        $check_issued_result = mysqli_stmt_get_result($stmt);
+
+                        if (mysqli_num_rows($check_issued_result) > 0) {
+                            echo "<script>alert('This book is already issued to you.');</script>";
+                        } else {
+                            // Insert book request into database
+                            $query = "INSERT INTO book_request (user_email, student_id, student_name, book_name, book_edition, author_name, book_num, status, request_date) 
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', NOW())";
+                            $stmt = mysqli_prepare($connection, $query);
+                            mysqli_stmt_bind_param($stmt, "sssssss", $user_email, $student_id, $student_name, $book_name, $book_edition, $author_name, $book_num);
+
+                            if (mysqli_stmt_execute($stmt)) {
+                                echo "<script>alert('Book request submitted successfully! You will be notified once it is processed.'); window.location.href=window.location.href;</script>";
+                            } else {
+                                echo "<script>alert('Error submitting request: " . mysqli_error($connection) . "');</script>";
+                            }
+                        }
+                    }
                 }
+            } else {
+                echo "<script>alert('Book not found in the system.');</script>";
             }
         }
     } else {
@@ -158,8 +205,8 @@ $count_result = mysqli_stmt_get_result($count_stmt);
 $total_books = mysqli_fetch_assoc($count_result)['total'];
 $total_pages = ceil($total_books / $books_per_page);
 
-// Add LIMIT clause to main query
-$query .= " LIMIT ? OFFSET ?";
+// Add LIMIT clause to main query with RANDOM ordering
+$query .= " ORDER BY RAND() LIMIT ? OFFSET ?";
 $types .= 'ii';
 $params[] = $books_per_page;
 $params[] = $offset;
@@ -183,6 +230,62 @@ if (!empty($params)) {
 // Execute the query
 mysqli_stmt_execute($stmt);
 $query_result = mysqli_stmt_get_result($stmt);
+
+// Function to get book status for current user (only if logged in)
+function getBookStatus($connection, $student_id, $book_num) {
+    if (!$student_id) return null;
+    
+    // Check if book is requested (excluding rejected/cancelled)
+    $request_query = "SELECT status FROM book_request WHERE student_id = ? AND book_num = ? AND status NOT IN ('rejected', 'cancelled') ORDER BY request_date DESC LIMIT 1";
+    $stmt = mysqli_prepare($connection, $request_query);
+    mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
+    mysqli_stmt_execute($stmt);
+    $request_result = mysqli_stmt_get_result($stmt);
+    
+    if (mysqli_num_rows($request_result) > 0) {
+        $row = mysqli_fetch_assoc($request_result);
+        return $row['status'];
+    }
+    
+    // Check if book is issued
+    $issued_query = "SELECT * FROM issued WHERE student_id = ? AND book_num = ? AND (returned IS NULL OR returned = 0)";
+    $stmt = mysqli_prepare($connection, $issued_query);
+    mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
+    mysqli_stmt_execute($stmt);
+    $issued_result = mysqli_stmt_get_result($stmt);
+    
+    if (mysqli_num_rows($issued_result) > 0) {
+        return 'issued';
+    }
+    
+    return null;
+}
+
+// Initialize user status variables for logged-in users
+$current_requests = 0;
+$current_issued = 0;
+
+if ($is_logged_in) {
+    $student_id = $_SESSION['ID'];
+    
+    // Get current pending requests count
+    $request_count_query = "SELECT COUNT(*) as request_count FROM book_request WHERE student_id = ? AND status = 'pending'";
+    $stmt = mysqli_prepare($connection, $request_count_query);
+    mysqli_stmt_bind_param($stmt, "s", $student_id);
+    mysqli_stmt_execute($stmt);
+    $request_count_result = mysqli_stmt_get_result($stmt);
+    $request_count_row = mysqli_fetch_assoc($request_count_result);
+    $current_requests = $request_count_row['request_count'];
+
+    // Get current issued books count
+    $issued_count_query = "SELECT COUNT(*) as issued_count FROM issued WHERE student_id = ? AND (returned IS NULL OR returned = 0)";
+    $stmt = mysqli_prepare($connection, $issued_count_query);
+    mysqli_stmt_bind_param($stmt, "s", $student_id);
+    mysqli_stmt_execute($stmt);
+    $issued_count_result = mysqli_stmt_get_result($stmt);
+    $issued_count_row = mysqli_fetch_assoc($issued_count_result);
+    $current_issued = $issued_count_row['issued_count'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -190,9 +293,44 @@ $query_result = mysqli_stmt_get_result($stmt);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Requests</title>
+    <title><?php echo $is_logged_in ? 'Book Requests' : 'Browse Books'; ?></title>
     <link rel="stylesheet" href="style2.css">
-    <style>
+        <style>
+        .status-indicator {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        .status-pending { background-color: #fff3cd; color: #856404; }
+        .status-approved { background-color: #d4edda; color: #155724; }
+        .status-issued { background-color: #d1ecf1; color: #0c5460; }
+        .status-rejected { background-color: #f8d7da; color: #721c24; }
+        .request-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.65;
+        }
+        .user-limits {
+            background-color: #e9ecef;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .alert {
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .alert-info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .alert-warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -385,6 +523,11 @@ $query_result = mysqli_stmt_get_result($stmt);
             color: white;
         }
         
+        .status-rejected {
+            background-color: #dc3545;
+            color: white;
+        }
+        
         /* Pagination Styles */
         .pagination-container {
             display: flex;
@@ -558,6 +701,11 @@ $query_result = mysqli_stmt_get_result($stmt);
             background-color: #218838;
         }
         
+        .request-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        
         .status-message {
             color: #6c757d;
             font-weight: bold;
@@ -605,14 +753,44 @@ $query_result = mysqli_stmt_get_result($stmt);
                 font-size: 14px;
             }
         }
-    </style>
+</style>
 </head>
 <body>
     <!-- Include the navigation bar -->
     <?php include('navbar.php'); ?>
 
-    <span class="welcome-user">Welcome: <?php echo $_SESSION['Name']; ?></span>
-    <h2>Available Books</h2>
+    <?php if ($is_logged_in) { ?>
+        
+        <div class="user-limits">
+            <strong>Your Current Status:</strong> 
+            Pending Requests: <?php echo $current_requests; ?>/5 | 
+            Issued Books: <?php echo $current_issued; ?>/7
+            
+            <?php if ($current_requests >= 5): ?>
+                <div class="alert alert-warning">
+                    ⚠️ You have reached the maximum limit of pending requests (5/5). Please wait for some requests to be processed.
+                </div>
+            <?php elseif ($current_issued >= 7): ?>
+                <div class="alert alert-warning">
+                    ⚠️ You have reached the maximum limit of issued books (7/7). Please return some books before requesting new ones.
+                </div>
+            <?php else: ?>
+                <div class="alert alert-info">
+                    ℹ️ You can request <?php echo (5 - $current_requests); ?> more book(s) and issue <?php echo (7 - $current_issued); ?> more book(s).
+                </div>
+            <?php endif; ?>
+        </div>
+        
+        <h2>Available Books</h2>
+    <?php } else { ?>
+        <div class="guest-welcome">
+            <h2>📚 Browse Our Book Collection</h2>
+            <div class="alert alert-info">
+                <strong>Welcome, Guest!</strong> You can browse our collection of books below. 
+                <a href="index.php" style="color: #007bff; text-decoration: underline;">Login</a> to request books from our library.
+            </div>
+        </div>
+    <?php } ?>
 
     <!-- Filter Form -->
     <div class="filter-container">
@@ -683,38 +861,30 @@ $query_result = mysqli_stmt_get_result($stmt);
                 $description = isset($row['description']) ? $row['description'] : '';
                 $picture = isset($row['picture']) ? $row['picture'] : '';
 
-                // Check if the user has already requested this book
-                $student_id = $_SESSION['ID'];
-                $check_query = "SELECT status FROM book_request 
-                                WHERE student_id = ? 
-                                AND book_num = ?";
-                $stmt = mysqli_prepare($connection, $check_query);
-                mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
-                mysqli_stmt_execute($stmt);
-                $check_result = mysqli_stmt_get_result($stmt);
-                $status = "";
-                if (mysqli_num_rows($check_result) > 0) {
-                    $status_row = mysqli_fetch_assoc($check_result);
-                    $status = $status_row['status'];
-                }
-
-                // Check if the book is issued to the current user
-                $check_issued_query = "SELECT * FROM issued 
-                                       WHERE student_id = ? 
-                                       AND book_num = ?
-                                       AND returned = 0";
-                $stmt = mysqli_prepare($connection, $check_issued_query);
-                mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
-                mysqli_stmt_execute($stmt);
-                $check_issued_result = mysqli_stmt_get_result($stmt);
-                if (mysqli_num_rows($check_issued_result) > 0) {
-                    $status = "issued";
-                }
+                // Get book status for current user (only if logged in)
+                $status = $is_logged_in ? getBookStatus($connection, $_SESSION['ID'], $book_num) : null;
         ?>
             <div class="book-card" onclick="openModal('<?php echo htmlspecialchars($book_num); ?>')">
-                <?php if (!empty($status)) { ?>
+                <?php if ($is_logged_in && !empty($status)) { ?>
                     <div class="book-status status-<?php echo htmlspecialchars($status); ?>">
-                        <?php echo ucfirst(htmlspecialchars($status)); ?>
+                        <?php 
+                        switch($status) {
+                            case 'pending':
+                                echo '⏳ Requested';
+                                break;
+                            case 'approved':
+                                echo '✅ Approved';
+                                break;
+                            case 'issued':
+                                echo '📖 Issued to You';
+                                break;
+                            case 'rejected':
+                                echo '❌ Rejected';
+                                break;
+                            default:
+                                echo ucfirst(htmlspecialchars($status));
+                        }
+                        ?>
                     </div>
                 <?php } ?>
                 
@@ -767,6 +937,31 @@ $query_result = mysqli_stmt_get_result($stmt);
                                     <?php echo htmlspecialchars($available_quantity); ?>
                                 </span>
                             </p>
+                            
+                            <?php if ($is_logged_in && !empty($status)) { ?>
+                                <p><strong>Your Status:</strong> 
+                                    <span class="status-indicator status-<?php echo htmlspecialchars($status); ?>">
+                                        <?php 
+                                        switch($status) {
+                                            case 'pending':
+                                                echo '⏳ Request Pending';
+                                                break;
+                                            case 'approved':
+                                                echo '✅ Request Approved - Visit Library';
+                                                break;
+                                            case 'issued':
+                                                echo '📖 Book Issued to You';
+                                                break;
+                                            case 'rejected':
+                                                echo '❌ Request Rejected';
+                                                break;
+                                            default:
+                                                echo ucfirst(htmlspecialchars($status));
+                                        }
+                                        ?>
+                                    </span>
+                                </p>
+                            <?php } ?>
                         </div>
                         <div class="book-description">
                             <h4>Description:</h4>
@@ -780,19 +975,67 @@ $query_result = mysqli_stmt_get_result($stmt);
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <?php if (empty($status)) { ?>
-                            <form method="POST" action="" class='req-form' style="display:none;" id="request_form_<?php echo htmlspecialchars($book_num); ?>">
-                                <input type="hidden" name="book_name" pattern="[A-Za-z\s.]+" value="<?php echo htmlspecialchars($bname); ?>">
-                                <input type="hidden" name="book_edition" pattern="[A-Za-z\s.]+" value="<?php echo htmlspecialchars($bedition); ?>">
-                                <input type="hidden" name="author_name" pattern="[A-Za-z\s.]+" value="<?php echo htmlspecialchars($author); ?>">
-                                <input type="hidden" name="book_num" pattern="\d{13}" value="<?php echo htmlspecialchars($book_num); ?>">
-                                <input type="hidden" name="request_book" value="1">
-                                <!-- The button is outside the form, so the form stays hidden -->
-                            </form>
-                            <button type="button" class="request-btn" onclick="confirmRequest('<?php echo htmlspecialchars(addslashes($bname)); ?>', '<?php echo htmlspecialchars($book_num); ?>')">Request Book</button>
-                        <?php } else { ?>
-                            <span class="status-message">Status: <?php echo ucfirst(htmlspecialchars($status)); ?></span>
-                        <?php } ?>
+                        <?php if (!$is_logged_in) { ?>
+                            <!-- Guest user - show login button -->
+                            <div class="guest-action">
+                                <p style="margin-bottom: 10px; color: #666;">
+                                    <strong>Want to request this book?</strong>
+                                </p>
+                                <a href="index.php" class="request-btn" style="text-decoration: none; display: inline-block; text-align: center;">
+                                    🔐 Login to Request Book
+                                </a>
+                            </div>
+                        <?php } else {
+                            // Logged-in user - show request button with validation
+                            $can_request = true;
+                            $button_message = "Request Book";
+                            $disable_reason = "";
+                            
+                            // Check various conditions
+                            if (!empty($status)) {
+                                $can_request = false;
+                                switch($status) {
+                                    case 'pending':
+                                        $disable_reason = "Request already submitted and pending";
+                                        break;
+                                    case 'approved':
+                                        $disable_reason = "Request approved - Visit library to collect";
+                                        break;
+                                    case 'issued':
+                                        $disable_reason = "Book already issued to you";
+                                        break;
+                                    case 'rejected':
+                                        $disable_reason = "Previous request was rejected";
+                                        break;
+                                }
+                            } elseif ($available_quantity <= 0) {
+                                $can_request = false;
+                                $disable_reason = "Book is out of stock";
+                            } elseif ($current_requests >= 5) {
+                                $can_request = false;
+                                $disable_reason = "Maximum pending requests limit reached (5/5)";
+                            } elseif ($current_issued >= 7) {
+                                $can_request = false;
+                                $disable_reason = "Maximum issued books limit reached (7/7)";
+                            }
+                            
+                            if ($can_request) { ?>
+                                <form method="POST" action="" class='req-form' style="display:none;" id="request_form_<?php echo htmlspecialchars($book_num); ?>">
+                                    <input type="hidden" name="book_name" value="<?php echo htmlspecialchars($bname); ?>">
+                                    <input type="hidden" name="book_edition" value="<?php echo htmlspecialchars($bedition); ?>">
+                                    <input type="hidden" name="author_name" value="<?php echo htmlspecialchars($author); ?>">
+                                    <input type="hidden" name="book_num" value="<?php echo htmlspecialchars($book_num); ?>">
+                                    <input type="hidden" name="request_book" value="1">
+                                </form>
+                                <button type="button" class="request-btn" onclick="confirmRequest('<?php echo htmlspecialchars(addslashes($bname)); ?>', '<?php echo htmlspecialchars($book_num); ?>')">
+                                    📚 Request Book
+                                </button>
+                            <?php } else { ?>
+                                <button type="button" class="request-btn" disabled title="<?php echo htmlspecialchars($disable_reason); ?>">
+                                    <?php echo htmlspecialchars($disable_reason); ?>
+                                </button>
+                            <?php } 
+                        } ?>
                     </div>
                 </div>
             </div>
@@ -800,12 +1043,13 @@ $query_result = mysqli_stmt_get_result($stmt);
             }
         } else {
             echo "<div style='text-align: center; padding: 50px; color: #666;'>";
-            echo "<h3>No books found matching your criteria.</h3>";
+            echo "<h3>📚 No books found matching your criteria.</h3>";
+            echo "<p>Try adjusting your search filters or browse all available books.</p>";
             echo "</div>";
         }
         ?>
     </div>
-
+    
     <!-- Pagination -->
     <?php if ($total_pages > 1) { ?>
         <div class="pagination-container">
