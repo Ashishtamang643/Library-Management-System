@@ -1,57 +1,74 @@
 <?php
     require('functions.php');
     session_start();
+
     if (!isset($_SESSION['Name'])) {
         echo "<script>alert('Please login to continue.'); window.location.href='index.php';</script>";
         exit();
     }
-    $connection = mysqli_connect("localhost","root","", "library");
+
+    $connection = mysqli_connect("localhost", "root", "", "library");
 
     // Process the form submission for issuing books
-    if(isset($_POST['issue-book-btn'])) {
+    if (isset($_POST['issue-book-btn'])) {
         $studentID = $_POST["studentID"];
         $bnum = $_POST["bnum"];
         $due_date = $_POST["due_date"];
         $issuedate = date("Y-m-d"); // Current date
 
-        // Check if the book is already issued to the same student
-        $check_issued_query = "SELECT * FROM issued 
+        // Count how many books are currently issued to this student (not yet returned)
+        $count_issued_query = "SELECT COUNT(*) as total_issued FROM issued 
                                WHERE student_id = '$studentID' 
-                               AND book_num = '$bnum' 
-                               AND returned = 0";
-        $check_issued_result = mysqli_query($connection, $check_issued_query);
+                               AND returned IS NULL";
+        $count_issued_result = mysqli_query($connection, $count_issued_query);
+        $count_data = mysqli_fetch_assoc($count_issued_result);
 
-        if (mysqli_num_rows($check_issued_result) > 0) {
-            echo "<script>alert('This book is already issued to the student.');</script>";
+        if ($count_data['total_issued'] >= 7) {
+            echo "<script>alert('This student has already issued 7 or more books. Please return a book before issuing a new one.');</script>";
         } else {
-            // Check if the book exists and is available
-            $check_book_query = "SELECT * FROM books WHERE book_num = '$bnum'";
-            $check_book_result = mysqli_query($connection, $check_book_query);
-            $book = mysqli_fetch_assoc($check_book_result);
+            // Check if the book is already issued to the same student
+            $check_issued_query = "SELECT * FROM issued 
+                                   WHERE student_id = '$studentID' 
+                                   AND book_num = '$bnum' 
+                                   AND returned IS NULL";
+            $check_issued_result = mysqli_query($connection, $check_issued_query);
 
-            if ($book && $book['available_quantity'] > 0) {
-                // Insert the issue record with due_date
-                $issue_query = "INSERT INTO issued (student_id, book_num, issue_date, due_date, book_name, book_author, semester, faculty, publication, picture) 
-                VALUES ('$studentID', '$bnum', '$issuedate', '$due_date', '" . $book['book_name'] . "', '" . $book['author_name'] . "', '" . $book['semester'] . "', '" . $book['faculty'] . "', '" . $book['publication'] . "', '" . $book['picture'] . "')";
-                $issue_query_run = mysqli_query($connection, $issue_query);
-
-                // Update available quantity in books table
-                $update_query = "UPDATE books SET available_quantity = available_quantity - 1 WHERE book_num = '$bnum'";
-                $update_query_run = mysqli_query($connection, $update_query);
-
-                if ($issue_query_run && $update_query_run) {
-                    echo "<script>alert('Book Issued Successfully.'); window.location.href = window.location.href;</script>";
-                } else {
-                    echo "<script>alert('Error issuing book: " . mysqli_error($connection) . "');</script>";
-                }
+            if (mysqli_num_rows($check_issued_result) > 0) {
+                echo "<script>alert('This book is already issued to the student.');</script>";
             } else {
-                echo "<script>alert('This book is not available or does not exist.');</script>";
+                // Check if the book exists and is available
+                $check_book_query = "SELECT * FROM books WHERE book_num = '$bnum'";
+                $check_book_result = mysqli_query($connection, $check_book_query);
+                $book = mysqli_fetch_assoc($check_book_result);
+
+                if ($book && $book['available_quantity'] > 0) {
+                    // Insert the issue record with due_date
+                    $issue_query = "INSERT INTO issued (student_id, book_num, issue_date, due_date, book_name, book_author, semester, faculty, publication, picture) 
+                                    VALUES ('$studentID', '$bnum', '$issuedate', '$due_date', '" . $book['book_name'] . "', '" . $book['author_name'] . "', '" . $book['semester'] . "', '" . $book['faculty'] . "', '" . $book['publication'] . "', '" . $book['picture'] . "')";
+                    $issue_query_run = mysqli_query($connection, $issue_query);
+
+                    // Update available quantity in books table
+                    $update_query = "UPDATE books SET available_quantity = available_quantity - 1 WHERE book_num = '$bnum'";
+                    $update_query_run = mysqli_query($connection, $update_query);
+
+                    if ($issue_query_run && $update_query_run) {
+                        // Delete matching request from book_request table
+                        $delete_request_query = "DELETE FROM book_request WHERE student_id = '$studentID' AND book_num = '$bnum'";
+                        mysqli_query($connection, $delete_request_query);
+
+                        echo "<script>alert('Book Issued Successfully.'); window.location.href = window.location.href;</script>";
+                    } else {
+                        echo "<script>alert('Error issuing book: " . mysqli_error($connection) . "');</script>";
+                    }
+                } else {
+                    echo "<script>alert('This book is not available or does not exist.');</script>";
+                }
             }
         }
     }
 
     // Process the form submission for returning books
-    if(isset($_POST['return-book-btn'])) {
+    if (isset($_POST['return-book-btn'])) {
         $studentID = $_POST["studentID"];
         $bnum = $_POST["bnum"];
         $returned_date = date("Y-m-d"); // Current date
@@ -62,9 +79,11 @@
                                AND book_num = '$bnum' 
                                AND returned IS NULL";
         $check_issued_result = mysqli_query($connection, $check_issued_query);
+
         echo "<script>console.log('Check issued query: $bnum');</script>";
         echo "<script>console.log('Check issued result: " . mysqli_num_rows($check_issued_result) . "');</script>";
-        if (mysqli_num_rows($check_issued_result) > 0) {    
+
+        if (mysqli_num_rows($check_issued_result) > 0) {
             // Update the issued table to set returned date
             $update_return_query = "UPDATE issued 
                                     SET returned_date = '$returned_date', returned = 1
@@ -87,6 +106,8 @@
         }
     }
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

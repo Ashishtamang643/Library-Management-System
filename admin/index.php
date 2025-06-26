@@ -1,3 +1,40 @@
+ <?php
+    session_start();
+    
+    
+    if(isset($_SESSION['Name'])) {
+        header("Location: adminprofile.php");
+        exit();
+    }
+
+    $connection = mysqli_connect("localhost", "root", "", "library");
+    if (!$connection) {
+        die("Database Connection Failed: " . mysqli_connect_error());
+    }
+
+    if (isset($_POST['submit-btn'])) {
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+
+        // Query to fetch admin data
+        $query = "SELECT * FROM admin WHERE Username = '$username'";
+        $query_run = mysqli_query($connection, $query);
+        $row = mysqli_fetch_assoc($query_run);
+
+        if ($row) {
+            if ($row['Password'] == $password) {
+                $_SESSION['Name'] = $row['Name'];
+                header("Location: adminprofile.php");
+                exit();
+            } else {
+                $error_message = "Wrong Password! Please try again.";
+            }
+        } else {
+            $error_message = "Invalid username. Please try again.";
+        }
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -131,50 +168,20 @@
             <form action="" method="post">
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                    <input type="text" id="username" name="username"  placeholder="Enter your username" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" placeholder="Enter your password" required>
                 </div>
+
+                <?php if (!empty($error_message)): ?>
+    <p class="error-message"><?php echo $error_message; ?></p>
+<?php endif; ?>
+
                 
-                <?php
-    session_start();
-    
-    
-    if(isset($_SESSION['Name'])) {
-        header("Location: adminprofile.php");
-        exit();
-    }
-
-    $connection = mysqli_connect("localhost", "root", "", "library");
-    if (!$connection) {
-        die("Database Connection Failed: " . mysqli_connect_error());
-    }
-
-    if (isset($_POST['submit-btn'])) {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-
-        // Query to fetch admin data
-        $query = "SELECT * FROM admin WHERE Username = '$username'";
-        $query_run = mysqli_query($connection, $query);
-        $row = mysqli_fetch_assoc($query_run);
-
-        if ($row) {
-            if ($row['Password'] == $password) {
-                $_SESSION['Name'] = $row['Name'];
-                header("Location: adminprofile.php");
-                exit();
-            } else {
-                $error_message = "Wrong Password! Please try again.";
-            }
-        } else {
-            $error_message = "Invalid username. Please try again.";
-        }
-    }
-?>
+               
 
                 
                 <button type="submit" class="btn-login" name="submit-btn">LOGIN</button>

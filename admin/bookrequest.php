@@ -43,6 +43,22 @@ if (isset($_POST['issue_book'])) {
         exit();
     }
 
+    // Check how many books are already issued to this student
+    $check_issue_count_query = "SELECT COUNT(*) AS issued_count FROM issued WHERE student_id = ? AND returned IS NULL";
+    $stmt = mysqli_prepare($connection, $check_issue_count_query);
+    mysqli_stmt_bind_param($stmt, "s", $student_id);
+    mysqli_stmt_execute($stmt);
+    $issue_count_result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($issue_count_result);
+    $issued_count = $row['issued_count'];
+
+    $max_books_allowed = 7;
+    if ($issued_count >= $max_books_allowed) {
+        echo "<script>alert('You have already issued the maximum number of books allowed ($max_books_allowed).'); window.location.href = window.location.href;</script>";
+        exit();
+    }
+
+    // Check if this specific book is already issued to the student and not returned
     $check_issued_query = "SELECT * FROM issued WHERE student_id = ? AND book_num = ? AND returned IS NULL";
     $stmt = mysqli_prepare($connection, $check_issued_query);
     mysqli_stmt_bind_param($stmt, "ss", $student_id, $book_num);
@@ -93,11 +109,13 @@ if (isset($_POST['issue_book'])) {
         );
 
         if (mysqli_stmt_execute($stmt)) {
+            // Reduce available quantity by 1
             $update_available_quantity = "UPDATE books SET available_quantity = available_quantity - 1 WHERE book_num = ?";
             $stmt = mysqli_prepare($connection, $update_available_quantity);
             mysqli_stmt_bind_param($stmt, "s", $book_num);
             mysqli_stmt_execute($stmt);
 
+            // Update the book request status
             $update_request_status = "UPDATE book_request SET status = 'issued' WHERE request_id = ?";
             $stmt = mysqli_prepare($connection, $update_request_status);
             mysqli_stmt_bind_param($stmt, "s", $request_id);
@@ -115,6 +133,7 @@ if (isset($_POST['issue_book'])) {
     }
 }
 
+// Filter/search section
 $filter_student_id = isset($_GET['student_id']) ? $_GET['student_id'] : '';
 $filter_book_name = isset($_GET['book_name']) ? $_GET['book_name'] : '';
 $filter_book_num = isset($_GET['book_num']) ? $_GET['book_num'] : '';
@@ -134,6 +153,7 @@ if (!empty($filter_book_num)) {
 $query .= " ORDER BY request_date DESC";
 $query_run = mysqli_query($connection, $query);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

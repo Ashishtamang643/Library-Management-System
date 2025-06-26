@@ -383,7 +383,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-grid">
                 <div class="form-group">
                     <label for="bname">Book Name</label>
-                    <input type="text" name="bname" id="bname" placeholder="Enter book title" required>
+                    <input type="text" name="bname" id="bname" pattern="[A-Za-z\s]+" placeholder="Enter book title" required>
                 </div>
 
                 <div class="form-group">
