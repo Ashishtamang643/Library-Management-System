@@ -15,7 +15,7 @@ if (!isset($_SESSION['Name'])) {
         if($row['author_name'] == $author)
         {
         ?><script type="text/javascript">
-        alert("Author Already Exixts")
+        alert("Author Already Exists")
         window.location.href = "author.php"
         </script>
     <?php

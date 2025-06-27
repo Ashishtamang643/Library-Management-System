@@ -320,16 +320,27 @@ if ($is_logged_in) {
             margin: 10px 0;
             border-radius: 5px;
             font-size: 14px;
+            
+        }
+
+        .basic-info {
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
         }
         .alert {
             padding: 12px;
             margin: 10px 0;
             border-radius: 4px;
             font-weight: bold;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            font-size: 15px;
+            letter-spacing: 0.02em;
         }
-        .alert-info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
-        .alert-warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
-        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-info { background-color: #eaf6fb; color: #1976d2; border: 1px solid #b6e0fe; }
+        .alert-warning { background-color: #fff8e1; color: #b28704; border: 1px solid #ffe082; }
+        .alert-success { background-color: #e8f5e9; color: #388e3c; border: 1px solid #b9f6ca; }
 
         body {
             font-family: Arial, sans-serif;
@@ -761,10 +772,14 @@ if ($is_logged_in) {
 
     <?php if ($is_logged_in) { ?>
         
+        
+        <h2>Available Books</h2>
         <div class="user-limits">
-            <strong>Your Current Status:</strong> 
-            Pending Requests: <?php echo $current_requests; ?>/5 | 
-            Issued Books: <?php echo $current_issued; ?>/7
+            <div class="basic-info">
+                <strong>Your Current Status:</strong> 
+                Pending Requests: <?php echo $current_requests; ?>/5 | 
+                Issued Books: <?php echo $current_issued; ?>/7
+            </div>
             
             <?php if ($current_requests >= 5): ?>
                 <div class="alert alert-warning">
@@ -780,8 +795,6 @@ if ($is_logged_in) {
                 </div>
             <?php endif; ?>
         </div>
-        
-        <h2>Available Books</h2>
     <?php } else { ?>
         <div class="guest-welcome">
             <h2>📚 Browse Our Book Collection</h2>

@@ -41,6 +41,34 @@
         die("Database Connection Error: " . mysqli_connect_error());
     }
 
+    function deleteOldApprovedBookRequests(mysqli $con): int
+    {
+        $sql = "
+            DELETE FROM book_request
+            WHERE status = 'approved'
+              AND request_date < (NOW() - INTERVAL 48 HOUR)
+        ";
+        mysqli_query($con, $sql);
+        return mysqli_affected_rows($con);
+    }
+
+    // 2) Run the cleanup right away
+    $deletedCount = deleteOldApprovedBookRequests($con);
+
+    function deleteOldPendingBookRequests(mysqli $con): int
+    {
+        $sql = "
+            DELETE FROM book_request
+            WHERE status = 'pending'
+              AND request_date < (NOW() - INTERVAL 48 HOUR)
+        ";
+        mysqli_query($con, $sql);
+        return mysqli_affected_rows($con);
+    }
+
+    // 2) Run the cleanup right away
+    $deletedCount = deleteOldPendingBookRequests($con);
+
     // Function to get daily data for specified date range
     function get_daily_stats($con, $start_date, $end_date) {
         $data = [
